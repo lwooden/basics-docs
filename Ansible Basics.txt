@@ -1,64 +1,53 @@
-Ansible Basics
-----------------
-
 [Install Verification]
 
-$ which ansible
-$ ansible --version
+which ansible
+ansible Ñversion
 
 [Basic Ansible Configuration]
 
--Create another user to run ansible commands (on remote host too if necessary)
-  useradd ansible
-  passwd Password1
+Create another user to run ansible commands
+  useradd test
+  passwd test
 
--Generate keys
+Generate keys
   ssh-keygen
   ssh-copy-id test@hostname
 
--Edit sudoers file and ensure user has sudo rights w/o password
+Edit sudoers file and ensure user has sudo rights w/o password
   visudoers
 
--Test Ping
-  ansible all -m ping 
+List Hosts
+  Add hostnames to /etc/ansible/hosts file
+  ansible all -list-hosts // verify
+  
 
+Test Ping
+  ansible all -m ping 
 
 [Install AWS CLI on Ansible Controller]
 
-$ yum install python-pip
-$ pip install awscli
-$ ansible all —list-hosts
-$ ansible -m setup // gather facts about local server
+yum install python-pip
+pip install awscli
+
+ansible all Ñlist-hosts
 
 [Running a Playbook Against a Remote Host]
 
 Make sure you can resolve host (DNS or host file)
-
 Add hostname to /etc/ansible/hosts file
-
 ansible all -list-hosts // verify
-
 Load pem key onto controller (for ssh access)
-
 Add pem key to ssh-agent so the shell can use it
   ssh-agent
   ssh-add pemFile
-
 Build playbook file
-
 Run playbook 
-  ansible-playbook myplay.yml
-
-
-
+  Ansible-playbook play.yml
 
 
 Jobs // check stopped or background processes
-
 Command & // puts a process in the background
-
 CTRL-Z // stops a processes
-
 Bg // moves stopped process to background
-
 Fg // moves stopped process to foreground
+
