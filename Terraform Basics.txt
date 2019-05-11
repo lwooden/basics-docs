@@ -1,0 +1,23 @@
+Terraform Basics
+-----------------
+
+- Allows me to write infrastructure-as-code
+- Automation of my infrastructure
+- Keep infrastructure in a certain state (e.g no less than 3 instances open)
+- Make my infrastructure auditable
+- Keep in versional control
+- Ansible, Chef, Puppet focus on automating and config of "software"
+- Terrafom focuses on "infrastructure"
+- Works well with automation software like ansible to install software "after" the infrastructure
+is provisioned
+- Works with multiple cloud providers
+
+$ terraform init // run in new directory with your terraform file before you run "apply"
+$ terraform apply
+$ terraform destroy // destroys the apply that you ran
+$ terraform plan // show you the changes that your terraform file would make if applied
+$ terraform plan -out file.tr // safe way to print the changes that are going to be made 
+$ terraform apply file.tr // changes that are going to be executed
+
+
+

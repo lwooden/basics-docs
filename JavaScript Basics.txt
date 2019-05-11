@@ -1,0 +1,60 @@
+JavaScript Basics
+
+Number(var) //converts var into type number
+alert("")
+
+
+Printing
+----------
+console.log("")
+
+
+Input
+--------
+var name = prompt("What is your first name? ")
+
+Types
+------
+Number
+String
+Boolean
+Undefined
+Null
+Symbol
+Object
+
+Comparisons
+------------
+!== #not equal to
+=== #equal to
+>=  #greater than or equal to
+<=  #less than or equal to
+<   #less than
+>   #greator than
+
+Variables
+---------
+var firstName
+
+Conditionals
+-------------
+if 
+else
+else if 
+
+Logical Operators
+------------------
+&& #and
+|| #or
+! #not
+
+Functions
+---------
+var a = function name() {} //Function Expression
+function name() {} //Function Declaration (BEST WAY)
+return
+
+parameters - placeholders for future arguments
+arguments - functions execute against arguments
+
+/**One of the rules of thumbs for a developer is "not to repeat yourself. Ideally I should want to make things as "efficient" as possible. Add "arguments" to functions. This is how I make my function "extensible" and customizable.**/

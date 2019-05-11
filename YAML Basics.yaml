@@ -1,0 +1,42 @@
+
+%TAG ! tag:hostdata:alx: # setting a local tag
+--- # Multi-Document Stream
+# Alexandria host data
+# Block Style
+host: sandbox.local
+datacenter:
+  location: !ALX Alexandria
+  rack: !!str 6  #changes data-type to string w/o using quotes
+  row: 1
+roles: &wphost # the anchor allows me to reuse data in my file
+  - webserver
+  - database
+downtime_sch: |
+  2018-10-31 - kernal upgrade
+  2019-02-02 - security fix 
+comments: >
+  Experience high I/O
+  since 2018-10-01.
+  Currently investigating.
+--- # Next Document
+host: sandbox2.local
+datacenter:
+  location: Alexandria
+  rack: 6  
+  row: 2
+... # End of Alexandria Data Stream. Signals the end of the this document without closing the data stream
+--- # Next Document 
+# Washington DC host data
+host: sandbox3.local
+datacenter:
+  location: Washington DC
+  rack: 1  
+  row: 1
+roles: *wphost # this will inherit the values of my anchor above
+... # End of Washington DC Data Stream
+
+
+# Flow Style
+host: sandbox3.local
+datacenter: { location: Herndon , rack: 7 , row: 1 }
+roles: [ webserver , database ]
