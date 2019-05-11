@@ -1,0 +1,81 @@
+[Package Management]
+
+{root_of_project_folder}$ npm init -y // answers yes with all defaults and
+generates baseline package.json file 
+
+npm i <package_name> // installs package 
+npm i <package_name> -g // saves package globally
+npm i <package_name> --save-dev
+
+
+
+[Debug]
+
+Insert "debugger" anywhere in your code (this will act as a breakpoint in the debug session)
+$ node inspect app.js // inspect command spawns a debug session and sends it to the Chrome Browser
+Open up Chrome > hit URL chrome://inspect
+Inspect the current session that you spawned in step 1
+
+[Callback Functions]
+
+const geocode = (address, callback) => {
+  setTimeout(() => {
+    data = {
+      latitude: 0,
+      longitude: 0
+    }
+    callback(data) // define the data I want to return to the function
+  }, 2000)
+}
+
+geocode('TempleHills',(data) => { // data is the variable I want to access when I call the function geocode
+  console.log(data)
+})
+
+- A callback function is a function that we provide as an "argument" to another function with the expectation that the original function is going to call that function sometime in the future
+- When a function is doing a synchronous operation, we can use the keyword "return" to have the data returned to the function that is being called. 
+- When a function is doing an asynchronous operation, the "return" keyword is not an option. I must use the "callback" method in order to access that data (when it becomes available)
+
+[Arrow Functions]
+
+Statement Format
+-------------------
+
+var square = (argument) => {
+  var result = x * x;
+  return result;
+  };
+
+console.log(square(9));
+
+Expression Format
+-----------------
+
+var square = (x) => x * x; 
+// Simplifies our code and makes it easier to scan
+// I also don't need to specify "return" keyword; it is already implied
+
+var square = x => x * x;
+// When I am accepting only 'one' argument then I don't have to wrap the variable in ()
+
+
+var user = {
+  name: 'Andrew',
+  sayHi: () => {
+   console.log(`Hi`);
+  }
+}
+
+// How to use arrow function and reference an object literal (this.property)
+var user = {
+  name: 'Andrew',
+  sayHi: () => {
+  console.log(`Hi ${this.name`); // this will not work with arrow functions
+  },
+  sayHiAlt () { // this is the correct way
+    console.log(`Hi ${this.name}`); 
+  }
+}
+
+user.sayHiAlt()
+    
