@@ -3,9 +3,12 @@
 {root_of_project_folder}$ npm init -y // answers yes with all defaults and
 generates baseline package.json file 
 
-npm i <package_name> // installs package 
+npm config set prefix <user-home-dir> // this ensures that modules installed with -g flag will not require sudo to install as they will be installed in the dir you desire
+
+npm install // install all modules listed in package.json
+npm i <package_name> // installs a specific package 
 npm i <package_name> -g // saves package globally
-npm i <package_name> --save-dev
+npm i <package_name> --save-dev // saves module under the "devDependecies" section
 
 
 
