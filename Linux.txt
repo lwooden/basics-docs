@@ -1,0 +1,784 @@
+RHCSA PREP
+
+**FOCUS ON PERSISTENCE! 
+
+dd if/=dev/zero of=/root/test.file bs=1M count=1024 
+
+Ctrl+R // does a recursive search of my history and auto completes
+
+Ctrl+U // clears up a line to the beginning
+
+grep -v ^# {filename} | grep -v ^$ //returns all lines with no # or space characters
+
+screen -d -m -S shared // create a new screen
+screen -ls // list available screens
+screen -x shared // attach to the screen
+
+script recorded_session.txt // starts recording my terminal session in this file
+# exit [Enter] // ends the recording session
+
+script --timing=recorded_sessions.txt  
+scriptreplay --timing=recorded_session.txt
+
+
+Login Shell/ Non-Login Shell + .bashrc .bash_profile /etc/profile
+-----------------------------------------------------------------
+echo $0 // bash = not a login shell (graphical interface or service account)
+echo $0 // -bash = login shell (you were prompted for a user/pass, e.g. ssh)
+
+.bashrc // executed by bash for non-login shells
+/etc/profile // system-wide profile for all users
+
+
+Order of Execution 
+Login Shell(ssh): /etc/profile -> .bash_profile -> .profile(if present)
+Non-Login(desktop): /etc/bash.bashrc -> .bashrc
+
+
+
+Input/Output Redirection 
+-----------------------
+cat file > file2.txt // overwrites or creates if not there
+cat file >> file2.txt // appends to the end of a file
+
+2> // represents error
+/dev/null // kernal location for empty location. Where things go to die
+2>&1 // redirects stderr to stdout
+
+#sdaasdsd 2> error.txt // 2> represents error. Redirects it to a file
+#sdaasdsd 2> /dev/null 
+#sdaasdsd 2>&1 | grep "command"
+
+head file.txt
+tail file.txt // -f live stream
+
+Grep
+-----
+-v // do not include
+-n // display line number
+-i // case insensitive
+^ // line starts with
+$ // line ends
+[] // do not return what's in brackets
+
+
+Regular Expressions
+---------------------
+. // any charater
+
+
+SSH & Transferring Files - scp,sftp 
+------------------------------------
+ssh ec2-user@192.168.1.1
+
+scp file.txt ec2-user@192.168.1.1:/tmp
+
+sftp ec2-user@192.168.1.1
+>ls // files on remote server
+>pwd // pwd on remote server
+>cd // cd on the remote system
+>get file.txt // downloads file.txt from the remote server
+>put newfile.txt // uploads file to remote server
+
+#Ctrl+R // does a recursive search of my history and auto completes
+#Ctrl+U // clears up a line to the beginning
+
+
+Switching Users 
+-----------------
+systemctl get-default // gets default run level
+.bash_profile // customization script for login shells (per user)
+su lwooden // executes non-login shell
+su - lwooden // executes login shell; everything in my .bash_profile is executed
+/etc/profile // global bash_profile
+
+
+Archive, Compress, Unpack, Upcompress - tar,gzip, and bzip
+----------------------------------------------------------
+gzip file1.txt // compresses a file or archive
+gunzip file.txt // uncompresses a file or archive
+
+tar -cvf myarchive.tar file1.txt // creates a tar file 
+tar -cvzf myarchive.tar file1.txt // creates a tar file w/ gzip compression
+tar -xvf myarchive.tar // extracts a tar file
+tar -zxvf myarchive.tar // extracts a tar that is gzip (z flag must be first!!!)
+tar -dvf myarchive.tar // checks differences of files in tar and in directory
+tar -tf myarchive.tar // list contents in a tar file
+
+star -c /var/log f=myarchive.tar // creates the star 
+star -t f=user-logs.tar // list contents of the star
+star -bz -x f=myarchive.tar // decompress bzip star
+
+
+Create and Edit Text Files
+--------------------------
+vi // standard
+vim // vi improved (yum install vim)
+
+Command Mode Shortcuts:
+yy // yank (copy)
+p // paste
+u // undo
+Shift+G // jump to end of file
+gg // jump back to the beginning 
+/test // search forward for the term "test
+?test // search backwards
+set number // displays line numbers in file
+set ignorecase // ignores case when searching
+%s/test/word // replaces the 1st occurance of the word "test" with "word" on each line
+%s/test/word/g // replace the word "test" with "word" globally
+!cat // runs the cat command inside of vi
+
+wc // word count
+wc -l // line count 
+
+Files & Directories
+--------------------
+touch file.txt // creates empty file called file.txt
+touch {file1, file2, file3} // creates three files 
+mkdir dir1 // creates a directory
+tree // visual presenation of the file system (yum install tree)
+rm -rf * // delete recursively 
+mv file1 file2 // rename file1 
+mv file1 /dir1 // moves file1 into dir1
+cp -R /tmp /home/user // moves all contents of /tmp over to /home/user
+
+
+Hard & Soft Links
+--------------------
+ln // creates a hardlink
+ln -s linuxacademy.txt test // creates a symlink that points "test" to the linuxacademy.txt file
+vi test -> will open up linuxacademy.txt file
+*Symlinks can be broken if the source file is deleted, moved, or renamed
+*When you access a symlink I am essentially accessing the souce file
+*I am not editing the inodes on the actual harddisk. I am using a "shorcut"
+*Source permissions on the source file supercede symlink permissions
+*Hardlinks are a link to a specific inode on my filesystem
+*You can't link to a specfic inode across filesystems
+
+
+Permissions: Owner(U)-Group(G)-Others(O)
+---------------------------------------
+chmod g+x file.txt // adds execute perm for groups
+chmod a+r file.txt // adds read perms for user, group, and others (all) 
+chown user:group file.txt // changes user and group ownership for a file
+usermod -G finance user1 // makes the finance group the primary group for user1
+usermod -aG finace user1 // appends supplementary groups to the user
+
+Read = 4
+Write = 2
+Execute = 1
+
+
+SetUID + SetGID
+----------------
+*Whenever soemone calls a program it is going to execute it "as the owner" of the file
+chmod u+s file.txt
+chmod g+s file.txt
+
+
+
+Sticky Bit
+-----------
+*Prevents a user from deleting, removing, renaming a directory or a file unless they own it
+chmod +t file.txt // sets the sticky bit on the file
+
+
+uMask
+-----
+0022 | Write = 2 | We are "masking" write priviledges for group and the world; we don't want to "hide" anything from the user/owner
+-rw-r--r--
+006 | O - mask nothing | G - mask nothing | O - mask everything
+
+umask 006 // changes umask for the current session
+vi /etc/bashrc 
+
+
+System Documention - man, info, usr/share/doc
+----------------------------------------------
+man passwd // pulls up man pages for passwd
+
+mandb // indexes everything in the usr/share/man directory
+apropos passwd // pulls up every command that contains "passwd"
+
+info // fully searchable and interactive; usr/share/info (most common documentation utility)
+
+/usr/share/doc
+
+locate passwd // searches everything "passwd" (yum install locate)
+updatedb // updates the "locate" local cache database !IMPORTANT
+
+which passwd // displays the full path for the passwd program
+whatis passwd //
+whereis // detailed find option
+
+
+Finding files - locate, find
+-----------------------------
+locate // fast, cached searching mechanism 
+updatedb // manually reindex/update database
+
+find // much more flexible and specific
+find / -name file.txt // searches entire fill system for file.txt 
+find / -mtime -3 // searches all files modified within 3 days
+find / -user jeff -exec cp {} /home/ec2-user \;  // searches all files owned by jeff and copies them to /home/ec2-user
+find /home -user jeff -type f -exec rm {} \; // searches all files owned by jeff in /home of type file and deletes it
+
+stat file.txt // returns detailed stats on a file
+
+
+Boot, Reboot and Shutdown
+--------------------------
+Redhat -> Fedora -> CentOS = systemd // handles initialization and control of services
+init 0 = shutdwon
+init 6 = reboot
+reboot // reboots system
+systemctl reboot // also reboots systems
+shutdown -r now // reboot
+shutdown -P // powers down
+
+
+Booting Into Different Targets Manually & Automatically
+---------------------------------------------------------
+Method #1 - Non-Persistence
+systemctl get-default // displays current target
+systemctl isolate graphical.target // switches me to the graphical target (not persistent)
+
+Method #2 - Persistence
+systemctl set-default graphical.target // changes symbolic link for default.target to point to graphical.target at boot
+1) reboot
+2) interrupt boot process
+3) press 'e' to edit selected item
+4) jump to the end of linux16 kernel command line
+5) add "system.unit=graphical.target
+6) Ctrl+X to continue boot process 
+
+/etc/systemd/system
+/usr/lib/systemd/system // list of targets/services on  your server
+
+systemctl list-units // list all targets available on system
+systemctl list-dependencies multi-user.target // shows dependencies
+
+Target = a grouping of configuration files
+multi-user.target -> graphical.target -> emergency.target -> rescue.target 
+
+
+Interrupt the Boot Process to Gain Access 
+------------------------------------------
+1) Reboot system
+2) Highlight the kernal I want to boot into 
+3) Press "e" to edit GRUB Config
+4) Find "linux16" line and apped "rd.break" to the end of it and CTLR+X
+**I am now in initramfs debug shell
+**The contents of /sysroot is mounted as /root at boot time
+6) mount -oremount,rw /sysroot // mounts systroot directory as read/write
+7) chroot /sysroot // enables /sysroot to act as my root
+8) run passwd // change password of root user 
+9) touch /.autorelable // ensures our new password is accepted
+10) Reboot and login in with new root password
+
+
+Processes 
+----------
+w // shows me users online and uptime
+uptime // uptime and system load average
+ps -aefl // most commonly used command
+top // displays processes in "real-time"
+uptime //
+pgrep gnome // combines grep and ps process for filtering
+pgrep -u ec2-user -l // displays all ec2-user process in a list 
+
+pkill httpd // kills "all" processes that contain "httpd"
+pkill -t pts/0 // kills all users processes and boots them from system
+kill -l // displays all signals
+kill -1 // 
+kill -2 // keyboard interrupt CTRL+C
+kill -9 // forcefully kill of a program
+kill -15 // gracefully kill of a program (default)
+kill -18 // stop and start
+kill -19 // focrces stop of a program
+
+Example -> (while true; do echo -n "My Program" >> ~/output.file; sleep 1; done) &
+& // puts processes in the background
+jobs // list jobs
+kill -SIGSTOP %1 // stops job [1]
+kill -SIGCONT %1 // resumes job [1]
+
+**Niceness determines the "priority" level that each process has when it comes to CPU utilization
+**The LOWER the NICE value the HIGHER the priority
+dd if/=dev/zero of=/root/test.file bs=1M count=1024 // creates a 1MB test file
+nice -n 0 httpd // sets priority to 0 for httpd
+renice -n 10 2879 // resets priorty without restarting the service
+time [command] // displays how long it takes to run a command
+
+
+load average: 0.00[60secs], 0.01[5mins], 0.05[15mins] //past time
+**proc filesystem shows critical information about my system
+cat /proc/cpuinfo // displays cpus on system 
+top + r // renice inside of top
+top + k // kill inside of top
+
+
+System Logs Files and Journals
+--------------------------------
+/var/log/
+messages // system log
+lastlog // most recent log in log
+secure // ssh attempt logs
+
+journalctl // logs "all" events on my system (journald)
+**Contents are relative to the current boot. Contents are removed at reboot
+/etc/systemd/jounrald.conf 
+  #Storage=auto // will make journald content persistent
+journalctl -n // displays last 10 lines
+journalctl -xn // verbose display
+journalctl -f // same as tail -f
+journalctl _SYSTEM_UNIT=httpd.service
+
+/etc/rsyslog.conf // logging service 
+
+systemd-analyze blame // displays boot statistics                
+
+
+Virtual Machines
+-----------------
+systemctl isolate graphical.target // switches me to the graphical target
+Applications -> System Tools -> Virtual Machine Manager
+#virsh 
+>help 
+>list --all // list 
+>shutdown [vm-name] 
+>start [vm-name] 
+>autostart [vm-name] // sets VM to start at reboot
+
+1.1 - Configure Physical Machine to Host VMs
+yum install virt-manager *quemu* *libvirt* *python*
+systemctl start libvirtd 
+systemctl enable libvirtd
+Applications -> System Tools -> Virtual Machine Manager
+
+
+Services - Start, Stop, Status, Enable, Disable
+-----------------------------------------------
+systemctl get-default // displays current default target
+systemctl list-units // displays loaded units
+systemctl list-units --type=[target | service] // displays all active target | service units
+systemctl list-units --type=target --all
+systemctl list-unit-files --type=[target | service]
+
+
+systemctl start service
+systemctl stop service
+systemctl status service
+systemctl enable service // set service to start at boot time
+systemctl disable service // set service not to start at boot time
+
+
+List, Create, and Delete Partitions MBR/GPT Disks
+---------------------------------------------------
+MBR - 4 Primary Partitions & 2TB Limit Per Partition
+GPT - 128 Primary Partitions & 8ZB Limit Per Partition
+
+/dev // attached device storage information
+partprobe // reloads partition information
+
+fdisk -l // list all disks
+fdisk /dev/xvdf // utility used to create MBR based partition
+gdisk /dev/xvdf // utility used to create GPT based partition
+>n
+>1
+>default
+>default
+>8e00 | 8e #Linux LVM
+>w #write and quite 
+
+blkid // displays UUID for each storage device
+lsblk // list devices available to the system
+
+file -s /dev/xvdf // checks if any data is on the disk
+mkfs -t {ext4 | xfs} /dev/xvdf //formates disk
+mount /dev/xvdf /mnt/location
+*then add to /etc/fstab for autoremount on boot
+
+pvcreate /dev/xvdf1 // add your disk to a new volume group
+pvs // verify
+pvdisplay // detailed verification
+pvscan
+pvmove /dev/xfdf1 // moves PE off of this disk to another
+
+vgcreate vg01 /dev/xvdf1 // attaches your disk to the new volume group
+vgs // verify
+vgdisplay // detailed verification
+vgscan
+vgextend vg01 /dev/xvdg // adds a new disk to the volume group
+vgreduce vg01 /xvdf1 // removes a disk from volume group
+
+lvcreate --name tmp --size 10G vg01 
+lvs // verify
+lvdisplay // detailed verification
+lvscan
+lvextend -L +5G /dev/vg01/tmp // increases logical volume by 5GB
+xfs_growfs /tmp // recans xfs filesystems to update new size 
+resize2fs /tmp // rescans ext filesystems to update new size
+
+mkfs.{ext2 | ext3 | xfs} /dev/vg01/tmp // create a filesystem on your new logical volume for files
+fsck /dev/vgo1/tmp // filesystem check
+dumpe2fs /dev/vg01/tmp // shows details of filesystem
+
+mount /dev/vg01/tmp /tmp // mount new 10GB logical volume on /tmp temporarily
+mount -U 68437f95-d53e-4e69-8e91-41168dd3f31d /tmp // mounts using UUID 
+
+vi /etc/fstab // make changes so mount happens at boot
+/dev/vg01/tmp   /tmp     ext3       rw    0 0
+Write & Quit
+
+
+Mount File Systems at Boot by UUID or Label
+---------------------------------------------
+xfs_admin -L filesystem1 /dev/xvdf1 // creates label for xfs partition
+tune2fs -L filesystem2 /dev/xvdf2 // creates label for ext partition
+
+/etc/fstab
+UUID=68437f95-d53e-4e69-8e91-41168dd3f31d /tmp xfs  defaults 0 0 
+LABEL=filesystem2 /mnt/mount1 ext4 defaults 0 0
+Write & Quit
+mount -a 
+
+Swap
+-------
+free -m // shows available free memory on the system
+**General best practices to assign 2/2.5 * Current Memory for swap
+1) Create physical volume
+2) Create volume group
+3) Create logical volume
+4) mkswap /dev/vg01/swap // formats as swap file system
+5) swapon /dev/vgo1/swap // 
+6) add UUID or path in /etc/fstab to make persistent
+7) swap -a
+
+
+CIFS and NFS File Systems
+----------------------------
+yum install *samba* *cifs* *nfs*
+smbclient -L 10.0.0.100 // list Samba Shares available on remote server
+mount -t cifs -o username=linuxacademy //10.0.0.100/public /mnt/sambashare
+mount -t nfs 10.0.0.100:/nfsshare /mnt/nfsshare
+dfh -h // verify mounts
+umount -a
+
+fstab
+//10.0.0.100/public /mnt/sambashare cifs username=linuxacademy,password=123456 0 0 
+10.0.0.100:/nfsshare /mnt/nfsshare nfs defaults 0 0 
+mount -a
+
+
+Set-GID Directories for Collaboration
+---------------------------------------
+**Sets permissions on a directory so that any files created within it will inherent it's permissions from the parent directory
+
+mkdir finance
+chown :finance finance // sets the finance group as the group owner of finance dir
+chmod g+s finance // set-GID for the group for /finance dir
+touch file1.txt
+ls -al // verify that file1.txt has the same perms as the parent dir
+
+
+
+Access Control Lists (ACLs)
+------------------------------
+**supported by xfs and ext filesystems only
+
+getfacl file1.txt // displays current acls on the file
+
+setfacl -m u:lwooden:rw file1.txt // modifies the acls for file1.txt and allows user lwooden rw access; user is mapped to UID 
+ls -al // verify ACLs are set by "=" at the end of the permission line
+
+"Mask" represents the "maximun allowed" priviledges for a file or dir
+setfacl -m m::r file1.txt // sets minimum perms to read only
+setfacl -m m::- file1.txt // masks (removes) all privileges
+
+setfacl -d m u:lwooden:rw dir1 // sets defualt acl for dir1 (inheritance)
+setfacl -x // removes acls
+
+
+Networking
+-----------
+ip addr 
+ip addr show eth0
+ip -s link show eth0 // displays statistics for an network interface
+ip route
+
+ping 
+traceroute
+tracepath // displays mtu (not all routers support this)
+
+ss -tan // displays listening/established connections (netstat)
+ls /sys/class/net // displays network devices available on system
+
+hostnamectl status
+cat /etc/red-hat-release
+uname -r 
+
+yum install networkmanager
+nmcli dev status // network manager view of system interfaces
+nmcli con add con-name "mycon" autoconnect yes type ethernet ifname eth1
+nmcli con add con-name "mycon" autoconnect yes type ethernet ifname eth1 ip4 192.168.1.2 gw4 192.168.1.1
+nmcli con show
+nmclu con show --active 
+nmcli dev show
+
+/etc/sysconfig/network-scripts -> Interfaces
+/etc/hostname -> change filename here for persistence
+/etc/hosts -> locally DNS resolution
+/etc/resolve.conf -> DNS
+/etc/nsswitch.conf -> "hosts" files[1st] dns[2nd] 
+
+
+
+Scheduling Tasks - at,cron
+---------------------------
+man at // allows us to schedule the exec of command at a specific time (yum install)
+at now +5 minutes
+at now +5 hours
+at 12:00am
+>reboot // schedules a reboot for 12am
+atq // displays tasks in the queue
+atrm 1 // removes job "1" in the queueq
+/etc/[at.deny | at.allow or cron.deny | cron.allow]
+
+cron //
+crontab // allows a user to create their own cron job
+/etc/cron.daily // location where scripts run once per day (and so on)
+etc/cron.d // location for scripts that need to run outside of predefined times
+*/5 0 */3 Jan *  root /home/root/uptime.log -> means "every" 5 minutes at 12:05 am "every" 3 days of every week
+
+man anacron // a utility that allows me to run a command that hasn't yet run (i.e. if the system where off during execution time)
+
+
+Kickstart
+------------
+anaconda-ks.cfg // Kickstart Script
+yum install system-config-kickstart // GUI based tool to create a kickstart file
+rpm -qd pykickstart // docs for kickstart
+
+
+Time Services - NTP,Chrony
+--------------
+man timedatectl // lists information about system time
+timedatectl list-timezones // list timezones
+timedatectl set-timezone {}
+timedatectl set-time {}
+date // verify
+
+chronyd -> default ntp daemon
+systemctl status chronyd 
+chronyc sources -v // displays ntp details
+chronyc tracking  // stratum -> how many hops to reach ntp server
+vi /etc/chrony.conf
+systemctl restart chrondy // to apply changes
+
+
+YUM
+--------
+yum check-update // checks for any packages that have an available update
+yum update -y // applies the actual updates that are found
+yum search apache // searches package descriptions/details only for the term
+yum search all // searches everything for the entered pattered
+yum info httpd // displays detailed info about the package
+yum list all 
+yum clean all 
+
+yumdownloader apache // pulls the actual rpm from the repo
+rpm -ivh *.rpm // installs a RPM manually
+rpm -qa | [sort | grep ] // queries the system for the rpm
+rpm -qd // list docs on the rpm
+yum localinstall .*rpm // installs the rpm using YUM; handles dependencies
+
+yum repolist all // displays all repos and their statuses
+yum-config-manager --add-repo=[url] // creates base repo file
+
+1.1 GPG Keys
+1. Grab "public key" from the repository url
+2. Place it in /etc/pki/rpm-gpg/ folder
+3. In repo file set gpgcheck=1
+4. In repo file set gpgkey=file:///[path-to-pub-key]
+
+
+Updating Kernel
+---------------
+Method #1 - Using YUM
+yum list kernel // displays currently installed and available kernels
+yum update kernel // updates kernel using yum
+
+Method #2 - Manual
+yumdownloader kernel // downloads new kernel package
+yum install linux-firmware
+rpm -ivh [kernel version]
+ls /boot // verify new vmlinuz file
+reboot 
+uname -r // verify new kernel is loaded
+
+Set Bootloader from Command Line
+grub2-set-default [0-1] // 0 is the latest version
+
+
+Managing Users
+---------------
+id -> displays UID
+groups root -> displayd groups
+
+0 = root
+1-200 = system users for RHEL process
+201-999 = system account for processes, but dont own system files
+ 
+/etc/passwd // list all users in the system
+/etc/groups // list all groups in the system
+/etc/shadow // contains password policy information
+/etc/skel
+/etc/login.defs // defaults for users
+/etc/default/useradd // useradd defaults
+
+useradd --help
+usermod -- help
+userdel --help
+groupadd --help
+groupmod --help
+groupdel --help
+chage --help
+
+usermod -s /sbin/nologin // prevents a user from logging in
+
+
+
+Authentication Service - LDAP
+----------------------------
+yum install realmd
+realm discover ad.linuxacademy.com // discovers AD server on the network
+#Install necessary packages listed
+realm join ad.linuxacademy.com
+realm discover ad.linuxacademy.com
+realm list // verify current realm that server is apart of
+#verify by "configured: kerberos-member" output
+#verify login format output
+vi /etc/ssh/sshd_config
+#Uncomment "Kerberos" directives and change to yes
+#Restart sshd service
+Try to login
+
+Linux ldM Server (Linux Environment ONLY - Linux Domain Controller)
+Lightweight LDAP Server 
+Linux ldM Server Integrated w/ an Existing Windows Active Directory Domain
+
+Red Hat Directory Server (LDAP Directory) Vs ldM Server
+
+
+
+Security - firewall,iptables,ssh,SELinux
+----------------------------------------
+iptables <--> Netfilter <--> firewalld
+yum install *firewall*
+#Runtime changes vs Permanent changes
+firewall-cmd --help
+firewall-cmd --get-zones 
+#Groups all of my rules in zones
+firewall-cmd --get-default-zone
+firewall-cmd --list-all 
+firewall-cmd --zone=home --add-source=192.168.1.0/24 // allows devices from this segment through in my "home" zone
+firewall-cmd --zone=home --permanent --add-source=192.168.1.0/24 // makes change persistent
+firewall-cmd --reload
+firewall-cmd --add-port=80/tcp --permanent // allows inbound http in my "public" zone
+firewall-cmd --add-port=21/ftp --permanent // allows inbound ftp in my "public" zone
+firewall-config -> opens up GUI
+
+iptables -L -n -v //  lists all chains in number formate with verbosity
+iptables -F // flushes rules from all chains
+
+
+ssh key-gen // keys should be generated as the user (not as root)
+ssh-copy-id lwooden@{ip address} // user must also exist on the remote server
+ssh-agent bash // starts the ssh-agent
+ssh-add // adds my private keys into the agent service
+ssh lwooden2@{ip address} // should bypass passphrase 
+600 -> Private Key Permissions 
+644 -> Public Key Permissions
+
+**SELinux defines a set of rules that determine what "process" can access specific files and location on a file system
+**A "context" is assigned to every process, directory, and port which is used to determine if a "process" can access that resource
+**SELinux essentially acts as an application layer firewall
+
+- Enabled - acting and enforcing context
+- Passive - monitoring and reporting context but not enforcing
+- Disabled
+
+getenforce // displays SELinux status
+setenforce [0|1] // sets SELinux in "permissive mode" for the current session
+
+/etc/selinux
+#SELINUX=disabled // must reboot to take effect
+
+ls -Z // displays SELinux context 
+semanage fcontext -l // displays all of the available contexts on our system
+
+system_u:object_r:admin_home_t:s0
+u=user | r=role | t=type
+
+semange fcontext -a -t httpd_sys_content_t '/content/(/.*)?' // adds type content to a new dir and its child objects
+restorecon -Rv /content // updates the context for the given directory 
+semange fcontext -d '/content/{}'// deletes a context 
+restorecon -Rv /content // applies update
+
+yum install setroubleshoot-server // installs troubleshooting package
+setscbool httpd_enable_homedirs off
+less /var/log/audit.log
+sealert -a /var/log/audit/audit.log 
+
+29 Exercises
+18 Hands-on Labs
+
+
+
+File Transfer
+---------------
+copy scp: bootflash: // Move file from remote server to CSR
+copy bootflash: scp: // Move file from CSR to remote server
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
