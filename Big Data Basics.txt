@@ -1,0 +1,47 @@
+Big Data Basics
+
+4 V's of Big Data
+------------------
+Volume - large volumes of data
+Variety - various forms; structured, semi-structured, unstructured
+Velocity - real time, batch, streams of data
+Variability - inconsistent, sometimes inaccurate, varying data
+
+Big Data is a result of technology advances and innovations made in the past few decades
+Cheap and faster storage + the internet + virtualization + cloud computing
+
+Sources of Big Data
+-------------------
+Social Media
+Machine-Generated Data
+Business Transactions
+IOT
+Sensors
+
+Big Data Example
+----------------
+UPS uses sensors on its vehicles to monitor speed, miles per gallon, mileage, number of stops and engine health.
+ - UPS collects [200 data points] for each 80,000 vehicles every day
+
+
+EDW = Enterprise Data Warehouse
+
+
+Cycle of Big Data Management
+----------------------------
+1. Capture - depends of the problem to be solved
+2. Organize - cleanse, organize, and validate data
+3. Integrate - integrate with business rules or data warehouses
+4. Analyze - real-time analysis, batch, reports, visualizations
+5. Act - use analysis to solve the business problem 
+
+Layers of Big Data Architecture
+--------------------------------
+Layer 1: Physical Infrastructure - clusters, network, in-memory analytics
+Layer 2: Security & Governance
+Layer 3: Data - Text/Audio, Social Media, Machine Generated, Human Generated
+Layer 4: Capture - Distributed File Systems, Streaming, NoSQL, RDBMS
+Layer 5: Organize & Integrate - Apache Spark, Hadoop, ETL, Data Warehouse
+Layer 6: Analyze - Predictive Analytics, Advanced Analytics, Alerts/Recommendations, Visualizations/Reports/Dashboards
+
+*Not an architecture, but a strategy!
