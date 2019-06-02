@@ -45,3 +45,76 @@ Layer 5: Organize & Integrate - Apache Spark, Hadoop, ETL, Data Warehouse
 Layer 6: Analyze - Predictive Analytics, Advanced Analytics, Alerts/Recommendations, Visualizations/Reports/Dashboards
 
 *Not an architecture, but a strategy!
+
+Organizing & Integrate Data
+
+1. Cleaning data - identifying missing or incomplete data
+2. Transformation - morphing data to a suitable form for analysis 
+3. Normalization - modifying structure of database schema to minimize redundancy
+
+
+Data Lake -> ETL -> Hadoop/Apache Spark -> Data Warehouse -> Analyze
+Text/Audio  						     Visualizations  
+Social Media						     Reports
+Machine Gen						     Dashboards
+Human Gen
+
+ETL = Extract Transform Load
+
+1. Extract - read data from the data source
+2. Transform - convert the format of the data so that it conforms to the requirements of the target database
+3. Load - write data to the target database
+
+Apache Hadoop Map Reduce - good for batch processing large volumes of data in  scalable and resilient style
+Apace Spark - good for applying complex analytics using machine learning models
+
+Data Warehouse
+--------------
+A relational database that is designed for query and analysis rather than for transaction processing.
+Usually contains historical data derived from transaction data from other sources. It seperates analysis workload from
+transaction workload.
+
+1. Organized by subject area, it contains an abstracted view of the business
+2. Highly transformed and structured
+3. Data loaded in the data warehouse is based on a strictly defined use case 
+
+Platforms: Redshift, MongoDB, SQL
+
+Data Lake
+-----------
+A storage repository that holds vast amounts of raw data in its native format, including structured, semi-structured,
+and unstructured data. The data structure and requirements are not defined until the data is needed
+
+Platforms: S3, HDFS, Azure
+
+
+Data Lake Vs. Data Warehouse
+----------------------------
+
+[Data Lake]
+1. Retains all data
+2. Data types consist of data sources such as web server logs, sensor data, text, images
+3. Processing of data follows "Schema-on-read"
+4. Extremely agile and can adapt to changes in businesss requirements quickly
+5. Harder to secure 
+6. Hardware must be clustered to support a data lake
+7. Used for advanced analytics 
+
+
+[Data Warehouse]
+1. Only data that is required for the business use case and is highly modeled and structured
+2. Consists of data extracted from transactional systems and consist of quantitative metrics and the attributes 
+3. Processing of data follows "Schema-on-write" 
+4. Due to strucuted modeling, time consuming to modify business processes
+5. Older more mature technology; secure
+6. Hardware consists of enterprise grade servers
+7. Used for operational analysis to report on KPIs and slices of data
+
+Types of Analytics
+------------------
+Predictive - using statistical models to predict the outcome of a task
+Advanced - deep learning for apps like speech/face recognition
+Social Media - determine market trends, forecast demand, etc 
+Text - derive analytics from natural language processing
+Alerts/Recommendations - fraud detection and recommendation engines
+Reports, Dashboards, and Visualizations = descriptive; answers what, when, where
