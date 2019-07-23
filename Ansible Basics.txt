@@ -1,3 +1,32 @@
+
+[Install]
+
+AWS Linux 
+---------
+1. yum install ansible
+2. Configure hosts file /etc/ansible/hosts
+3. Create global user (ansible) - usersadd ansible on controller
+4. Create same user on client server and give it a password - usersadd ansible + passwd ansible
+5. Grant ansible user root access in sudoers file - sudo visudo (controller and client)
+6. On controller switch to ansible user and create key - sudo su - ansible + ssh-keygen
+7. Copy public key over to client server - ssh-copy-id ansible@client_server
+8. Test passwordless ssh from server -> client as ansible user
+
+RHEL
+----
+1. Download EPEL Repo - wget
+2. Install EPEL Repo file - yum install
+3. yum install ansible
+4. Configure hosts file /etc/ansible/hosts
+5. Create universal user (ansible) - usersadd ansible on controller
+6. Create same user on client server - usersadd ansible
+7. Grant ansible user root access in sudoers file - sudo visudo on controller and client
+8. On controller switch to ansible user and create key - sudo su - ansible + ssh-keygen
+9. Copy public key over to client server - ssh-copy-id ansible@client_server
+10. Test passwordless ssh from server -> client as ansible user
+
+
+
 [Install Verification]
 
 which ansible
@@ -19,10 +48,13 @@ Edit sudoers file and ensure user has sudo rights w/o password
 List Hosts
   Add hostnames to /etc/ansible/hosts file
   ansible all -list-hosts // verify
-  
 
-Test Ping
-  ansible all -m ping 
+  
+[Ad-Hoc Commands]
+
+Test Ping - ansible 192.168.1.16 -m ping 
+Yum Install - ansible 192.168.1.16 -b -m yum -a "name=screen"
+Restart Service - ansible 192.168.1.16 -b -m service -a "name=httpd state=restart"
 
 [Install AWS CLI on Ansible Controller]
 
