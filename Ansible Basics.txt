@@ -11,6 +11,7 @@ AWS Linux
 6. On controller switch to ansible user and create key - sudo su - ansible + ssh-keygen
 7. Copy public key over to client server - ssh-copy-id ansible@client_server
 8. Test passwordless ssh from server -> client as ansible user
+9. Enable logs /etc/ansible/hosts
 
 RHEL
 ----
@@ -24,6 +25,7 @@ RHEL
 8. On controller switch to ansible user and create key - sudo su - ansible + ssh-keygen
 9. Copy public key over to client server - ssh-copy-id ansible@client_server
 10. Test passwordless ssh from server -> client as ansible user
+11. Enable logs /etc/ansible/hosts
 
 
 
@@ -32,29 +34,15 @@ RHEL
 which ansible
 ansible Ñversion
 
-[Basic Ansible Configuration]
-
-Create another user to run ansible commands
-  useradd test
-  passwd test
-
-Generate keys
-  ssh-keygen
-  ssh-copy-id test@hostname
-
-Edit sudoers file and ensure user has sudo rights w/o password
-  visudoers
-
-List Hosts
-  Add hostnames to /etc/ansible/hosts file
-  ansible all -list-hosts // verify
-
   
 [Ad-Hoc Commands]
 
 Test Ping - ansible 192.168.1.16 -m ping 
 Yum Install - ansible 192.168.1.16 -b -m yum -a "name=screen"
 Restart Service - ansible 192.168.1.16 -b -m service -a "name=httpd state=restart"
+Gather Facts - ansible 192.168.1.16 -m setup 
+Gather Facts About Specific Properties - ansible 192.168.1.16 -m setup -a filter=*ipv4*
+List Hosts - ansible all -list-hosts // verify
 
 [Install AWS CLI on Ansible Controller]
 
