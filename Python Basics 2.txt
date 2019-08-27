@@ -1,9 +1,24 @@
 Python Basics
 
-Python uses "Dynamic Typing." This menas that I can reassign variables to "different" data types.
+Python uses "Dynamic Typing." This means that I can reassign variables to "different" data types.
 
 Other languages are much more "strict" in this regard therefore the variable type must be 
 defined ahead of time.
+
+
+Virtual Environment Setup
+------------------------
+pip install virtualenv // install virtualenv
+mkdir Python_Ends 	// create folder for environment
+virtualenv projectOne // initialize virtualenv by giving it a name
+source projectOne/bin/activate // enter environment
+(projectOne)
+which python  // verify
+which pip
+pip list
+deactivate  // exit environment
+
+
 
 Conversion
 -----------
