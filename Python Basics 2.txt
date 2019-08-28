@@ -18,6 +18,8 @@ which pip
 pip list
 deactivate  // exit environment
 
+virtualenv --python=/Library/Frameworks/Python.framework/Versions/3.6/bin/python3.6 projectOne // use a specific version of Python if you have multiple versions installed
+
 
 
 Conversion
