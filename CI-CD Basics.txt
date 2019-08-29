@@ -1,0 +1,160 @@
+CI/CD Pipeline Class Notes
+
+
+Git (SCM)
+__________
+
+Need to understand these actions with respect to SCM:
+
+Cloning - pulling down a copy of the source code from the remote repo
+
+Adding - adding changes to stage for the next commit
+
+Commiting - takes changes and adds them to the SCM repo
+
+Pushing - taking my local commits on my local copy of the code and pushing them to the remote server so others can see and interact with them
+
+Branching - seperate groups of changes (i.e. working on a particular feature)
+
+Merging - once that feature is done that code can be merged into the maser branch
+
+Pull Requests - 
+
+
+
+
+Gradle (Build Automation)
+__________________________
+
+Build Automation - the automation of tasks needed in order to process and prepare source code for deployment ot production. Includes things like: compiling, dependency management, executing automated tests, and packaging the app 
+
+Graddle Wrapper - a script that invokes a declared version of Gradle, downloading it beforehand if necesary. It allows Gradle to install itself using just the files from your project's source control.
+
+Gradle Build - defined in a groovy script called "build.gradle", locatged in the root directory of your project
+
+Gradle builds consist of a set of tasks that you call from the command line:
+./gradlew task1 task2
+
+The "build.grade" file controls what tasks are avaialable for your project
+
+task myTask 
+{
+	printIn 'Hello, World!"
+}
+
+Most task come built into Gradle or by a plug-in
+
+Task dependencies - determine the order in which tasks get run
+*Dependencies will always run before the task that is depending on it (Task B -> Task A)
+taskA.dependsOn taskB
+
+
+Automated Testing - the automatic execution of tests that verify the quality and stablility of the code; test are usually code so they are code written to test other code
+
+Multiple Types of Automated Tests:
+- Unit Test: small pieces of code in isolation; usually a single method or function
+- Integration Test: larger portions of an application that are integrated with each other
+- Smoke Test: high-leve test to verify basic functionality
+
+*These test can be apart of an automated "build process"
+
+
+
+
+Install
+-------
+wget -O [location] [gradle url]
+gradle --version // verify installation
+
+
+
+Jenkins (CI)
+_____________
+
+Continous Integration (CI) - the practice of frequently merging code changes
+
+- A CI server executes a build that automatically prepares/compiles the code and runs automated tests.
+- Automatically detects codes changes in source control and runs the build whenever thers is a change
+- If it fails, we get immediate feedback
+- Hundreds of plug-ins
+
+Jenkins Project/Job - controls what a piece of Jenkins automation does and when it executes
+
+Webhook - event notification made from one application to another over http (the internet)
+ - Github will notify Jenkins whenever there is a change made to the source code in the GitHub repository. GitHub will send a "webhook requests"to Jenkins so that it can immediately execure the build
+
+
+
+>Start with "Freestyle" Project
+
+
+Install
+-----------
+
+Gotta create my own repo to install jenkins 
+
+Recommneded (Base) Plug-Ins:
+- Folders
+- Timestamper
+- Pipeline
+- Git
+- PAM Authentication
+- GAWSP Markup Formatter
+- Workspace Cleanup
+- GitHUb Branch Source
+- Subversion
+- LDAP
+- Build Timeout
+- Ant
+- Pipeline: GitHub Libraries
+- SSH Slaves
+- Email Extension
+- Credentials binding
+- Gradle
+- GitLab Plugin*
+- Pipeline: Stage View
+- Matrix Authorization Strategy
+- Mailer
+
+Set Up GitHub Webhook
+------------------------
+
+
+
+Jenkins (CD)
+____________
+
+Pipeline - automated process built on tools. It takes source code through a "pipeline" from the source -> production
+
+"Jenkins Pipelines" is a set of Jenkins "plugins" that support doing continous delivery in Jenkins
+
+Pipelines ahere to the best practice of infrastructure as code. What this means is that all of the code that will be apart of the "build process" needs to be stored "as code" alongside the application code (seperate code basis). This is called a "Jenkinsfile." 
+
+Pipelines have a "domain-specific language (DSL)" that is used to define the pipelione logic.
+
+Two different ways to write Jenkins Pipeline:
+	1) Scripted - procedural code
+	2) Declaritive - describes the Pipeline logic
+
+Pipeline Stages - large pieces of the CD process (i.e. Build, Test, Staging, Production); a logical componet of the Continous Deployment process
+
+Pipeline Steps - individual tasks that make up each stage (i.e. execute a commamd. copy files, restart service, wait for input)
+
+
+1) Define Stages
+2) Define Steps needed to perform the deployment
+3) Approvals (before Production)
+
+
+Configure Remote Deployment Servers
+--------------------------------------
+Home > Manage Jenkines > Scroll to Bottom > Publish over SSH > Define IPs of deployment servers (you can add multiple)
+
+
+Configure Remote Credentials
+-----------------------------
+Home > Credentials > Jenkins Scope > Global > Add Credentials 
+
+
+
+

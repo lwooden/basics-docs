@@ -1,0 +1,52 @@
+Azure Fundamentals
+
+1. Resource Organization
+
+Subscription 
+ Region 
+  Tenant
+   Resouce Group
+
+2. Azure Active Directory
+
+- extenstion of the benefits of an on-prem Domain Controller into the cloud
+
+
+3. Virtual Networks
+
+- each subscription can have many virtual networks
+- cannot expand across regions
+- can be "linked" across regions
+
+VNet 1			VNet 2
+ Subnet 1		 Subnet 1
+   Security Groups         Security Groups
+ Subnet 2		 Subnet 2
+
+4. Virtual Machines (VMs)
+
+- organized into "resource groups" and launched in "virutal networks"
+
+
+5. Azure Storage
+
+- leverages the distrbuted storage model (multiple copies of data on multiple systems)
+- provisioned inside of a "resouce group"
+- allows those resources to use this storage
+
+Types:
+
+Blobs 
+ Tables | act as shared excel spreadhseets or small databases; unique to Azure
+  Queues 
+   Files | act as remote "fileshares"; unique to Azure
+
+
+- Disc are encrypted by default
+- Users can chose to deploy w/ ssh keys or to define a user ahead of time
+- Virtual networks have the option for pushing traffic data to a log 
+- Virtual machines can be configured to shutdown daily (by default)
+
+
+
+
