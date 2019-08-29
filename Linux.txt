@@ -2,6 +2,9 @@ RHCSA PREP
 
 **FOCUS ON PERSISTENCE! 
 
+time wget http://www.google.com // shows the time it takes to execute a command
+file helloWorld.txt // displays the file type and compression of a file 
+
 dd if/=dev/zero of=/root/test.file bs=1M count=1024 
 
 Ctrl+R // does a recursive search of my history and auto completes
@@ -172,7 +175,7 @@ Execute = 1
 
 SetUID + SetGID
 ----------------
-*Whenever soemone calls a program it is going to execute it "as the owner" of the file
+*Whenever someone calls a program it is going to execute it "as the owner" of the file
 chmod u+s file.txt
 chmod g+s file.txt
 
@@ -186,31 +189,33 @@ chmod +t file.txt // sets the sticky bit on the file
 
 uMask
 -----
-0022 | Write = 2 | We are "masking" write priviledges for group and the world; we don't want to "hide" anything from the user/owner
+666 is the default
+0022 | Write = 2 //  We are "masking" write privileges for group and the world
 -rw-r--r--
 006 | O - mask nothing | G - mask nothing | O - mask everything
 
-umask 006 // changes umask for the current session
-vi /etc/bashrc 
+umask 006 // changes umask for the current shell session only
+
+vim /etc/bashrc // set permanently for non-login shells) 
+vim /etc/profile // set permanently for login shell)
 
 
-System Documention - man, info, usr/share/doc
+System Documentation - man, info, usr/share/doc
 ----------------------------------------------
 man passwd // pulls up man pages for passwd
+whatis httpd // tells you what the module does 
+whereis httpd // detailed find option
+which passwd // displays the full path for the passwd program
 
 mandb // indexes everything in the usr/share/man directory
 apropos passwd // pulls up every command that contains "passwd"
 
-info // fully searchable and interactive; usr/share/info (most common documentation utility)
+info // fully searchable and interactive; usr/share/info (most common doc utility)
 
 /usr/share/doc
 
 locate passwd // searches everything "passwd" (yum install locate)
 updatedb // updates the "locate" local cache database !IMPORTANT
-
-which passwd // displays the full path for the passwd program
-whatis passwd //
-whereis // detailed find option
 
 
 Finding files - locate, find

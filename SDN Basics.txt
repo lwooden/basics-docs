@@ -1,0 +1,121 @@
+
+Northbound Interface (NBI) - interface between the application(s) and the network contorller
+
+Southbound Interface (SBI) - interface between the controller and the low-level network devices
+
+Application -> NBI -> Controller -> SBI -> Network Devices
+
+Network Funtion Virtualization (NFV) - the ability to stand up network components in a virtualized manner rather than going out and purchasing physical hardware (i.e. firewalls, PEs, IDS, IPS). These components should be able to spun up quickly with minimal impact to CAPEX/OPEX
+
+Central Office Rearchitected As A Datacenter (CORD) - a methodology or framework that aims to move away from how COs were built in the past (monolithically) to making them function like DC's in order to achieve agility, modularity, and scale
+
+
+Traditional Switching Vs OpenFlow Enabled Switching
+---------------------------------------------------
+
+Each Switch makes a "local" decision
+Each Swtich has a "local" brain
+Each Switch "independently" updates it's "local" MAC Table
+No centralized control
+No centralized visibility
+
+Seperated control and data-plane (dumb switches)
+Controller has "the brain" 
+If the switch doesn't know what do with the traffic -> send it to the controller
+Controller runs a "Layer 2 Learning Switch" Application
+Controller has it's own table
+OpenFlow Flow Entries are "undirectional" (must be set in both directions)
+
+
+Reactive Flow Entry - After Traffic is Received (Controller Should Be Near Switches)
+--------------------
+1. PC1 sends a packet to the switch
+2. Switch does not know what to do with the packet
+3. Switch fowards packet to controller (Packet-In Message)
+4. Controller learns and adds entry to it's table
+5. Controller sends a packet back out to the switch (Packet-Out Message)
+6. Route Once -> Switch Many Occurs the rest of the way
+7. Traffic now flows without the Controller being in the middle
+
+
+Proactive Flow Entry - Before Traffic is Received (Controller Can Be Far Away)
+-------------------
+Flow entries are built "before" traffic arrives (Pre-Programmed Flow Entries)
+
+1. Pre-program a flow entry that drops traffic from PC1
+2. PC1 sends traffic to the switch
+3. Switch drops the packet (based on flow created in Step 1)
+4. Controller is not involved
+5. Pre-program a flow entry that marks phone traffic as "DSCP46"
+6. Phone sends traffic
+7. Packets are tagged "DSCP46"
+
+Use Cases
+---------
+We can say from 9AM to 5PM traffic from PC1 to PC2 takes a certain path (say S1 -> S2 -> S3 -> PC2)
+The Controller "writes flow entries" to the switches "proactively"
+
+
+Matches -> Instruction Action
+--------------------------
+PC1 -> Drop 
+Phone -> Mark DSCP46
+
+
+SDN Architecture
+-----------------
+- OpenFlow does not update configurations; it updates the "flow tables" of devies to change the forwarding behavior of those devices
+- Protocols such as NETCONF, OVSDB, SNMP can be used as SBIs to update device configuration; that is not the function of OpenFlow
+- OpenFlow + Controller allows a application developer develop high-level business applicaton using "abstraction"
+- Allows to manupulate flow entry of multiple devices 
+- Central Intelligence is held in the Control Plane (the Controller)
+- This allows orgs to be more cost effective versus buying complex equipment from vendors that require complex knowledge
+
+- OpenFlow 1.3.2 = baseline specifiction; most switches in the marketplace will support but not 1.4 or 1.5
+- An OpenFlow switch consist of (1) or more "Flow Tables" and a "Group Table"
+- OpenFlow Channel: connects to upsteam Controller (via OpenFlow Protocol)
+- Flow Table: handles forwarding logic
+- Group Table: allow us to group multiple interfaces into a single group (i.e. Port Channel)
+
+- "Matching" starts at the "first" flow table (Table 0) and extend to other flow tables (via go-to-table)
+- Matching happens by "priority"
+- Table-Miss Flow Entry = last entry; priority 0; match of anything (i.e. implicit accept all statement)
+- OpenFlow Protocol runs across a TCP/TLS session to the controller; not a physical connection (like telnet)
+- All you need is routing capability to get to the controller
+- Open vSwitch: supports up to 254 OpenFlow Tables in a pipeline (housed in software; more scale)
+
+Application Layer 
+  Controller Layer
+    Infrastructure Layer
+
+- OpenFlow switches connect to each other "logically" via their OpenFlow Ports
+- OpenFlow can be enabled on certain ports and not others
+- OpenFLow packets are received on an "ingress port" and processed by the OpenFlow Pipeline
+- OpenFlow 1.3 = basis
+- OpenFlow 1.5 = "egress" port-matching introduced
+
+- Physical Port: ports that correspond to a hardwware interface of the switch
+- Logical Port: ports that don't correspond directly to a hardware interface of the switch (i.e link aggregation/port channel, tunnel interfaces, loopback); these ports "must" interact with OpenFlow Processing just like Physical Ports (important!)
+- Reserved Port: handle generic forwarding actions like sending to the controller, flooding traffic, forwading using non-openflow methods
+- Controller Port: represetns the control channel with the OpenFlow Controller
+- Normal Port: represents the traditional non-openflow pipleline of the switch; only can be used as a "output" port via normal pipeline
+
+
+- OpenFlow Only vs OpenFlow Hybrid Switch
+- 24 Port Switch
+- 12 can be enabled for OpenFlow (VLAN 10)
+- 12 can be dedicated to Traditional Routing & Switching (VLAN 20)
+- We can have a "match" rule that says:
+MATCH: Port 1
+INSTRUCTION: output traffic to a normal port (VLAN 10 [OpenFlow] -> VLAN 20 [Traditional])
+- Essentially the switch would be cut in half
+- 50% Dumb (for OpenFlow Pipeline) | 50% Smart (For Traditional Pipeline)
+
+
+
+
+
+
+
+
+
