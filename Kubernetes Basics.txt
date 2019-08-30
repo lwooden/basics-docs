@@ -1,0 +1,151 @@
+Kubernetes is an open source system for automating deployment, scaling, and management of containerized applications.
+
+At heart it is a "container orchestration" tool
+
+With containers we can run a variety of software components across a "cluster" of generic servers; instead of running a component on (1) server and if it dies we lose everything we can have a cluster and we can distribute the components (High Availabity)
+
+We can also scale based on resource needs
+
+Server		      Server
+ Container (Pod)     	Container
+ Container (Pod)	Container
+ Container (Pod)        Container
+
+
+Kube Master	
+------------
+Docker  // container runtime
+Kubeadm // automates cluster setup
+Kubelet // agent that manages processes
+Kubectl // CLI tool to interact w/ the cluster
+Control Plane // cluster controller
+
+Kube Node (n)
+--------------
+Docker
+Kubeadm
+Kubelet
+Kubectl
+
+"Pods" are the smallest atomic unit (like cells) in the Kubernetes ecosystem. They consist of 
+one or more containers, storage resources, and have a unique IP in the cluster network 
+
+Node
+  Pod (10.244.0.1)
+     Container1
+
+Node
+  Pod (10.244.0.2)
+     Container1
+     Container2
+
+
+Control Node		Worker
+------------		------
+Kubernetes API		Pod
+Other Components	Pod
+
+
+kubectl get nodes
+kubectl get pods // displays default namespace
+kubectl get pods -n kube-system
+kubectl get pods -o wide // more detail
+
+
+kubectl describe node $node_name
+kubectl describe pods $pod_name
+
+kubectl delete pod $pod_name
+
+
+Base Components
+--------------------
+
+[Kubernetes Control Plane]
+etcd - provides distributed, synchronized data storage for the cluster state
+kube-apiserver - serves the Kubernetes API, interface for the cluster
+kube-controller-manager - bundles several components into one package
+kube-scheduler - schedules pods to run on nodes; 
+
+kubelet - agent that runs on each node and interfaces with the Kubernetes API and docker; runs as a systemd service (systemctl status kubelet
+kube-proxy - handles the network layer inter/intra node traffic; runs on each node
+
+
+Install
+--------
+1. Install docker - All Nodes
+
+// Get GPG key
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 
+
+// Add Repo
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+
+sudo apt-get update
+
+sudo apt-get install -y docker-ce=18.06.1~ce~3-0~ubuntu
+
+// Prevent package from being updated
+sudo apt-mark hold docker-ce
+
+// Verify
+sudo docker version
+
+2. Install Kubernetes Components - All Nodes
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+cat << EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+
+sudo apt-get update
+
+sudo apt-get install -y kubelet=1.12.7-00 kubeadm=1.12.7-00 kubectl=1.12.7-00
+
+sudo apt-mark hold kubelet kubeadm kubectl
+
+3. Verify - All Nodes
+
+kubeadm version 
+
+4. Bootstrap Cluster - Master
+
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+//Setup Local Kubectl
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+//Verify
+kubectl version # check client and server response
+
+5. Join Worker Nodes to Cluster
+
+sudo kubeadm join $some_ip:6443 --token $some_token --discovery-token-ca-cert-hash $some_hash
+
+6. Verify - Master
+
+kubectl get nodes (won't be in READY STATE yet; networking not setup yet)
+
+7. Set up Networking - Master (Flannel)
+
+//Execute on all nodes
+echo "net.bridge.bridge-nf-call-iptables=1" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
+//Grab config file from internet to apply to cluster
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
+
+//Verify Nodes are in READY State
+kubectl get nodes
+
+//Verify Back-End Services in Kube-System Namespace
+kubectl get pods -n kube-system
+
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
