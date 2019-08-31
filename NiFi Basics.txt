@@ -1,0 +1,73 @@
+
+
+Data Flows -> Processors -> Transformation
+
+- Automate the flow of data between systems
+- JSON -> Database -> Hadoop -> ElasticSearch
+- Drag and drop interface
+- Can scale via clustering
+- Guaranteed Delivery
+- Data Buffering
+
+Strenghts
+---------
+- Reliable and secure transfer of data between system 
+- Delivering data from sources to analytic platfroms
+- Enriching and preping data; conversion between formats, extraction, parsing, routing decisions
+
+Weaknesses 
+------------
+- distributed computation
+- complex event processing
+- joins, rolling windows, aggregate operations
+
+FlowFile: Content + Attributes
+*Persisted to disk after creation
+*Processors can change attributes, content, or both
+
+Processors: apply a set of transformations and rules to FlowFiles, to genereate "new" FlowFiles
+- any processors can process any FlowFile
+- processors are passing FlowFile references to each other to advance the data processing
+- they all in parallel
+
+                    FlowFile 1	       FlowFile2
+Data -> Processor 1 -------> Processor 2 ----> etc
+
+Connector: a queue of all the FlowFiles that have not yet been processed by the upstraem processor(queue)
+
+
+Install
+-----------
+
+1. Stage binaries (grab .zip)
+2. Unzip the binary
+3. Install Nifi - ./nifi.sh run
+4. Access web gui - localhost:8080/nifi
+
+
+"Templates" can be created, exported, or imported (from the web) into your NiFi system. This allows admins to get get up and running quickly, share capability, or discover a template for a specific use-case.
+
+
+"Process Groups" collapse a fully built pipeline into a single pane of glass; you can double click the process group to see the underlying pipeline; this is great for organization
+
+Process groups can be exported into a template
+
+Get File -> Put File = Get and Put File
+
+We can leverage "attributes" using "NiFi Expression Language"
+
+{ "field1" : "${csv.1}" }
+
+The value of csv.1 will be interpolate into the expression once executed.
+
+Monitoring NiFi
+---------------
+- click hamburger icon in the top right 
+- click "system diagnostics" for usage, RAM, memory, etc
+
+
+
+
+
+
+
