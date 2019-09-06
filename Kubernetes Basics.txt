@@ -45,17 +45,28 @@ Control Node		Worker
 Kubernetes API		Pod
 Other Components	Pod
 
+Commands
+--------------------
 
+kubeadm version 
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+kubectl version // check Kubernetes version ($Major: and $Minor:)
 kubectl get nodes
 kubectl get pods // displays default namespace
-kubectl get pods -n kube-system
+kubectl get pods -n kube-system // kube-system namespace
 kubectl get pods -o wide // more detail
+kubectl get deployments // displays list of deployments and their state
+kubectl get service // displays list of services
 
 
 kubectl describe node $node_name
 kubectl describe pods $pod_name
+kubectl describe deployment $deployment_name
 
+kubectl delete node $node_name
 kubectl delete pod $pod_name
+kubectl delete deployment $deployment_name
 
 
 Base Components
@@ -69,6 +80,70 @@ kube-scheduler - schedules pods to run on nodes;
 
 kubelet - agent that runs on each node and interfaces with the Kubernetes API and docker; runs as a systemd service (systemctl status kubelet
 kube-proxy - handles the network layer inter/intra node traffic; runs on each node
+
+
+Deployments
+-------------------
+
+"Deployments" are "objects" that gives us a way to organize and maintain our pods
+- Scaling: specigy the number of replicas we want and that number of pods will be created
+- Rolling Updates: gradually replace existing containers with a new update without taking them all out (no down-time)
+- Self-Healing: if a pod happens to fail or get destroy, the deployment will immediately spin up another one to replace it in order to achieve the desired state (replica set)
+
+
+# Deployment File Example
+
+cat <<EOF | kubectl create -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx // tag name in Kubernetes
+spec:
+  replicas: 2 // desired state (number of Pods to run at all times)
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx    
+        image: nginx:1.15.4   // container to pull from Docker Repo
+        ports:
+        - containerPort: 80   // port to expose
+EOF
+
+
+Services
+---------------
+
+"Services" provide an abstraction layer between upstream services and the underlying pods in order to get some information. 
+The upstream service will send a request to the "service layer" and the service layer will distribute the request to the backend pods. 
+This way no matter what is happening at the Pod Level, upstream services will be able to get their requests processed
+
+Pod 1 <- [Service Layer] -> Resource
+
+# Service File Example
+
+cat << EOF | kubectl create -f -
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx // determines which pods to route traffic to
+  ports:
+  - protocol: TCP
+    port: 80  // port to route traffic to
+    targetPort: 80
+    nodePort: 30080 // listening port of the service layer
+  type: NodePort
+EOF
 
 
 Install
