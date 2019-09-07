@@ -59,7 +59,6 @@ kubectl get pods -o wide // more detail
 kubectl get deployments // displays list of deployments and their state
 kubectl get service // displays list of services
 
-
 kubectl describe node $node_name
 kubectl describe pods $pod_name
 kubectl describe deployment $deployment_name
@@ -67,6 +66,8 @@ kubectl describe deployment $deployment_name
 kubectl delete node $node_name
 kubectl delete pod $pod_name
 kubectl delete deployment $deployment_name
+
+kubectl create namespace $name
 
 
 Base Components
