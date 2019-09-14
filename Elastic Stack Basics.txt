@@ -1,0 +1,154 @@
+Elastic Stack Basic
+
+Log File -> Filebeat -> Log Stash -> Elastic Search -> Kibana
+
+
+Install - Filebeat
+-------------------
+
+Create Source Directory for Data
+  /var/log/apache2
+
+Download Filebeat RPM
+  wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.3-x86_64.rpm
+
+Install RPM
+  rpm -ivh filebeat-6.2.3-x86_64.rpm
+
+Enable
+  systemctl enable filebeat
+
+Check Config File
+  /etc/filebeat/...
+    filebeat.yml 
+      paths: /var/log/secure.log
+      multiline.pattern: 
+      fields:
+        application: app1 // pre-tagging data
+      output.logstash: 
+        hosts: ["localhost:5044"]
+
+Run Filebeat Setup
+  $filebeat setup
+
+Enable Module
+  $filebeat modules enable apache2
+
+Start Filebeat
+  systemctl start filebeat
+
+
+Install - Logstash
+-------------------
+Install Java 1.8
+
+Download Elastic Search RPM 
+  wget https://artifacts.elastic.co/downloads/logstash/logstash-6.2.3.rpm
+
+
+Install RPM
+  rpm -ivh logstash-6.2.3.rpm
+
+Check Config Files
+  /etc/logstash/...
+    jvm.options // java-heap settings (leave at 1GB)
+    log4j2.properties
+    logstash.yml  
+    pipelines.yml 
+
+Grab Pipeline Config Code
+
+*Grok - most popular log stash filter available
+
+Start Logstash
+  systemctl start logstash
+
+
+
+
+
+Install - Elastic Search (Master Node)
+------------------------
+Install Java 1.8
+
+Import GPG-Key
+  rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+Download Elastic Search RPM 
+  wget https://artifacts.elastic.co/downloads/elasticsearch-6.2.3.rpm
+
+Install RPM
+  rpm -ivh elasticsearch-6.2.3.rpm 
+
+Enable Elastic Search
+  systemctl daemon-reload
+  systemctl enable elasticsearch
+
+Check Config Files
+  /etc/elasticsearch/...
+    elasticsearch.yml // node and cluster settings
+    jvm.options // java-heap settings (leave at 1GB)
+    log4j2.properties // leave defaults
+
+Start Elastic Search
+  systemctl start elasticsearch
+
+
+Install - Elastic Search (Data Node)
+---------------------------------
+[same as above]
+
+Modify Elasticsearch.yml
+  change node.name
+  node.master: false
+  network.host: ["localhost","private_ip"]
+  discovery.zen.ping.unicast.hosts: ["ip_of_master"] // talk to master node
+
+Start Elastic Search
+  systemctl start elasticsearch
+
+Check Logs for Node Detection 
+  /var/log/elasticsearch.log
+
+Check Node/Cluster Status
+  curl localhost:9200 
+  curl localhost:9200/_cluster/health?pretty=true
+
+
+
+Install - Kibana
+----------------
+Download Kibana RPM 
+  wget https://artifacts.elastic.co/downloads/kibana/kibana-6.2.3.rpm
+
+Install RPM
+  rpm -ivh kibana-6.2.3.rpm
+
+Enable Kibana 
+  systemctl enable kibana
+
+Check Config Files
+  /etc/kibana/kibana.yml
+
+Check Kibana Log
+  std out goes to /var/log/messages
+
+Setup A Tunnel Between Me and Kibana Host
+  ssh user@public-ip -L 5601:localhost:5601 // create a tunnel between my laptop to the public ip of the   kibana host, route my local port 5601 to the kabana host 5601 
+
+Visit Kabana Dashboard
+  browse to localhost:5601
+
+Create Index Pattern
+
+Check Discover Tab
+
+Create Visualizations
+  index pattern or saved searched
+
+Create Dashboard
+
+
+
+
+
