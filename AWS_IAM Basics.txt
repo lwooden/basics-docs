@@ -1,0 +1,98 @@
+IAM Basics
+
+Users -> Groups (attached policies)
+
+Root Accounts
+--------------
+Enable MFA (Virtual or Hardware)
+Delete all access keys
+Change passwords
+
+
+IAM Policy 
+----------
+Identity Based -> Managed or Inline -> People | Groups | Roles
+Resource Based -> S3 Bucket Policy or EC2 Policy
+
+Inline Policy -> User | Role | Group
+
+*Groups is the best way to manage access by function
+
+*Inline policies should be used for "special" cases. Only use when a specific access needs to be granted for an individual rather than the entire group
+
+Role(s) come with (2) types of policies:
+
+1. Trust Policy - which principle can assume that rule
+2. Permission Policy - what they can do with the role
+
+
+# Single Statement Policy Example
+
+{
+"Version": "2012-10-17"
+"Statement": {
+    "Effect": "Deny"
+    "Action": "*"
+    "Resource": "*"
+    "Condition": {
+         "NotInAddress": {
+             "aws::SourceIp": [
+                 "192.168.10.0/24"   
+                 "192.168.20.0/24"     
+              ]
+          }
+     }
+}
+
+Can have an "array" of statements
+Each "statement" is a JSON block enclosed in {}
+
+
+S3
+---
+Bucket Policies - used for enabling cross-account access
+User/Group Polices - used for regulating access within an account
+
+
+# Cross Account Access Bucket Policy Example
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Example permissions",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::818557330282:root" // grant external account access
+            },
+            "Action": [
+                "s3:GetBucketLocation",
+                "s3:ListBucket"
+            ],
+            "Resource": "arn:aws:s3:::iamsecurecorp" // grant access to this bucket
+        }
+    ]
+}
+
+
+
+Roles
+-------
+
+Used to "delegate" necessary/temporary access to a user, resource, or service in order to perform a certan task
+
+Application on EC2 ---[role]---> S3
+*It is best to create roles instead of issuing/embedding access keys within an application
+
+# Cross Account Access For A Group (Dev)
+
+{
+  "Version": "2012-10-17",
+  "Statement": {
+    "Effect": "Allow",
+    "Action": "sts:AssumeRole", // grant assume rule action 
+    "Resource": "arn:aws:iam:818557330282:role/DeveloperProdAccess"  // account number and role that exists in the account you want assume
+  }
+}
+
+
