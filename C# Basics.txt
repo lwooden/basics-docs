@@ -1,0 +1,60 @@
+Ctrl K+D - formate code
+
+Internet Information Services (IIS) - web server for Windows
+
+Namespace - a container for namespaces; I can have two classes that have the same name in two different namespaces, but never in the same namespace
+
+DLL File - a compiled C# project
+Nuget - repository of commonly used dlls (think npm)
+Entity Framework - nicely integrates SQL models and objects into your c# code
+LINQ - a syntax used to write SQL queries in c#
+
+Access Identifiers
+-----------------
+Public - accessible from anyone
+Private - accessible only from within its class
+Protected - accessible from within its class and from its children
+
+Output Type
+-----------
+void - does not return anything; no output
+string
+int
+bool
+
+HTML - defines the content
+CSS - specifies the layout
+Javascript - controls the behavior
+
+
+Inhertiance
+-----------
+
+public class PersonController : ApiController 
+
+*This means that the PersonController class "inherits"
+everything from the ApiController class (that is not private)
+
+
+www.myfirstapp.com/person
+
+[RoutePrefix("person)] // attribute
+public class PersonController : ApiController // class
+ {
+
+  [Route("search")] // www.myfirstapp.com/person/search
+  public List<string> Search() // method
+  {
+
+
+  }
+
+  [HttpGet]
+  [Route("{id}")] // www.myfirstapp.com/person/{id}
+  public string GetPerson(Guid id)
+  {
+  
+  }
+
+  [Route("{id}/cars")] // www.myfirstapp.com/person/{id}/cars
+  public List<string> GetCarsForPerson(Guid)
