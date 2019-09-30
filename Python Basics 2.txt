@@ -9,7 +9,7 @@ defined ahead of time.
 Virtual Environment Setup
 ------------------------
 pip install virtualenv // install virtualenv
-mkdir Python_Ends 	// create folder for environment
+mkdir Python_Env 	// create folder for environment
 virtualenv projectOne // initialize virtualenv by giving it a name
 source projectOne/bin/activate // enter environment
 (projectOne)
@@ -87,17 +87,8 @@ Comparisons
 
 Functions
 -----------
-- We use the "return" keyword to send back the result of the function; it allow us to assign the "output" of the 
-function to a new variable
+- We use the "return" keyword to send back the result of the function; it allow us to assign the "output" of the function to a new variable
 
-Comparisons
-------------
-!=  #not equal to
-==  #equal to
->=  #greater than or equal to
-<=  #less than or equal to
-<   #less than
->   #greator than
 
 Looping
 ---------
@@ -145,22 +136,22 @@ Execute the funtion "square" against the argument "10"
 
 
 
-Modules
-----------
+Importing Modules
+-----------------
 
-#A module is a file that contains definitions—including variables and #functions—that you can use once it is imported.
+Module - a file that contains definitions—including variables and #functions—that you can use once it is imported.
 
-#However, we only really needed the sqrt function, and it can be #frustrating to have to keep typing math.sqrt().
+However, we only really needed the sqrt function, and it can be #frustrating to have to keep typing math.sqrt().
 
 import math
 math.sqrt(25)
 
-#Function specific import which grabs only certain variables or functions #from a given module without needing to use dot notation {ex. math.sqrt}
+"Function specific import" which grabs only certain variables or functions #from a given module without needing to use dot notation {ex. math.sqrt}
 
 from math import sqrt
 sqrt(25)
 
-#Univeral import of all functions and variables in module without needing to #use dot notation {ex. math.sqrt}
+"Univeral import" of all functions and variables in module without needing to use dot notation {ex. math.sqrt}
 
 from module import *
 
@@ -179,7 +170,8 @@ fruit[0] = 'Apple'
 
 
 List Methods
----------f.append
+---------
+f.append
 name.pop
 
 
