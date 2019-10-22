@@ -1,4 +1,5 @@
-[Package Management]
+Package Management
+------------------------------
 
 {root_of_project_folder}$ npm init -y // answers yes with all defaults and
 generates baseline package.json file 
@@ -10,16 +11,93 @@ npm i <package_name> // installs a specific package
 npm i <package_name> -g // saves package globally
 npm i <package_name> --save-dev // saves module under the "devDependecies" section
 
+npm i -g yarn 
+yarn --version
 
 
-[Debug]
+Debug
+---------
 
 Insert "debugger" anywhere in your code (this will act as a breakpoint in the debug session)
 $ node inspect app.js // inspect command spawns a debug session and sends it to the Chrome Browser
 Open up Chrome > hit URL chrome://inspect
 Inspect the current session that you spawned in step 1
 
-[Callback Functions]
+Web Servers
+------------------
+
+[Live-Server]
+yarn global add live-server
+npm i -g live-server
+
+{root_of_project_folder}$  live-server [folder to serve up]
+{root_of_project_folder}$  live-server public 
+
+[Express]
+
+
+Classes
+--------
+
+class Person {
+    constructor(name = 'Anonymous', age = 0) {
+        this.name = name
+        this.age = age
+    }
+
+    getGreeting() {
+        return `Hello my name is ${this.name}!`
+    }
+
+    getDescription() {
+        return `Hello my name is ${this.name} and I am ${this.age} years old!`
+    }
+}
+
+class Student extends Person {
+    constructor(name, age, major) {
+      super(name, age) // call superclass constructor for name and age property
+      this.major = major
+    }
+
+    hasMajor() {
+        return this.major
+    }
+
+    getDescription() {
+        let description = super.getDescription() // call superclass getDescription method
+
+        if(this.hasMajor()) {
+            description = description + ` My major is ${this.major}!`
+        }
+
+        return description
+    }
+}
+
+const low = new Person("Low", 29)
+console.log(low.getGreeting())
+
+
+const other = new Person()
+console.log(other.getGreeting())
+
+
+
+
+
+Functions
+---------
+
+[Standard]
+
+[Arrow]
+
+
+
+
+Callback Functions
+-------------------------
 
 const geocode = (address, callback) => {
   setTimeout(() => {
@@ -39,7 +117,7 @@ geocode('TempleHills',(data) => { // data is the variable I want to access when 
 - When a function is doing a synchronous operation, we can use the keyword "return" to have the data returned to the function that is being called. 
 - When a function is doing an asynchronous operation, the "return" keyword is not an option. I must use the "callback" method in order to access that data (when it becomes available)
 
-[Arrow Functions]
+
 
 Statement Format
 -------------------
@@ -51,8 +129,9 @@ var square = (argument) => {
 
 console.log(square(9));
 
+
 Expression Format
------------------
+--------------------------
 
 var square = (x) => x * x; 
 // Simplifies our code and makes it easier to scan
