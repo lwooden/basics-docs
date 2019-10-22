@@ -1,0 +1,232 @@
+Python Basics
+
+Python uses "Dynamic Typing." This means that I can reassign variables to "different" data types.
+
+Other languages are much more "strict" in this regard therefore the variable type must be 
+defined ahead of time.
+
+
+Virtual Environment Setup
+------------------------
+pip install virtualenv // install virtualenv
+mkdir Python_Env 	// create folder for environment
+virtualenv projectOne // initialize virtualenv by giving it a name
+source projectOne/bin/activate // enter environment
+(projectOne)
+which python  // verify
+which pip
+pip list
+deactivate  // exit environment
+
+virtualenv --python=/Library/Frameworks/Python.framework/Versions/3.6/bin/python3.6 projectOne // use a specific version of Python if you have multiple versions installed
+
+
+Classes
+--------
+class Circle:
+    pi = 3.14 // static value shared across instances of Circle
+
+    # Circle gets instantiated with a radius (default is 1)
+    def __init__(self, radius=1):
+        self.radius = radius 
+        self.area = radius * radius * Circle.pi
+
+    # Method for resetting Radius
+    def setRadius(self, new_radius):
+        self.radius = new_radius
+        self.area = new_radius * new_radius * self.pi
+
+    # Method for getting Circumference
+    def getCircumference(self):
+        return self.radius * self.pi * 2
+    
+    # My Method
+    def tripleCircumference(self):
+        return self.radius * self.pi * 3
+
+## MAIN
+c = Circle()
+
+print('Radius is: ',c.radius)
+print('Area is: ',c.area)
+print('Circumference is: ',c.getCircumference())
+print('New Circumference is: ',c.tripleCircumference())
+
+Inheritance
+-----------
+# Base Class
+class Animal:
+    def __init__(self):
+        print("Animal created")
+
+    def whoAmI(self):
+        print("Animal")
+
+    def eat(self):
+        print("Eating")
+
+
+# Derived Class         
+class Dog(Animal):
+    def __init__(self):
+        Animal.__init__(self)
+        print("Dog created")
+
+    def whoAmI(self):
+        print("Dog")
+
+    def bark(self):
+        print("Woof!")
+
+
+
+Conversion (Casting)
+-----------
+int("13") // converts string into int
+str(100) // converts int into string
+
+Printing
+----------
+print("Hello World")
+
+
+% method - Python 2
+-------------
+
+x = "good"
+print("Today was a %s day!" % x)
+
+.format() method - Python 3
+--------------------------
+
+a = 2
+print("First Number: {}".format(a)) 
+First Number: 2
+
+print('The {2} {1} {0}'.format('fox', 'brown', 'quick'))
+The quick brown fox
+
+print('The {q} {b} {f}'.format(f='fox', b='brown', q='quick'))
+The quick brown fox
+
+result = 100/3
+33.[33]3333333333336
+print("The result was {:1.2f}".format(result)) // value:width.precisionf
+The result was 33.33 // 2f represents "two" decimal places
+
+f Literal method - Python 3
+---------------------------
+
+print(f"My name is {name}")
+My name is Lowell
+
+
+Input
+--------
+name = input("What is your first name? ")
+
+Types
+------
+Int
+String
+Boolean
+NoneType
+
+
+Comparisons
+------------
+!=  #not equal to
+==  #equal to
+>=  #greater than or equal to
+<=  #less than or equal to
+<   #less than
+>   #greator than
+
+
+Looping
+---------
+while True: // loops forever until you type q
+  x = input("Enter a name [type q to quit]: ")
+
+x = 0
+while x < 5: // loops 5 times and exits
+
+for i in myList: // for as many values stored in the list do something
+
+Variables
+---------
+x = 100
+
+
+Conditionals
+-------------
+if 
+elif
+else
+
+
+Logical Operators
+------------------
+
+
+
+
+Functions
+---------
+
+def f(x):
+   return x * 2
+
+Here, "x" is a parameter of the function "f". A parameter is a variable that is an input to a function. It says, "Later, when "f" is used, you'll be able to input any value you want, but for now we'll call that future value x."
+
+We use the "return" keyword to send back the result to the caller of the function; it allows us to assign the "output" of the function to a new variable
+
+To summarize:
+- When defining a function, placeholder variables are called parameters.
+- When using, or calling, a function, inputs into the function are called arguments.
+
+square(10)
+
+Execute the funtion "square" against the argument "10"
+
+
+
+Importing Modules
+-----------------
+
+Module - a file that contains definitions—including variables and #functions—that you can use once it is imported.
+
+However, we only really needed the sqrt function, and it can be #frustrating to have to keep typing math.sqrt().
+
+import math
+math.sqrt(25)
+
+"Function specific import" which grabs only certain variables or functions #from a given module without needing to use dot notation {ex. math.sqrt}
+
+from math import sqrt
+sqrt(25)
+
+"Univeral import" of all functions and variables in module without needing to use dot notation {ex. math.sqrt}
+
+from module import *
+
+#Print all methods and functions within a module
+
+import math 
+everything = dir(math) 
+print everything # 
+
+
+Lists
+-------
+fruit = [] // creates empty list named fruit
+fruit = ["Apple", "Orange", "Pear"]
+fruit[0] = 'Apple'
+
+
+List Methods
+---------
+f.append
+name.pop
+
+
