@@ -1,3 +1,7 @@
+Node + React = Front End (Web/App)
+Node + Express = Back End (Web Service)
+Node + React Native = Mobile App
+
 Package Management
 ------------------------------
 
@@ -92,8 +96,6 @@ Functions
 [Standard]
 
 [Arrow]
-
-
 
 
 Callback Functions
