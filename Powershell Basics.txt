@@ -1,0 +1,38 @@
+
+$variable // declared by using $ sign at the front
+
+Object output allows us to access the results of a command for later use more easily
+Everything is an object in Powershell!!!
+
+Example:
+PS C:\> $computers = Get-Content C:\Example.txt
+PS C:\> $computers 
+DC1 [0]
+DC2 [1]
+DC3 [3]
+// saved as an array
+
+PS C:\> $computers[0]
+DC1 
+
+$string = Write-Output 'Hello World!'
+$string | Get-Member // displays all of the type and all of the props and methods of the object
+$string.Length
+$string.ToUpper()
+[pscustomobject]$hashtable // type accelerator; converts to a custom object
+
+Get-Content -Path C:\Example.txt | ForEach-Object { $PsItem}
+Get-Content -Path C:\Example.txt | ForEach-Object { Test-Connection -Computername $PsItem }
+
+
+update-help
+Get-Help -Name <cmdlet>
+Get-Alias // display list of default aliases
+Get-Service // display list of services and their state
+Add-Content -Path <path> -Value <content>
+Get-Content <path to file>
+Get-Command
+Get-Command -Verb Get
+
+Test-Connection // better ping alternative
+
