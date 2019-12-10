@@ -4,7 +4,18 @@ $variable // declared by using $ sign at the front
 Object output allows us to access the results of a command for later use more easily
 Everything is an object in Powershell!!!
 
-Example:
+Hashtable
+----------
+
+@{
+    Adapter = 'Ethernet'
+    IPV4Address = '192.1681.81'
+    SubnetMask = '255.255.255.0'
+}
+
+Example
+--------
+
 PS C:\> $computers = Get-Content C:\Example.txt
 PS C:\> $computers 
 DC1 [0]
@@ -23,7 +34,14 @@ $string.ToUpper()
 
 Get-Content -Path C:\Example.txt | ForEach-Object { $PsItem}
 Get-Content -Path C:\Example.txt | ForEach-Object { Test-Connection -Computername $PsItem }
+Get-CimInstance -ClassName "win32_OperatingSystem" | Select-Object * // displays a ton of properties about the system
 
+get-modules // displays list of modules in your current session
+get-modules -ListAvailable // displays all of your modules
+import-module // loads for current session
+remove-module
+$env:PSModulePath // displays directories defined to import modules into your shell
+get-command -Module <module_name>
 
 update-help
 Get-Help -Name <cmdlet>
