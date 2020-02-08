@@ -12,12 +12,74 @@ Terraform Basics
 is provisioned
 - Works with multiple cloud providers
 
+$ terraform version
 $ terraform init // run in new directory with your terraform file before you run "apply"
+$ terraform validate // validates terraform files
 $ terraform apply
 $ terraform destroy // destroys the apply that you ran
 $ terraform plan // show you the changes that your terraform file would make if applied
-$ terraform plan -out file.tr // safe way to print the changes that are going to be made 
-$ terraform apply file.tr // changes that are going to be executed
+$ terraform plan -out tfplan // safe way to print the changes that are going to be made 
+$ terraform apply tfplan // changes that are going to be executed
+$ terraform console // starts interactive console to evaluate expressions based on created objects
+
+Make a directory for your terraform files
+  mkdir -p /terraform
+  cd /terraform
+
+Create a terraform script
+  vim main.tf
+  
+  provider "aws" {
+  access_key = "xxxxxx"
+  secret_key = "xxxxxx"
+  region     = "us-east-1"
+}
+
+// "resource_type" "resource_name"
+resource "aws_instance" "example" {  
+  ami           = "ami-011b3ccf1bd6db744"
+  instance_type = "t2.micro"
+  subnet_id = "subnet-ad7da4e7"
+  vpc_security_group_ids = ["sg-0ac5e15ddfe7cefe0"]
+  key_name = "macKey"
+  tags = {
+    Name = "Terraform 1"
+  }
+}
+output "ip"{
+  value = "${aws_instance.example.public_ip}"
+}
+
+Initialize Terraform
+  terraform init
+
+Validate files
+  terraform validate
+ 
+ List providers in the folder
+   ls .terraform/plugins/linux_amd64
+ 
+ List providers in the folder
+   terraform providers
+   
+ Generate execution plan and send to outfile
+   terraform plan -out=tfplan
+   
+ Execute the plan
+   terrafrom apply tfplan
+  
+  Show state
+    terraform show
+  
+ Start Terraform Console and Get Resource Property Values
+   terraform console
+   > aws_instance.example.ami
+   > aws_instance.example.instance_type
+   
+  
+  
+ 
+ 
 
 
 

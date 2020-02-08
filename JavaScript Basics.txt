@@ -48,6 +48,15 @@ Logical Operators
 || #or
 ! #not
 
+Logical & Operator
+------------------
+this.state.error && <p>{this.state.error}</p> // if this.state.error has a value then render the error to the screen, otherwise never show this element
+
+Ternary Operator
+----------------
+Description: props.expense ? props.expense.description : '' // if props.expense exists (true) then we will set the value of description to props.expense.description. If it does not exist (false) then we will set it to an empty string
+
+
 Functions
 ---------
 var a = function name() {} //Function Expression
@@ -57,4 +66,8 @@ return
 parameters - placeholders for future arguments
 arguments - functions execute against arguments
 
-/**One of the rules of thumbs for a developer is "not to repeat yourself. Ideally I should want to make things as "efficient" as possible. Add "arguments" to functions. This is how I make my function "extensible" and customizable.**/
+
+
+One of the rules of thumbs for a developer is "not to repeat yourself. Ideally I should want to make things as "efficient" as possible. 
+
+Add "arguments" to functions. This is how I make my function "extensible" and customizable.
