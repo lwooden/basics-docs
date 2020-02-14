@@ -1,0 +1,42 @@
+SRE Application to DHS
+
+Things to automate:
+
+1) Instance provisioning -> Cloud Form
+2) Backups -> ???
+
+Interferences:
+
+1) For AWS CLI access token continously expires after one hour - RESOLVED
+
+------------------
+
+Friction Points:
+
+"We want to launch anything, any time, without hindrance." (Us)
+
+"They don't ever want to change anything unless it goes through 10 different approvals." (Security)
+
+Product Development Team - Missions (ADT,AIC,TRDS,etc)
+AWS Operations - Me
+CLAN Operations - SENS3/Security
+
+Dev-Ops-Ops :(
+
+------------------
+
+Time Management (as-is):
+- 100% spent on Ops
+- 0% spent on Engineering
+
+Time Management (should-be):
+- 50% ops
+- 50% engineering 
+
+------------------
+
+Changes Needed:
+
+1) "Postmortems" should be written for all events/failures/issues
+2) "Availability targets" need to be defined per mission
+3) "Error budgets" also need to be defined per system

@@ -1,0 +1,158 @@
+ACG - AWS Advanced Networking Course
+
+Reserved Addresses
+------------------
+.0 - Network Address
+.1 - VPC Router
+.2 - DNS (Based on VPC CIDR not subnet)
+.3 - Resevered for future use
+.255 - Broadcast 
+
+
+Netwok Refresher
+----------------
+
+- Every extra bit borrowed from either host/network doubles (x2) the addresses/subnets available
+- /23 subnet is twice the size of a /24 and /22 is twice the size of a /23.
+
+192.168.1.0 /22 - 1024 addresses (512 x 2)
+192.168.1.0 /23 = 512 addresses(256 x 2)
+192.168.1.0 /24 = 256 addresses (128 x 2)
+192.168.1.0 /25 = 128 addresses (64 x 2)
+192.168.1.0 /26 = 64 addressess
+
+                  _    _    _    _    _    _    _   _ 
+Decimal Value     128  64   32   16   8    4    2   1
+Bit Position      1    2    3    4    5    6    7   8
+
+Multi-Exit Deliniation (MED)
+
+
+Design & Implement AWS Networks
+-------------------------------
+
+- Source/Destination Check: if an ENI receives traffic where it recognizes that it is not the source or the destination, by default, it automatically drops the packet (if enabled)
+
+- Security Groups are associated with ENI's! NOT INSTANCES
+- Multiple security groups can be associated with an instance (per purpose; i.e Active directory)
+- Separate security group for the primary ENI and secondary ENI
+
+- NACL's processes traffic before it enter or leaves a subnet  
+- Applies to all instances that live in the subnet
+
+- Route Propagation: dynamically adds any routes learned by the attached VGW to the routing table (i.e. routes learned via BGP); this must be explicitly enabled on the router of your choice; you can also use static routes if a routing protocol is not used to form the VPN
+
+- When two VPCs are peered they can "reference" each others security groups
+
+- Within a VPC the public hostname resolves to the private IP address
+- With a VPC peer connection if a instance in VPC-A tries to access a instance in VPC-B via it's public hostname, it real resolve to it's public IP address
+
+- VPC Enpoints: a way of accessing a AWS Public Service from within a VPC, without crossing the VPC boundary (only works with S3 and DynamoDB)
+
+
+Design & Implement Hybrid Networks at Scale
+--------------------------------------------
+
+Hybrid Architectures
+_________________
+
+People move to the cloud for primarily (2) reasons:
+
+1. Reactive 
+2. Proactive 
+
+Reactive is when some kind of event happens 
+
+
+The subcategories are as follows:
+
+Data center Extension - 
+
+Compliance/Regularoty Reasons -
+
+High Availability/DR -
+
+Dynamic Bursting - 
+
+Organization IT Budget
+	CapEx - New equipment 
+	CapOps - Operations 
+
+
+Software Based VPN - good for specific use cases; don’t expect 1-10 Gbps performance even with big instances due to encoding/decoding limitations in software (versus hardware)
+
+AWS Managed VPN - resilent; AWS handles most of the heavy lifting; performance is better than software VPN, but if 10 Gbps is needed, consider Direct Connect
+
+Hardware VPN is always preferred!
+
+Make sure the VGW is aware of the prefixes that are being sent from the CGW!
+
+The information in the AWS config specifies (2) types of IPs when it comes to VPNs:
+1. Tunnel Interface IP
+2. Public Endpoint IP
+
+Routing Decisions
+1. Most Specific Prefix
+2. Direct Connect
+3. Static Route
+4. Routes learned from BGP
+
+
+CloudHUB -> MPLS
+
+
+Direct Connect
+------------------
+
+Cross-connect between customer router and the AWS router at the CO-LO or DX Location is a 802.1q trunk:
+- single mode fiber (1000BaseLX or 10BaseLR)
+
+Virtual Interface (VIF) = VLAN
+
+Direct Connect is not secure by default. It is a physical point-to-point connection technology
+
+
+Billing
+-----------------------
+Resource Charges = Tiered
+Internet Transfer IN = FREE
+Internet Transfer OUT = Tiered
+VPN = Per Hour + Internet Transfer OUT
+Direct Connect = Per Hour 
+Private VIF IN = FREE
+Private VIF OUT = DC Discounted Rate Per Gb (flat rate)
+Public VIF IN = DC Discounted Rate Gb + Resource Charge [Owned Resources]
+Public VIF IN = FREE [Non-Owned Resources]
+
+QinQ
+-----
+- QinQ - a way to associate more than (1) VLAN within a frame; provider tag + customer tag
+- Push and pop only works on the "outer" VLAN tag
+
+
+Classic Load Balancing 
+---------------------------
+- Multiple Questions on this 
+- External Load Balancer (Internet Facing)
+- Internal Load Balancer (Internal)
+
+Requirements for External ELB
+- Must be in a public subnet 
+- CIDR must be at least at /27
+- Needs 8 available address to start 
+
+- Cross-Zone Load balancing ensures traffic is evenly distributed at the “instance” level, not the “availability zone” level (doesn’t take into account the instance size. Only number of instances) 
+- Proxy protocol can only be enabled from the AWS CLI
+
+
+
+DNS
+-----
+- Multiple DNS questions on exam 
+- +2 resolver is only accessible within the VPC
+- Can’t use Stub or internally hosted zones and you can’t define this and delegate authority to these zone using namesever records 
+
+
+
+
+
