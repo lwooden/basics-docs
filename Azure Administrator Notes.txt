@@ -1,0 +1,164 @@
+ACG - Microsoft Azure Administrator
+
+High Level Review
+----------------------------
+
+Resource Groups - a container that holds all of the resources you provision
+
+
+Manage Azure Subscriptions
+--------------------------------------
+Azure Enterprise --> http://ea.azure.com
+	Departments
+		Accounts --> http://account.azure.com
+			Subscriptions (Management Groups) --> http://portal.azure.com
+				Resource Groups
+					Resources
+
+LA Engineering (Enterprise)
+	Finance (Department)
+		Finance Dev/Test (Account)
+			Subscription 1
+		Finance Stage (Account)
+			Subscription 2
+			Subscription 3
+   
+The department level can be set up to be: functional (Finance, IT), business divsion (Auto, Aerospace), geographic (North America, Europe)
+
+Know how to set Billing Alerts: Subscriptions > Manage > Enable Billing Alert Feature > Click Subscription > Create Alert
+Know how to assign polices at the subscription level and monitor compliance
+
+
+Analyze Resource Utilization and Consumption
+--------------------------------------------------------------
+
+
+Managing Resource Groups
+------------------------------------
+
+Can set RBACS 
+Can set locks On resources (delete or read only - most restrictive)
+Can set up polices 
+Can set up tagging 
+Can set up automated deployments 
+
+
+[Policies]
+
+azure governance 
+Built in or custom code
+Assigned to subscriptions or specific resource groups 
+
+
+Storage Accounts
+-----------------------
+
+Blobs 
+
+GPv1
+GPv2 (best choice and will be the baseline going forward)
+Blob Account 
+Hot, Cold, Archive
+
+Download azcopy, azure storage explorer and play
+
+Shared Access Signature (SAS) - query string that it added to the end of a URL of a storage resource; the string defines the access 
+Service SAS Token - grants access to a specific service in a storage account 
+Account SAS Token - granted at the account level to grant permissions to services within the account 
+
+
+Import/Export
+---------------
+
+
+Azure FileSync
+--------------------
+
+Create storage account 
+Create file share 
+Create azure file sync service in resource group 
+Register vm by using install script 
+Create server endpoint in azure file sync by selecting server I registered 
+Choose location on server to sync data
+
+
+Azure Backup - WATCH AGAIN
+------------------
+High Availbility
+Disaster Recovery
+Backup
+
+Unlimited DataTransfer - not charged for data in or out
+
+Locally Redundant Storage (LRS) - replicates 3 copies within the local datacenter
+Geo Redundant Storage (GRS) - moves copies of data to a secondary datacenter hundreds of miles away out of region
+
+MARS - Microsoft Azure Recovery Services Agent
+
+Azure Backup Agent (MARS) - file level recovery 
+System Center DPM - can be used on prem with Azure Backup
+Azure Backup Server - VM or on premise backups
+Azure Iaas VM Backup - 
+Snapshot Recovery - blob snapshots taken of VM page blob; vms get created from snapshot; application consistent if VM was shutdown
+
+1. Create Recovery Valut Resource
+2. Define Backup Goal (where and what you want to back up)
+3. Choose backup policy
+4. Select VMs to back up
+5. Go to VM detials and select Operations -> Backup to check status
+
+
+Virtual Machines
+--------------------
+
+[Series]
+A - Basic = testing and development
+A - Standard = general purpose
+B - Burstable = burst to full capacity of CPU when needed
+D - General Purpose = for enterprise applications
+E - Memory Optimized = high memory-to-CPU ratio
+F - CPU Optimized = high CPU core-to-memory ratio
+G - Godzilla = large databases + bigdata
+H - High Performance Compute =
+L - Storage Optimized = high I/O
+M - Large Memory = large scale memory option; up to 3.5TB of RAM
+N - GPU enabled = GPU enabled
+SAP Hanna = specialized for SAP 
+
+[Specialization]
+M - Larger Memory
+R - Supports Remote Directory
+S - Premium Storage
+
+Example = DS (General Purpose + Premium Storage)
+
+[Windows Server Support]
+Pre-Windows 2008 R2 - supported for deployment but must bring your own image; no marketplace support;
+2008 R2 - supported; see matrix for server roles
+2012 - supported; datacenter
+2016 - suppored; datacenter and nano 
+Desktop - 10 Pro and Enterprise in Marketplace
+Other Servers in the Microsoft Ecosystem (e.g. exchage, bizatalk, forefront identity manager)
+
+[Linux]
+CentOS
+CoreOS
+Debian
+Oralce Linux
+Red Hat
+SUSE/openSUSE
+
+[Availability Optons]
+Availabity sets - same datacenter, but seperate racks and power
+Availability zone - same region, but seperate datacenters
+
+**Autoshutdown is native to Azure 
+**Can download automated version of your deployment for future use
+
+
+
+
+
+
+
+
