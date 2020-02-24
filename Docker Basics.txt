@@ -7,18 +7,20 @@ Basic Commands
 
 Docker <subcommand> --help
 docker commit      Create a new image from a container's changes
-docker exec        Run a command in a running container
-docker images      List images
-docker logs        Fetch the logs of a container
+docker exec <id> /bin/sh | bash Run a command in a running container
+docker images -a   List all images/repositories
+docker logs -f     Fetch the logs of a container
 docker ps          List running containers
 docker ps -a       List all containers
 docker pull        Pull an image or a repository from a registry
 docker rm <id>   Remove one or more containers
 docker rmi         Remove one or more images
-docker run         Run a command in a new container
+docker create      Creates a container in the "stopped" state
+docker run         Creates a container in the "running" state
 docker search      Search the Docker Hub for images
 docker start|stop <id>  Start/Stop one or more stopped containers
 docker stats       Display a live stream of container(s) resource usage statistics
+docker inspect     displays metadata that docker maintains about for a container
 
 Management Commands
 ----------------
@@ -28,10 +30,46 @@ docker network inspect [bridge|host|local]
 
 docker volume ls
 
+Swarm/Service Commands
+---------------------
+
+docker swarm init // enables service abstraction
+
+docker service create -p 8080:80 --name hello-world busybox 
+docker service ls
+docker service ps <service_name>
+docker service inspect --pretty <service_name> // prints in human readable
+docker service scale <service_name>=3 // increases replica set to 3
+
+
 Examples
 ---------
 
+docker create nginx
+
+docker run hello-world
+
 docker run --name hi hello-world 
 
+docker run -d --name WebA nginx // runs the nginx container in "detached" mode (in the background)
+
 docker run --name busy -it busybox /bin/sh // interactively starts a busy box container and gives me a terminal running a shell 
+
+docker exec ef875hdhsd /bin/sh // opens up a shell on the container ID
+
+docker logs -f webA // continuously displays logs on container with name "WebA" 
+
+
+docker run -it --name example --link <container_to_link_to>:<link alias> busybox
+
+docker run -it --name example --link web:insideweb busybox // creates a container using the busybox image and links it a container named "web" so they can communicate with one another 
+
+docker run -it --name example --link web busybox // does not set a link alias name
+
+docker inspect --format "{{.State.Running}}" busybox // displays the value of the enclosed property
+
+docker inspect -f "{{.HostConfig.Links}}" busybox // displays the links in place for busybox container
+
+
+
 
