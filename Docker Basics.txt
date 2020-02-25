@@ -1,6 +1,25 @@
 Docker Basics
 
 
+Networking Modes
+----------------
+
+Bridge - default docker network; provides inter container connectivity for all containers running on the same node
+
+Host - containers interact directly with the host network stack like any other locally hosted application or process 
+
+None - no outside connectivity outside of themselves
+
+
+Networking Scopes
+----------------
+
+Local - network is constrained to the machine where the network exists
+
+Global - network should be created on every node in the cluster but no routing between them
+
+Swarm - network spans all of the hosts in a Docker Swarm (cluster-wide)
+
 
 Basic Commands
 -------------
@@ -27,6 +46,8 @@ Management Commands
 
 docker network ls 
 docker network inspect [bridge|host|local]
+
+docker network create --driver bridge --attachable --scope local --subnet 192.168.1.0/24  --ip-range 192.168.1.128/25 lows-network
 
 docker volume ls
 
@@ -69,6 +90,8 @@ docker run -it --name example --link web busybox // does not set a link alias na
 docker inspect --format "{{.State.Running}}" busybox // displays the value of the enclosed property
 
 docker inspect -f "{{.HostConfig.Links}}" busybox // displays the links in place for busybox container
+
+docker run -it --network lows-network --name network-explorer alpine:3.8 sh // creates an alpine linux based container, attaches it to my user defined network, and opens a shell prompt
 
 
 
