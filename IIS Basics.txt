@@ -1,0 +1,32 @@
+IIS Basics
+
+Windows Server Core - 
+
+
+Powershell
+----------
+
+WebAdministration // Module
+PSProvider WebAdministration // Provider
+
+PS> Get-Module -ListAvailable
+PS> Import-Module ServerManager
+PS> Get-Command -Module ServerManager
+
+PS> Add-WindowsFeature Web-Server, Web-ASP
+PS> Get-Command -Noun web*
+PS> Get-Help *web*
+PS> Get-EventLog -LogName System -Source IIS* -EntryType Error
+
+ASP.NET - provides IIS access to a host of server variables that can be used to dynamically inject information on a web page (extension .asp or .aspx)
+
+
+
+
+
+
+Normal Folders - basic separation of files and video objects; can only be referenced on the local file system
+
+*Virtual Directories - has an alias feature and can feature remote locations and network shares as physical paths (not just local files)
+
+Application Pool - separate memory location for applications; putting apps into their own pool protects other web applications and the IIS Server itself in case something goes wrong with the application (like how virtual machines are isolated from the host OS)
