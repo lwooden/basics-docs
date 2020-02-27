@@ -162,11 +162,21 @@ Availability zone - same region, but separate datacenters
 **Can download automated version of your deployment for future use
 
 
+Create VM Image
+---------------
+1. Run C:/windows/system32/Sysprep/sysprep.exe
+2. OOBE + Generalize (will shutdown machine when completed)
+3. Select VM 
+4. Click "Capture"
+
+
+
 
 Automate VM Deployments
 -----------------------
 
 Cattle vs Pets
+
 
 Powershell DSC | VM Extensive | Scripts
 
@@ -314,6 +324,95 @@ Test pinging from 2 different VMs using their private host names
 
 
 [Public DNS Zone]
+
+
+
+Connectivity Between Virtual Networks
+-------------------------------------
+
+[Hybrid Options]
+
+Site-to-Site (S2S) - IPSec VPN option
+ExpressRoute - direct connect construct; private/public VIF concept
+Point-to-Site (P2S) - end client to VPN Gateway connectivity; 100 mbps throughput limit
+
+SKUs
+
+Basic | 10 Tunnels | 128 P2S Connections | 100 Mbps
+VpnGw1 | 30 | 128 | 650 Mbps
+VpnGw2 | 30 | 128 | 1 Gbps
+VpnGw3 | 30 | 128 | 1.25 Gbps
+
+Unlimited (Higher Fee) Vs Metered (Lower Fee)
+
+
+[Routing and Peering]
+
+System Routes
+  LocalVNet
+  On-Premises
+  Internet 
+
+User Defined Routes
+
+VNet Peering
+
+
+Internet Access
+---------------
+
+- All resources in a VNet can communicate to internet by default (there is no public/private subnet construct)
+- Private IP is source NAT to a public IP selected by Azure
+- Outbound connectivity can be shaped/filtered 
+
+
+
+Network Security Groups (NSG)
+----------------------------
+
+- network filter to allow or restrict traffic to resources
+- associated with a subnet or NIC
+- subnet rules apply to ALL resources in the subnet
+- evaluated by priority (100-4096)
+
+
+
+Load Balancing Services
+-----------------------
+
+
+Basic
+- Layer 4 
+- up to 100 instances in the pool
+- service monitoring (probes)
+- automatic reconfiguration
+- hash based distribution (5-tuple_
+- internal and public facing
+- open by default
+- scoped to an availability set
+
+
+Standard
+- Layer 4
+- up to 1000 instance sin the pool
+- scoped to any virtual machine in a VNET
+- HTTPS
+- AZ support 
+- secured by default
+
+
+Application Gateway
+- Layer 7
+- cookie-based session affinity
+- SSL offload
+- End-to-End SSL
+- Web application firewall**
+- URL-based content routing
+- requires its own subnet
+
+
+Traffic Manager
+
 
 
 
