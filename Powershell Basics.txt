@@ -1,3 +1,28 @@
+$PSVersionTable.PSVersion // returns version of powershell
+
+update-help
+Get-Help -Name <cmdlet>
+Get-Help *web*
+
+
+Get-modules // displays list of modules in your current session
+Get-modules -ListAvailable // displays all of your modules
+Import-module // loads for current session
+Remove-module
+
+Get-Command
+Get-Command -Verb Get // list all command with the verb get
+Get-Command -Noun web* // list all command with "web" in the noun portion
+Get-command -Module <module_name> // list all commands from a particular module
+
+
+Get-PSRepository // list remote repositories
+
+Install-Module -Name Az -AllowClobber -Scope CurrentUser // install module from PSGallery Repo
+
+
+
+
 
 $variable // declared by using $ sign at the front
 
@@ -36,21 +61,16 @@ Get-Content -Path C:\Example.txt | ForEach-Object { $PsItem}
 Get-Content -Path C:\Example.txt | ForEach-Object { Test-Connection -Computername $PsItem }
 Get-CimInstance -ClassName "win32_OperatingSystem" | Select-Object * // displays a ton of properties about the system
 
-get-modules // displays list of modules in your current session
-get-modules -ListAvailable // displays all of your modules
-import-module // loads for current session
-remove-module
-$env:PSModulePath // displays directories defined to import modules into your shell
-get-command -Module <module_name>
 
-update-help
-Get-Help -Name <cmdlet>
+$env:PSModulePath // displays directories defined to import modules into your shell
+
+
+
 Get-Alias // display list of default aliases
 Get-Service // display list of services and their state
 Add-Content -Path <path> -Value <content>
 Get-Content <path to file>
-Get-Command
-Get-Command -Verb Get
+
 
 Test-Connection // better ping alternative
 
