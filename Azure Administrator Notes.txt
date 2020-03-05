@@ -157,6 +157,46 @@ Availability zone - same region, but seperate datacenters
 
 
 
+Do these labs:
+
+Create A Subscription Policy
+  1. Go to Subscriptions > Click your subscription > Policies (Left Menu)
+  2. Assign Policy
+  3. Choose a built-in or custom policy
+
+Set up a Billing Alert
+ 1. Go to Subscriptions > Click Subscription > Manage (Top left)
+ 2. Go to Preview Features > Billing Service Alert > Try it now (to activate feature)
+ 3. Go to Subscriptions > Click your subscription > Alerts
+ 4. Create your alert
+ 
+Create A VM Mointor
+  1. Click or search for "Monitor" Service
+  2. Click Explore Metrics
+  3. Select a Subscription, Resource Group, and Resource Type, Resource and metric to pull
+  4. Choose how to display the chart (line or bar) and to pin to dashboard
+ 
+ Create A VM Alert
+   1. Click or search for "Monitor" Service
+   2. Click Create Alert
+   3. Choose Resource, Condition, and Action Group
+   4. Action Groups live in Resource Groups and can have many actions (email, SMS, ServiceNow, Automation Runbook, etc)
+
+Backup using MARS
+
+Backup using Azure Backup
+
+Perform File Recovery From A VM
+
+Perform A Full VM Recovery
+
+Create A Storgae Account
+
+Create File Share
+
+Create File Share Sync
+
+..
 
 
 
