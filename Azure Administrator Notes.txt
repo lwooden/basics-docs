@@ -23,18 +23,18 @@ LA Engineering (Enterprise)
 			Subscription 2
 			Subscription 3
    
-The department level can be set up to be: functional (Finance, IT), business divsion (Auto, Aerospace), geographic (North America, Europe)
+The department level can be set up to be: functional (Finance, IT), business division (Auto, Aerospace), geographic (North America, Europe)
 
 Know how to set Billing Alerts: Subscriptions > Manage > Enable Billing Alert Feature > Click Subscription > Create Alert
 Know how to assign polices at the subscription level and monitor compliance
 
 
 Analyze Resource Utilization and Consumption
---------------------------------------------------------------
+---------------------------------------------
 
 
 Managing Resource Groups
-------------------------------------
+------------------------
 
 Can set RBACS 
 Can set locks On resources (delete or read only - most restrictive)
@@ -84,7 +84,8 @@ Choose location on server to sync data
 
 Azure Backup - WATCH AGAIN
 ------------------
-High Availbility
+
+High Availability
 Disaster Recovery
 Backup
 
@@ -101,17 +102,18 @@ Azure Backup Server - VM or on premise backups
 Azure Iaas VM Backup - 
 Snapshot Recovery - blob snapshots taken of VM page blob; vms get created from snapshot; application consistent if VM was shutdown
 
-1. Create Recovery Valut Resource
+1. Create Recovery Vault Resource
 2. Define Backup Goal (where and what you want to back up)
 3. Choose backup policy
 4. Select VMs to back up
-5. Go to VM detials and select Operations -> Backup to check status
+5. Go to VM details and select Operations -> Backup to check status
 
 
 Virtual Machines
 --------------------
 
 [Series]
+
 A - Basic = testing and development
 A - Standard = general purpose
 B - Burstable = burst to full capacity of CPU when needed
@@ -126,6 +128,7 @@ N - GPU enabled = GPU enabled
 SAP Hanna = specialized for SAP 
 
 [Specialization]
+
 M - Larger Memory
 R - Supports Remote Directory
 S - Premium Storage
@@ -133,27 +136,282 @@ S - Premium Storage
 Example = DS (General Purpose + Premium Storage)
 
 [Windows Server Support]
+
 Pre-Windows 2008 R2 - supported for deployment but must bring your own image; no marketplace support;
 2008 R2 - supported; see matrix for server roles
 2012 - supported; datacenter
 2016 - suppored; datacenter and nano 
 Desktop - 10 Pro and Enterprise in Marketplace
-Other Servers in the Microsoft Ecosystem (e.g. exchage, bizatalk, forefront identity manager)
+Other Servers in the Microsoft Ecosystem (e.g. exchange, biztalk, forefront identity manager)
 
 [Linux]
+
 CentOS
 CoreOS
 Debian
-Oralce Linux
+Oracle Linux
 Red Hat
 SUSE/openSUSE
 
-[Availability Optons]
-Availabity sets - same datacenter, but seperate racks and power
-Availability zone - same region, but seperate datacenters
+[Availability Options]
+
+Availability sets - same datacenter, but separate racks and power
+Availability zone - same region, but separate datacenters
 
 **Autoshutdown is native to Azure 
 **Can download automated version of your deployment for future use
+
+
+Create VM Image
+---------------
+1. Run C:/windows/system32/Sysprep/sysprep.exe
+2. OOBE + Generalize (will shutdown machine when completed)
+3. Select VM 
+4. Click "Capture"
+
+
+
+
+Automate VM Deployments
+-----------------------
+
+Cattle vs Pets
+
+
+Powershell DSC | VM Extensive | Scripts
+
+Enterprise Approach: Puppet + Chef
+Getting Started: Powershell DSC
+
+
+Powershell DSC (Desired State Configuration)
+  Configurations
+    Resources
+      Logical Configuration Manager
+
+
+Configuration SkylinesWebSite <-- Name of config
+{
+  Node 'localhost' <--- Resource to apply to 
+  {
+    #Install IIS - Enabled via Windows Feature  <--- What I am configuring
+     WindowsFeature IIS
+      {
+       Ensure = "Present"
+       Name= "Web-Server"
+      }
+    #Install ASP.NET 4.5
+    WindowsFeature ASP
+    {
+    Ensure = "Present"
+    Name= "Web-Asp-Net45"
+    }
+  }
+}
+
+
+Save file
+
+Prepare for consumption by Azure
+  PS > Publish-AzureRmCMDsConfiguration -ConfigurationPath <location of file> -OutputArchivePath <file>.zip
+
+Choose a VM from the Virtual Machine Menu
+
+Go to Extensions and "Add"
+
+Choose Powershell DSC
+  Select zip file from command
+
+
+[Custom Script Extension]
+
+- execute VM tasks without logging into the VM (no credentials or IPs needed to connect)
+- automate using Powershell
+- must be enabled on per VM basis
+- slow
+
+[PowerShell VM Commands]
+
+New-AzureRmResourceGroup -Name lowsandbox -Location EastUS
+New-AzureRmVM 
+
+
+Manage VM Storage and Networking
+-------------------------------
+
+Standard Storage (S)
+- HDD
+- Cost savings
+- Max throughput 60MB/S per disk
+- Max IOPS 500 IOPS per disk
+
+Premium Storage (P)
+- SSD
+- High perf
+- Max throughput 250 MB/s
+- Max IOPS 7500 
+
+
+Unmanaged Disks Vs Managed Disks
+
+Locally Redundant Storage (LRS) - replicates 3 copies within the same local datacenter
+Zone Replicated Storage (ZRS) - same as above plus replication between one or two datacenters
+Geo Redundant Storage (GRS) - moves copies of data to a secondary datacenter hundreds of miles away out of region
+
+Disk Caching (Instance Storage) 
+- improves performance
+- uses local RAM and SSD drives of the host
+- available on standard and premium
+
+OS disk -> default: read/write -> read-only or read-write
+Data disk -> default: none -> none, read-only or read-write
+
+*Must be enabled through Powershell
+
+
+Must specifically define Private IPs as "static" at the NIC level
+Can customize DNS Servers per VM at even after it has been launched
+
+
+VM Availability
+----------------
+
+Potential VM Impacts
+- planned maintenance (Azure hardware)
+- unplanned hardware maintenance
+- unexpected downtown
+
+Availability Sets
+- group (2) or more VMs in a set
+- separate fault and update domains
+
+Fault Domain 0 | Fault Domain 1 | Fault Domain 2
+Update Domain 0 |  Update Domain 1 | Update Domain 2
+
+Availability Sets or Availability Zones (can't have both - preference is Zone)
+
+
+
+VM Scale Sets
+-------------
+
+- used for "horizontal" scaling to meet demand or based on metrics
+- define instance count, size
+- determine auto-scale or not (minimum maximum)
+
+Search "Scale sets" in the search bar
+Create virtual scale set
+
+
+Azure Networking
+-----------------
+
+Azure reserves first (5) IPs from the VNET
+- first three IPs
+- last IP
+
+First useable address in a /24 is .4
+
+Static addresses are just DHCP Reservations
+
+
+[Private DNS Zone]
+
+Create Private DNS Zone
+Add virtual link to associate the zone with a network
+Select "Enable auto registration"
+Test pinging from 2 different VMs using their private host names
+
+
+[Public DNS Zone]
+
+
+
+Connectivity Between Virtual Networks
+-------------------------------------
+
+[Hybrid Options]
+
+Site-to-Site (S2S) - IPSec VPN option
+ExpressRoute - direct connect construct; private/public VIF concept
+Point-to-Site (P2S) - end client to VPN Gateway connectivity; 100 mbps throughput limit
+
+SKUs
+
+Basic | 10 Tunnels | 128 P2S Connections | 100 Mbps
+VpnGw1 | 30 | 128 | 650 Mbps
+VpnGw2 | 30 | 128 | 1 Gbps
+VpnGw3 | 30 | 128 | 1.25 Gbps
+
+Unlimited (Higher Fee) Vs Metered (Lower Fee)
+
+
+[Routing and Peering]
+
+System Routes
+  LocalVNet
+  On-Premises
+  Internet 
+
+User Defined Routes
+
+VNet Peering
+
+
+Internet Access
+---------------
+
+- All resources in a VNet can communicate to internet by default (there is no public/private subnet construct)
+- Private IP is source NAT to a public IP selected by Azure
+- Outbound connectivity can be shaped/filtered 
+
+
+
+Network Security Groups (NSG)
+----------------------------
+
+- network filter to allow or restrict traffic to resources
+- associated with a subnet or NIC
+- subnet rules apply to ALL resources in the subnet
+- evaluated by priority (100-4096)
+
+
+
+Load Balancing Services
+-----------------------
+
+
+Basic
+- Layer 4 
+- up to 100 instances in the pool
+- service monitoring (probes)
+- automatic reconfiguration
+- hash based distribution (5-tuple_
+- internal and public facing
+- open by default
+- scoped to an availability set
+
+
+Standard
+- Layer 4
+- up to 1000 instance sin the pool
+- scoped to any virtual machine in a VNET
+- HTTPS
+- AZ support 
+- secured by default
+
+
+Application Gateway
+- Layer 7
+- cookie-based session affinity
+- SSL offload
+- End-to-End SSL
+- Web application firewall**
+- URL-based content routing
+- requires its own subnet
+
+
+Traffic Manager
 
 
 
@@ -197,8 +455,5 @@ Create File Share
 Create File Share Sync
 
 ..
-
-
-
 
 
