@@ -1,14 +1,34 @@
+Powershell Basics
+
+Environment
+------------
+
 $PSVersionTable.PSVersion // returns version of powershell
+$env:PSModulePath // displays directories defined to import modules into your shell
+Get-PSRepository // list remote repositories
+
+
+Getting Help For Command Syntax
+-----------------------------
 
 update-help
 Get-Help -Name <cmdlet>
 Get-Help *web*
+Help Get-Process // more detail
 
+
+Working With Modules
+------------------
 
 Get-modules // displays list of modules in your current session
 Get-modules -ListAvailable // displays all of your modules
 Import-module // loads for current session
 Remove-module
+Install-Module -Name Az -AllowClobber -Scope CurrentUser // install module from PSGallery Repo
+
+
+Searching For Commands
+----------------------
 
 Get-Command
 Get-Command -Verb Get // list all command with the verb get
@@ -16,21 +36,115 @@ Get-Command -Noun web* // list all command with "web" in the noun portion
 Get-command -Module <module_name> // list all commands from a particular module
 
 
-Get-PSRepository // list remote repositories
-
-Install-Module -Name Az -AllowClobber -Scope CurrentUser // install module from PSGallery Repo
-
-
-
-
+Scripting
+---------
 
 $variable // declared by using $ sign at the front
 
-Object output allows us to access the results of a command for later use more easily
-Everything is an object in Powershell!!!
 
-Hashtable
+Handling Objects
+----------------
+
+
+When you run the command "Get-Process", in memory, Powershell constructs a "table" that contains all of the
+information about those items. This "table" represents a "collection" of objects
+
+[Header]      Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName                                                       
+------------------       ------    -----      -----     ------     --  -- -----------                                                       
+[Object 0]     384      22     7768      10828       0.47  10312   1 AcrobatNotificationClient                                         
+[Object 1]     387      22     7652      10792       0.39  13520   1 AcrobatNotificationClient 
+
+Each "row" represents a "single object"
+Each "column" represents a "property"
+Each object has predefined "methods" that can be invoked on them
+The entire "table" represents a "collection"
+
+To learn more about an object you must use:
+
+Get-Member // "Gm" is the alias
+*You can use this command after any cmdlet that produces output
+
+Get-Process | Get-Member
+
+
+   [Object]TypeName: System.Diagnostics.Process
+
+Name                       MemberType     Definition                                                                        
+----                       ----------     ----------                                                                        
+Handles                    AliasProperty  Handles = Handlecount                                                             
+Name                       AliasProperty  Name = ProcessName 
+ProcessName                Property       string ProcessName {get;} 
+BeginErrorReadLine         Method         void BeginErrorReadLine() 
+
+*All of the properties, methods, etc attached to an object are collectively calld its "members"
+
+[Sorting Objects]
+
+Get-Process | Sort-Object -property ProcessName
+
+
+[Selecting Objects]
+
+Get-Process | Select-Object -property ProcessName CPU
+
+ProcessName                             CPU
+-----------                             ---
+AcrobatNotificationClient           0.46875
+AcrobatNotificationClient          0.390625
+
+Get-Process | Select-Object -First 10 // displays first 10 objects
+Get-Process | Select-Object -Last 10 // displays last 10 objects
+
+
+
+The Pipeline Process
+-------------------
+
+The powershell pipeline "always" contains "objects" until the last command has been executed
+
+Get-Process | Sort-Object VM | Out-File c:\processes.txt
+1. Get-Process puts objects in the pipeline
+2. Sort-Object doesn't change what is in the pipeline, but only the order of the objects; objects are still in the pipeline
+3. Powershell has to produce output, so it takes what it has, formats it, and sends it to a file
+
+Get-Process | Sort-Object VM | Select-Object Name, ID
+1. Same
+2. Same
+3. Select-Object creates a "new" custom object -> PSObject
+
+ 
+
+
+
+Hashtables
 ----------
+
+begin with @{ }
+consist of one more key=value pairs
+
+
+[CSV File] 
+login,dept,city,title (properties)
+donj,IT,Las Vegas,CTO (object 0)
+gregs,custodial,Denver,Janitor (object 1)
+
+Problem:
+We are trying to pass data to the New-ADUser cmdlet, but it expects the following "exact" arguments:
+-Department, -samAccountName, -Name
+
+Solution:
+Create a hashtable and modify the properties to fit what New-ADUser command expects
+
+import-csv .\newusers.csv | Select-Object * (all properties)
+@{name='samAccountNmae';expression={$_.login}},
+@{label='Name';expression={$_.login}},
+@{n='Department';e={e$_.Dept}}
+
+@{name='The property I want to enforce/create';expression={the property whose value I want to reference in the file}}
+
+$_. // special placeholder that refers to the current piped-in object; allow you to access one property of the current object or column
+
+
 
 @{
     Adapter = 'Ethernet'
@@ -38,14 +152,28 @@ Hashtable
     SubnetMask = '255.255.255.0'
 }
 
-Example
+
+Common Commands
+---------------
+
+Get-Alias // display list of default aliases
+Get-Service // display list of services and their state
+Add-Content -Path <path> -Value <content>
+Get-Content <path to file>
+Test-Connection // better ping alternative
+Write-Output "Hello World" // writes output to console
+
+
+
+
+More Examples
 --------
 
 PS C:\> $computers = Get-Content C:\Example.txt
 PS C:\> $computers 
 DC1 [0]
 DC2 [1]
-DC3 [3]
+DC3 [2]
 // saved as an array
 
 PS C:\> $computers[0]
@@ -62,15 +190,9 @@ Get-Content -Path C:\Example.txt | ForEach-Object { Test-Connection -Computernam
 Get-CimInstance -ClassName "win32_OperatingSystem" | Select-Object * // displays a ton of properties about the system
 
 
-$env:PSModulePath // displays directories defined to import modules into your shell
 
 
 
-Get-Alias // display list of default aliases
-Get-Service // display list of services and their state
-Add-Content -Path <path> -Value <content>
-Get-Content <path to file>
 
 
-Test-Connection // better ping alternative
 
