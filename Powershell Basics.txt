@@ -36,6 +36,68 @@ Get-Command -Noun web* // list all command with "web" in the noun portion
 Get-command -Module <module_name> // list all commands from a particular module
 
 
+Remote Powershell
+-----------------
+
+WS-MAN (Web Services for Management) - the windows alternative to ssh and telnet; operates entirely over HTTP/S
+WinRM (Windows Remote Management) - background service for WS-MAN; acts as broker listening for requests and routing them to the proper applications (endpoints);
+
+All request are serialized into XML and then are sent over the network. The receiver then deserializes the XML back into an object
+Request -> XML(serialize) -> Network -> XLM(deserialize) -> object
+
+[WinRM Listener Ports]
+
+TCP 5985 HTTP
+TCP 5986 HTTPS
+
+Request -> WS-MAN (HTTP) -> HTTP Listener -> WinRM Service -> Applicaton (Endpoint)
+
+Enable-PSRemoting // starts WinRM service, configures it to start automatically, registers Powershell as an endpoint, creates firewall exception
+
+Invoke-Command -computerName server1,server2 -command { Get-EventLog Security -newest 200 Where { $_.EventID -eq 1212 }}
+-Its always more efficient to use Invoke-Command rather than -computerName of a cmdlet
+-Invoke-Command computers are contacted in parallel and connection is made through WinRM
+-Always complete as much processing on the remote computer as possible; only save reports for storage or reporting
+ 
+Disable-PSRemoting
+
+[1-to-1 Connection]
+
+Enter-PSSession -computerName server1 // cannot use IP or CNAME
+[server1] PS C:\> 
+
+*Your permissions carry over to the remote computer
+*You are still restricted by the remote computers execution policy
+
+
+Window Management Instrumentation (WMI)
+--------------------------------------
+
+WMI is the legacy interface
+CIM (Common Information Model) is the more modern approach and way forward; wrappers around pieces of WMI giving you a more powershell-centric way of interfacing with WMI
+Outside of the Win32 classes, WMI is not very well documented
+Get a WMI Explorer tool to traverse the tree and see details of the WMI tree
+
+Root
+  Namespaces (i.e. folders)
+    Classes
+      Instances
+
+Root
+  CIMv2
+    Win32_LogicalDisk
+
+Get-WmiObject -namespace root\cimv2 -list 
+Get-WmiObject -namespace root\cimv2 -class win32_desktop
+Get-WmiObject -Namespace root\cimv2 -Class win32_desktop -Filter "name='SPECTRE-009\\lowel'" | Format-List * // displays all properties
+
+Invoke-WmiMethod
+
+Get-CimInstance -Namespace root\cimv2 -ClassName win32_desktop 
+Get-CimInstance -Namespace root\cimv2 // same functionality as -list using WMI
+Invoke-CimMethod
+   
+
 Scripting
 ---------
 
