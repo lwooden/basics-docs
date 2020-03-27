@@ -1,11 +1,13 @@
 Powershell Basics
 
+
 Environment
 ------------
 
 $PSVersionTable.PSVersion // returns version of powershell
 $env:PSModulePath // displays directories defined to import modules into your shell
 Get-PSRepository // list remote repositories
+
 
 
 Getting Help For Command Syntax
@@ -15,6 +17,7 @@ update-help
 Get-Help -Name <cmdlet>
 Get-Help *web*
 Help Get-Process // more detail
+
 
 
 Working With Modules
@@ -27,6 +30,7 @@ Remove-module
 Install-Module -Name Az -AllowClobber -Scope CurrentUser // install module from PSGallery Repo
 
 
+
 Searching For Commands
 ----------------------
 
@@ -34,6 +38,7 @@ Get-Command
 Get-Command -Verb Get // list all command with the verb get
 Get-Command -Noun web* // list all command with "web" in the noun portion
 Get-command -Module <module_name> // list all commands from a particular module
+
 
 
 Formating
@@ -63,8 +68,6 @@ Format-Wide
 
 Get-Service | Format-table @{name='ServiceName';expression={$_.Name}},Status,DisplayName 
 // uses a hashtable to define a custom column called "ServiceName" using the "Name" property from the Service object as the value
-
-
 
 
 
@@ -102,6 +105,13 @@ Enter-PSSession -computerName server1 // cannot use IP or CNAME
 *Your permissions carry over to the remote computer
 *You are still restricted by the remote computers execution policy
 
+[Sessions]
+
+$session = New-PSSession -computername server1 
+$session
+Get-PSSession
+
+
 
 Window Management Instrumentation (WMI)
 --------------------------------------
@@ -129,17 +139,77 @@ Invoke-WmiMethod
 Get-CimInstance -Namespace root\cimv2 -ClassName win32_desktop 
 Get-CimInstance -Namespace root\cimv2 // same functionality as -list using WMI
 Invoke-CimMethod
-   
 
+
+
+Input/Output
+------------
+
+Powershell Engine ----> Console Hosts | Powershell ISE | Other (Host Applications)
+**The Powershell engine is responsible for passing along information. The host applications determine how this information is displayed
+
+Read-Host
+  $computerName = Read-Host "Enter a computer name"
+  (prompt) Enter a computer name: SERVER-1
+  $computerName
+  SERVER-1
+
+Write-Output
+  Write-Output "Hello World" // prints to the console
+
+
+
+   
 Scripting
 ---------
 
+Get-ExecutionPolicy // get systems current execution policy; by default scripts are not allowed to execute
+Set-ExecutionPolicy 
+  Restricted - default setting
+  Unrestricted - all scripts will run
+  Bypass - for developers embedding Powershell within their apps; "Don't worry. I have security covered."
+  AllSigned - will execute any script signed by using a code-signing certificate issued by a trusted certificate authority
+  RemoteSigned - will execute any local and remote script signed by using a code-signing certificate issued by a trusted certificate authority
+
 $variable // declared by using $ sign at the front
+
+{Adding Help To A Script - Start of File}
+
+<#
+.SYNOPSIS 
+enter text here
+.DESCRIPTION 
+enter text here
+.PARAMETER
+enter text here
+.EXAMPLE
+enter text here
+#>
+
+help .\Get-Processes (must define path because this is a script not a built-in cmdlet)
+ 
+{The Parameter Block}
+
+param (
+  $computerName
+)
+
+**Paramaters can be referenced positionally (in the order they are defined in the parameter block) or by paramter name
+
+
+{Type Declaration}
+ 
+[int]$number = Read-Host "Enter a number" // explicitly sets value to type "int"
+Enter a number: 100
+$number | get-member
+
+TypeName: System.Int32
+
+
 
 
 Handling Objects
 ----------------
-
 
 When you run the command "Get-Process", in memory, Powershell constructs a "table" that contains all of the
 information about those items. This "table" represents a "collection" of objects
@@ -182,6 +252,7 @@ Get-Process | Sort-Object -property ProcessName
 
 Get-Process | Select-Object -property ProcessName CPU
 
+
 ProcessName                             CPU
 -----------                             ---
 AcrobatNotificationClient           0.46875
@@ -189,6 +260,12 @@ AcrobatNotificationClient          0.390625
 
 Get-Process | Select-Object -First 10 // displays first 10 objects
 Get-Process | Select-Object -Last 10 // displays last 10 objects
+
+
+[Iterating Over Objects]
+
+$computers = $computers | ForEach-Object {$_.ToLower()} // executes the ToLower method on each object in $computers; $_ is the placeholder for each object
+
 
 
 
@@ -207,7 +284,7 @@ Get-Process | Sort-Object VM | Select-Object Name, ID
 2. Same
 3. Select-Object creates a "new" custom object -> PSObject
 
- 
+
 
 
 
@@ -248,6 +325,7 @@ $_. // special placeholder that refers to the current piped-in object; allow you
 }
 
 
+
 Common Commands
 ---------------
 
@@ -262,7 +340,7 @@ Write-Output "Hello World" // writes output to console
 
 
 More Examples
---------
+-------------
 
 PS C:\> $computers = Get-Content C:\Example.txt
 PS C:\> $computers 
