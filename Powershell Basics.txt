@@ -36,6 +36,39 @@ Get-Command -Noun web* // list all command with "web" in the noun portion
 Get-command -Module <module_name> // list all commands from a particular module
 
 
+Formating
+---------
+
+{Default Formatting Logic}
+
+Step 1: Check default formating instructions for the object in the DotNetTypes.format.ps1.xml file (in Powershell installation folder - $pshome)
+else
+Step 2: look to see if a custom default display propertyhas been set for this type of object in Types.ps1.xml file
+Step 3: Define the type of output to create;   properties show = table < 4 > properties show = list
+
+{The 4 Formatting Cmdlets}
+
+Format-Table
+  Get-Process | Format-Table -property * // display all properties
+  Get-Process | Format-Table -property ID,Name -autosize // display only defined properties; sizes columns to hold content and no more
+  Get-Process | Format-Table * -autosize // shorthand for display all
+
+Format-List 
+  Get-Service | Format-List * // displays all service objects in list form instead of table form
+
+Format-Wide
+  Get-Process | Format-Wide name -col 4
+
+{Create Custom Columns}
+
+Get-Service | Format-table @{name='ServiceName';expression={$_.Name}},Status,DisplayName 
+// uses a hashtable to define a custom column called "ServiceName" using the "Name" property from the Service object as the value
+
+
+
+
+
+
 Remote Powershell
 -----------------
 
@@ -50,7 +83,7 @@ Request -> XML(serialize) -> Network -> XLM(deserialize) -> object
 TCP 5985 HTTP
 TCP 5986 HTTPS
 
-Request -> WS-MAN (HTTP) -> HTTP Listener -> WinRM Service -> Applicaton (Endpoint)
+Request -> WS-MAN (HTTP) -> HTTP Listener -> WinRM Service (Handle) -> Applicaton (Endpoint)
 
 Enable-PSRemoting // starts WinRM service, configures it to start automatically, registers Powershell as an endpoint, creates firewall exception
 
