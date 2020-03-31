@@ -1,10 +1,5 @@
 ACG - Microsoft Azure Administrator
 
-High Level Review
-----------------------------
-
-Resource Groups - a container that holds all of the resources you provision
-
 
 Manage Azure Subscriptions
 --------------------------------------
@@ -37,17 +32,17 @@ Managing Resource Groups
 ------------------------
 
 Can set RBACS 
-Can set locks On resources (delete or read only - most restrictive)
+Can set locks on resources (delete or read only - most restrictive)
 Can set up polices 
 Can set up tagging 
 Can set up automated deployments 
 
 
-[Policies]
+[Azure Policies]
 
-azure governance 
-Built in or custom code
-Assigned to subscriptions or specific resource groups 
+Used to enforce Azure governance 
+Leverage built-in policies or create your own
+Policies are assigned at the subscriptions or resource group level
 
 
 Storage Accounts
@@ -58,11 +53,11 @@ Blobs
 GPv1
 GPv2 (best choice and will be the baseline going forward)
 Blob Account 
-Hot, Cold, Archive
+Hot,Cold, Archive
 
 Download azcopy, azure storage explorer and play
 
-Shared Access Signature (SAS) - query string that it added to the end of a URL of a storage resource; the string defines the access 
+Shared Access Signature (SAS) - query string that is added to the end of the URL of a storage resource; the string defines the access 
 Service SAS Token - grants access to a specific service in a storage account 
 Account SAS Token - granted at the account level to grant permissions to services within the account 
 
@@ -428,23 +423,45 @@ Set up a Billing Alert
  3. Go to Subscriptions > Click your subscription > Alerts
  4. Create your alert
  
-Create A VM Mointor
-  1. Click or search for "Monitor" Service
+View Virtual Machine Metrics
+  1. Click Monitor under favorites or Select a VM and scroll down to Monitoring Section
   2. Click Explore Metrics
   3. Select a Subscription, Resource Group, and Resource Type, Resource and metric to pull
   4. Choose how to display the chart (line or bar) and to pin to dashboard
+
+Enable Diagnostic Logs
+  1. Select a VM and scroll down to Monitoring Section
+  2. Click Diagnostic Settings
+  3. Select a storage account to send logs to > Click Enable Diagnostics
+
+Create An Alert
+  1. Click or search for "Monitor" Service
+  2. Click Create Alert
+  3. Choose Resource, Condition, and Action Group
+  4. Action Groups live in Resource Groups and can have many actions (email, SMS, ServiceNow, Automation Runbook, etc)
+
+Set Up A Log Analytics Workspace
+  1. Search for "Log Analytics"
+  2. Choose name and region for workspace and create
+  3. Click "Data Sources"
+  4. Connect my workspace to a virtual machine and Azure Activity Logs
+  5. Click on "Advanced Settings"
+  6. Define was it is I want to capture and save
+  7. Click "Logs" to begin querying data
+
+Assign Azure Policy To Resource Group
+  1. Go to Resource Groups > Policies
+  2. Click Assignments > Assign Policy
  
- Create A VM Alert
-   1. Click or search for "Monitor" Service
-   2. Click Create Alert
-   3. Choose Resource, Condition, and Action Group
-   4. Action Groups live in Resource Groups and can have many actions (email, SMS, ServiceNow, Automation Runbook, etc)
+
+-----Pick up on Chapter 5-----
+
 
 Backup using MARS
 
 Backup using Azure Backup
 
-Perform File Recovery From A VM
+Perform File Recovery From A Virtual Machine
 
 Perform A Full VM Recovery
 
