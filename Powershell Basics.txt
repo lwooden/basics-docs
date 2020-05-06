@@ -261,6 +261,17 @@ AcrobatNotificationClient          0.390625
 Get-Process | Select-Object -First 10 // displays first 10 objects
 Get-Process | Select-Object -Last 10 // displays last 10 objects
 
+[Exanding Properties]
+
+Get-NetAdapter | Select-Object -Property ifIndex
+
+ifIndex
+-------
+4
+
+Get-NetAdapter | Select-Object -ExpandProperty ifIndex
+
+This makes the value "4" available to me to use anyway I want to. It steals the value from the property so I can use it again later
 
 [Iterating Over Objects]
 
