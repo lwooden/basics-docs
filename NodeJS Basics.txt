@@ -11,15 +11,19 @@ generates baseline package.json file
 npm config set prefix <user-home-dir> // this ensures that modules installed with -g flag will not require sudo to install as they will be installed in the dir you desire
 
 npm install // install all modules listed in package.json
-npm i <package_name> // installs a specific package locally to the project
-npm i <package_name> -g // installs package globally
-npm i <package_name> --save-dev // saves module under the "devDependecies" section
+npm i <package> // installs a specific package locally to the project
+npm i <package> -g // installs package globally
+npm i <package> --save-dev // saves module under the "devDependecies" section
 
 npm i -g yarn 
 
 yarn --version
 yarn add <package_name>
 yarn global add <package_name>
+Yarn add <package> --dev
+
+npm list -g --depth=0 // get list of all globally installed packages
+yarn global list
 
 **It is best to avoid global modules as much as possible. Define everything at the project level so that if I am collaborating with someone on a project they will find everything they need in package.json. Items that are installed globally do not show up in package.json therefore it can be problematic. Also defining things at the project level allows me to use specific versions of things based on my application needs. Global modules force me to use one version for multiple projects
 
@@ -122,6 +126,16 @@ geocode('TempleHills',(data) => { // data is the variable I want to access when 
 - A callback function is a function that we provide as an "argument" to another function with the expectation that the original function is going to call that function sometime in the future
 - When a function is doing a synchronous operation, we can use the keyword "return" to have the data returned to the function that is being called. 
 - When a function is doing an asynchronous operation, the "return" keyword is not an option. I must use the "callback" method in order to access that data (when it becomes available)
+
+
+
+Promises
+--------
+
+
+
+Async/Await
+------------
 
 
 

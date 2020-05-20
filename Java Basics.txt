@@ -2,12 +2,12 @@ Class - blueprint for a house; we can build as many houses as we want based on t
 
 Instance - each house I build using the blueprint is called an instance
 
-Reference - each house I build has a physical locatoin on the disk; I can copy that reference as many times as I like, but there is only one house
+Reference - each house I build has a physical location on the disk; I can copy that reference as many times as I like, but there is only one house
 
 House blueHouse = new House("blue")
 House anotherHouse = bluehouse // this is a reference to the same "physical" object blueHouse (in memory)
 
-this - keyword used to access/call the current class varibales and methods; commonly used with constructors, setters, and getters
+this - keyword used to access/call the current class variables and methods; commonly used with constructors, setters, and getters
 
 private String color;
 public House(String color) {

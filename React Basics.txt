@@ -1,0 +1,66 @@
+React Basics Doc
+
+
+(2) types of components:
+	
+Class Based 
+- have the ability to manage local state
+- has access to component lifecycle methods
+
+
+Stateless Functional
+- lightweight
+- easy to test
+- cannot manage local state
+- cannot access lifecycle methods
+
+
+Class Based Component
+--------------------------------
+
+class App extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            ...
+        }
+ 
+    }
+
+componentDidMount() {
+   ...
+}
+
+render() {
+
+        return (
+           <div>
+           		Welcome to React
+           </div>
+              )
+  }
+  
+  export default App
+  
+  
+ Stateless Functional 
+ ---------------------------
+ 
+ const App = () => {
+ 	return (
+           <div>
+           		Welcome to React
+           </div>
+    )
+    
+    
+ 
+React Hooks
+-----------------
+
+
+useState - allows me to use state in a stateless functional component
+    
+      
+ 	
