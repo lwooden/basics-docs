@@ -1,4 +1,75 @@
-Ctrl K+D - formate code
+C# - a programming language
+
+.NET - a framework for building applications on Windows; there are different langauges that 
+can use the .NET framework (F#)
+
+
+C# -> IL Code -> Native Code
+Java -> ByteCode -> Native Code
+
+
+Assembly
+  Namespace
+    Class
+
+Application
+  Assembly
+  Assembly
+  Assembly
+
+
+To use a class in a different "namespace" I must import it with "using" statment
+
+using System;
+using System.Collections.Generic;
+
+
+Every project created in Visual Studio has a class called "Program"
+Inside of Program is a method called "Main"; this is where everything kicks off
+
+
+Visual Studio Shortcuts
+-----------------------
+
+cw <tab> - console.writeline()
+CTRL + SHIFT + B - Build project
+CTRL + F5 - run project
+CTRL + d - duplicate line
+CTRL + x - delete line
+
+
+Data Structures
+---------------
+
+Arrays
+  stores a collection variables of the "same" type
+  fixed size
+  once size is specified, it cannot be changed
+
+int number1
+int number2
+int[] numbers = new int[2]
+int[] numbers = new int[2] {1,2}
+
+
+Enums
+
+Strings
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+Ctrl K+D - format code
 
 Internet Information Services (IIS) - web server for Windows
 
@@ -17,6 +88,7 @@ Protected - accessible from within its class and from its children
 
 Output Type
 -----------
+static - there is only (1) instance allowed in memory; like "main" method
 void - does not return anything; no output
 string
 int
