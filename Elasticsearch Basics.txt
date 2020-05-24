@@ -1,0 +1,155 @@
+
+PUT /pages -- creates an idex called pages
+
+GET /_cluster/health
+GET /_cat/nodes?v 
+GET /_cat/indices?v 
+GET /_cat/ishards?v 
+
+
+Indexing
+-----------
+- a way to associate documents/data that are similar for easier and faster searching
+- limit of 2 billion documents in one index (w/ sharding)
+- index contains a single shared by defualt
+
+Person Index 
+	{name: Lowell Wooden, Age: 29}
+	(name: Anthony Tortorello, Age: 27}
+	
+Products Index
+
+
+Sharding
+-----------
+- sub-dvides indexes into smaller pieces
+- each peice is referred to as a "shard"
+- sharding is done at the index level and not cluseter
+- allows us to store more documents
+- fit large indices on nodes
+- parallelization in queries (shards on different nodes)
+- Split API - increases shards
+- Shrink API - decreases shards
+
+PUT /pages -- creates an idex called pages
+
+
+
+Index = 600 GB 
+Node A = 500 GB -> Shared A (300 GB)
+Node B = 500 GB -> Shared B (300 GB)
+*400 GB free 
+
+
+Replication
+---------------
+- enabled by default
+- configured at the index level
+- works by creating copies of shareds (replica shards)
+- a shard that has been replicated is called a "primary shard"
+-  primary shard and is replica shards are called a "replication group"
+- replica shards can serve search requests like a primary shard
+- repliaca shards are NEVER stored on the same node as their primary shard**
+- replica shards in a single-node cluster remain in an "unassinged" state until another node is added
+- replicate shards "once" if data loss doesn't result in a disaster
+- replicate shards "twice" if it does
+
+(primary shards -> replica shard) - Replication Group
+
+Replication Group A
+	Primary Shard A
+	Replica A1
+	Replica A2
+	
+Replication Group B
+	Primary Shard B
+	Replica B1
+	Replica B2
+	
+Node A
+	Primary Shard A
+	Replica B1*
+	Replica B2*
+
+Node B
+	Primary Shard B
+	Replica A1*
+	Replica A2
+	
+Node A
+	Primary Shard
+	
+Node B
+	Replica A1 -- can serve request
+	Replica A2 -- can serve request
+	Replica A3 -- can serve request
+
+*Elasticsearch routes requests to the best shard
+	
+[Snapshots]
+- restore to a given point in time
+- taken at the index or entire cluster level
+- used for backups, and replication for high availability
+- good to use when you need to restructure the way documents are stored on a index
+- snapshot the index first and then try to run queries against the changes index
+- if it fails, just revert back to the snapshot you took
+- snapshots are used for daily backups and before major changes
+- replication is needed to keep serving request in case of a failure
+
+Node Roles 
+----------------
+
+Master Role
+	responsible for performing cluster wide operations (creating, deleting indices, etc); 
+	should have a dedicated master node; 
+	node.master = true || false
+
+Data Role
+	allows a node to store data
+	performs search queries
+	node.data: true || false
+
+Ingest Role
+	enables a node to run ingest pipleines (adding a document to an index)
+	processors perform transformation operations on a document before inserting
+	simplied version of Logstash (within Elasticsearch)
+	useful for simple data transformations
+	node.ingest: true || false
+
+Machine Learning Role
+	node.ml: true || false
+	xpack.ml.enabled: true || false
+
+Coordination Role
+	handles the distribution of queries and aggregation results
+	useful for large clusters as a loadbalancing mechanism
+
+Voting Role
+	participate in voting for a new master node
+	cannot be elected itself
+	only useful for large clusters
+	
+ip         heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
+172.25.0.2           32          73   1    0.00    0.05     0.07 dilmrt    -      es02
+
+d - data
+i - ingest
+l - 
+m - master
+t - 
+
+
+	
+	
+
+
+
+	
+
+
+	
+
+
+
+
+
