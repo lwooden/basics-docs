@@ -1,3 +1,75 @@
+
+
+Shortcuts
+---------
+psvm <tab> - public static void main 
+sout <tab> - system.out.println()
+CMD + FN + F12 - displays available methods of a class
+
+
+Build Mechanisms
+----------------
+Maven
+  build/project management tool
+  dependency management and versions
+  project structure
+
+Archetype = Template
+GroupId = 
+Artifact
+
+pom.xml = project object model file
+Maven Plugins = Modules
+Maven Goals = the result the maven module method should produce (i.e. compile -> compile code)
+
+*By default, Maven always tries to compile code using Java 5 which is outdated. Must change to the JDK you are using
+*ALWAYS reimport your maven project after make changes to it or your pom file
+
+
+Gradle
+
+Ant
+
+
+
+Spring 5 Basics Content
+-----------------------
+
+
+Logging - Slf4j
+----------------
+- best logging API layer available for Java
+- configuration file is defined in xml, but logback can bootstrap itself w/ a BasicConfiguration if no configuration file is found
+
+
+Spring Web MVC
+-----------------------
+
+war - Web Application Archive
+jsp - java server pages
+
+[Plugins]
+Maven WAR
+  contains the resources needed to develop web applications
+  
+Maven Cargo
+  containerizes tomcat deployment so you can run your app easier
+
+we dont need to web.xml file because we will define routes using "annotations"
+
+*it is always best practice to follow the project structure that Maven gives
+
+[Dispatcher Servlet]
+
+
+
+
+
+
+
+
+
+
 Class - blueprint for a house; we can build as many houses as we want based on the blueprint
 
 Instance - each house I build using the blueprint is called an instance

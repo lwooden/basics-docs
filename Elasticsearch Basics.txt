@@ -1,10 +1,11 @@
 
-PUT /pages -- creates an idex called pages
+PUT /pages -- creates an index called pages
+DELETE /pages -- deletes an index
 
 GET /_cluster/health
 GET /_cat/nodes?v 
 GET /_cat/indices?v 
-GET /_cat/ishards?v 
+GET /_cat/shards?v 
 
 
 Indexing
@@ -31,14 +32,25 @@ Sharding
 - Split API - increases shards
 - Shrink API - decreases shards
 
-PUT /pages -- creates an idex called pages
-
+PUT /pages -- creates an index called pages
 
 
 Index = 600 GB 
 Node A = 500 GB -> Shared A (300 GB)
 Node B = 500 GB -> Shared B (300 GB)
 *400 GB free 
+
+
+Routing + Reading
+-----------------
+
+Shard_num = hash(_routing) % num_primary_shards
+
+
+Writing
+---------
+
+Request -> Primary Shard (for validation) -> Replica Shards
 
 
 Replication
@@ -96,6 +108,7 @@ Node B
 - snapshots are used for daily backups and before major changes
 - replication is needed to keep serving request in case of a failure
 
+
 Node Roles 
 ----------------
 
@@ -140,11 +153,184 @@ t -
 
 
 	
-	
+Create Index
+-------------
+
+
+PUT /products
+{
+"Settings": {
+  "number_of_shards": 2,
+  "number_of_replicas": 2
+  }
+}	
+
+
+Indexing Documents
+------------------
+
+POST /products/_doc 
+{
+  "Name": "Coffee Maker",
+  "Price": 64
+  "in_stock": 10
+  "Id": 100
+}
+
+
+Retrieving Documents
+-------------------
+
+GET /products/_doc/{id}
 
 
 
-	
+Updating Documents
+------------------
+
+POST /products/_update/{id}
+{
+"doc": {
+  "in_stock": 3
+ }
+}
+
+*Documents are immutable
+*Behind the scenes, elastic search grabs the current document, changes the fields,
+and replaces the old document with the modified document
+
+
+
+Scripted Updates
+---------------
+
+ctx = context
+
+POST /products/_update/{id}
+{
+  "Script": {
+     "Source": "ctx._source.in_stock--"
+  }	
+}
+
+POST /products/_update/{id}
+{
+  "Script": {
+     "Source": "ctx._source.in_stock = 10"
+  }	
+}
+
+POST /products/_update/{id}
+{
+  "Script": {
+     "Source": "ctx._source.in_stock -= params.quantity",
+     "Params": {
+	"quantity:" 4
+    }
+  }	
+}
+
+POST /products/_update/{id}
+{
+  "Script": {
+     "source": """
+     if (ctx._source.in_stock == 0) {
+	ctx.op = 'noop;
+  }	
+   ctx._source.in_stock--;
+   """
+  
+}
+
+
+Upserts
+-------
+- to conditionally update/insert a document based on whether it exist or not
+- if it already exists, then a script is run, but if doesn't, a new document is indexed with the upsert criteria
+
+POST /products/_update/{id}
+{
+  "script": {
+     "source": "ctx._source.in_stock++"
+   },
+  "upsert": {
+   "name": "Blender"
+   "price": 399,
+   "in_stock": 5
+
+  }
+}
+
+Replace Documents
+------------------
+
+PUT /products/_doc/{id}
+{
+  "Name": "Toaster",
+  "Price": 49,
+  "in_stock": 4
+}
+
+// get updated document to verify 
+GET /products/_doc/(id)
+
+
+Deleting Documents
+------------------
+
+DELETE /products/_doc/{id}
+
+
+Update By Query
+----------------------
+
+POST /products/_update_by_query
+{
+	"script": {
+		"source": "ctx._source.in_stock--"
+	},
+	"query" : {
+		"match_all": {}
+	}
+}
+
+1. Query request comes into coordinating node
+2. Snapshot is taken of the index
+3. Search query is performed on all index shards to get documents that fit the criteria
+4. Bulk update is performed
+
+
+Delete By Query
+----------------------
+
+DELETE /products/_delete_by_query
+{
+	"query" : {
+		"match_all": {}
+	}
+}
+
+Bulk API
+------------
+
+POST /_bulk
+{
+  "index": { "_index": "products", "_id": 200 }
+  {  "name": "Espresso Machine", "price": 1.99, "in_stock": 5 }
+  {  "create":  { "_index": "products", "_id": 201 }  }
+  {  "name": "Machiato", "price": 2.99, "in_stock": 6 }
+}
+
+POST /products/_bulk
+{
+  {"update": { "_id": 201 } }
+  {  "doc": {"price": 129 } }
+  "delete": { "_id": 200 } }
+}
+
+
+
+
 
 
 	
