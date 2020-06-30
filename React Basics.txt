@@ -67,10 +67,13 @@ React Hooks
 -----------------
 
 
-useState - allows me to use state in a stateless functional components
-setState - 
+useState - allows me to use simple state in a stateless functional components
+
 useEffect - implements lifecycle methods in stateless functional components 
-useReducer -
+
+useReducer - allows me to manage complex state and provide access to state to the components that need them
+
+useContext - allows me to share values without manually passing props down from the parent
     
       
  	

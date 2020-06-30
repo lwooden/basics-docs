@@ -21,6 +21,15 @@ deactivate  // exit environment
 virtualenv --python=/Library/Frameworks/Python.framework/Versions/3.6/bin/python3.6 projectOne // use a specific version of Python if you have multiple versions installed
 
 
+Pip Virtual Environment Setup
+-----------------------------
+
+Create project folder project_1/ and cd into it
+pipenv shell // creates a new virtualenv or activates an existing one
+pipenv install django // install within this project only
+pip3 freeze // check packages that are installed locally in this environment
+
+
 Classes
 --------
 class Circle:

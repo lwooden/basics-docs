@@ -1,3 +1,5 @@
+Client -> HTTP Request -> Elasticsearch (REST API)
+Client <- Response/Results <- Elasticsearch (REST API)
 
 PUT /pages -- creates an index called pages
 DELETE /pages -- deletes an index
@@ -152,10 +154,20 @@ m - master
 t - 
 
 
+Importing Data Using Curl
+----------------------------------
+
+- use curl to perform a post opertation on the elasticsearch bulk api
+- (2) dashes must proceed the data-binary swtich to let the system know that we are specifying a file and not a path
+- by not specifying a index name in the file, we determine what index the data will be added to based on the request we send (recipe in this case)
+
+{"index":{"_id":1}}
+{"title":"Fast and Easy Pasta With Blistered Cherry Tomato Sauce"}
+
+curl -H "Content-Type application/x-ndjson" -XPOST http://localhost:9200/recipe/_bulk --data-binary "@original.json"
 	
 Create Index
 -------------
-
 
 PUT /products
 {
@@ -327,6 +339,224 @@ POST /products/_bulk
   {  "doc": {"price": 129 } }
   "delete": { "_id": 200 } }
 }
+
+
+Search Query
+-----------------
+
+term - looks for exact matches (BAD)
+
+match (full text search) - uses the same analyzer as the inverted index (GOOD); best used for multi-word fields like blog post, articles, description
+
+[DSL Syntax]
+
+GET /products/_search
+{
+	"query" : {
+		"match":  {
+			"description": "red wine"
+	}
+  }
+}
+
+[URI Syntax]
+
+GET /products/_search?q=*  
+GET /products/_search?q=name:Lowell
+GET /products/_search?q=name:Lowell AND age:29
+
+
+Query DSL Syntax
+-------------------------
+
+GET /products/_search
+{
+	"query" : {
+		"match_all":  {}
+  }
+}
+
+**By default, matches are sorted by their "relevance score" (_score)
+Elasticsearch is interested in how "well" documents match (not exactly)
+
+TF/IDF = Term Frequency / Inverse Document Frequency 
+  the more times the term appears in the relevent field the more relevant the document
+  how many times does the word appear within the index (the word "is" appears everywhere so its not relevent)
+  how long is the field (the word salad appearing in a 50 char field is more relevant than it is in a 5000 char field)
+  
+Okapi BM25
+  better at handling stop words
+  
+GET /products/_search?explain
+{
+	"query" : {
+		"match":  {
+			"description": "red wine"
+	}
+  }
+}
+
+Search For Multiple Terms In A Field
+----------------------------------------------
+
+- use an array to search for multiple terms
+
+GET /product/_search
+{
+  "query": {
+    "terms": {
+      "name": [ "Tomato", "Paste" ]
+    }
+  }
+}
+
+
+Search By Range
+-----------------------
+
+GET /product/_search
+{
+	"query" : {
+		"range":  {
+			"in_stock": {
+				"gte": 1, // greater than
+				"lte": 5 // less than
+		}
+	 }
+   }
+}
+  
+
+
+Working With Dates
+--------------------------
+ Retrive documents that are relative to an "anchor" date
+ -1y-1d = anchor date "minus" one year and one day
+ -1y/M = round up the "month"
+ now/M-1y = perform search relative to the current time (now)
+ 
+GET /product/_search
+{
+	"query" : {
+		"range":  {
+			"created": {
+				"gte": "2010/01/01 || -1y-1d" // [Anchor Date || expression to apply to anchor date]
+		}
+	}
+  }
+}
+
+
+Searching For Non-Null Values
+----------------------------------------
+- uses "exists" clause 
+
+GET /product/_search
+{
+	"query" : {
+		"exists":  {
+			"field": "tags"
+		}
+	}
+}
+
+Matching Based On Prefixes
+-------------------------------------
+
+GET /product/_search
+{
+	"query" : {
+		"prefix":  {
+			"tags.keyword": "Vege"
+		}
+	}
+}
+
+
+Using Wildcards
+----------------------
+
+- wildcard performance is slow
+- avoid putting wildcards at the beginning of a term
+
+GET /product/_search
+{
+	"query" : {
+		"wildcard":  {
+			"tags.keyword": "Veg*ble"
+		}
+	}
+}
+
+
+Using Regular Expressions
+------------------------------------
+
+- uses Lucene regular expressions under the hood
+- this means I don't have access to the full functionality
+
+GET /product/_search
+{
+	"query" : {
+		"regexp":  {
+			"tags.keyword": "Veget[a-zA-Z]+ble"
+		}
+	}
+}
+
+
+Full Text Searches
+
+GET /recipe/_search
+{
+	"query" : {
+		"match":  {
+			  "title": "Recipes with pasta or spaghetti"
+			}
+	}
+}
+
+GET /recipe/_search
+{
+	"query" : {
+		"match":  {
+			  "title": {
+			  	"query": "Recipes with pasta or spaghetti",
+			  	"operator": "and" // default is or; we are setting it explicitly to and
+			  }
+		}
+	}
+}
+
+
+Matching Phrases
+------------------------
+- the order of the phrases matter in the "match_phrase" 
+- if the order is not correct then results can undesirable
+
+GET /recipe/_search
+{
+	"query" : {
+		"match_phrase":  {
+			  "title": "spaghetti puttanesca"
+			}
+	}
+}
+
+Searching Multiple Fields
+---------------------------------
+
+GET /recipe/_search
+{
+	"query" : {
+		"multi_match":  {
+			  "query": "pasta",
+			  "fields": [ "title", "description" ]
+			}
+	}
+}
+
+
 
 
 
