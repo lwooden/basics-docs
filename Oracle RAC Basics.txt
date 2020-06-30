@@ -1,0 +1,137 @@
+Oracle RAC Basics
+
+Login
+
+sqlplus / as sysdba
+sqlplus user/password@database-name (ex. sqlplus na_admin/Password1@hpna)
+
+
+-----------------------------------------------------------
+
+Initialization Parameters File
+
+Location = $ORALCE_HOME/dBS
+Sample File = init.ora
+
+
+
+-----------------------------------------------------------
+
+
+Handy Commands
+
+
+tnsping					     Checks availablity of an Oracle instance/service
+lsnrctl status				     Checks status of the oracle listner 
+crsctl check crs		             Check the Cluster Ready Services status 
+crs_stat -t (table format) -v (verbosely)    Check the Cluster Ready Services status in detail (table format)
+crsctl query css votedisk	             Checks voting disk
+srvctl status asm -a 			     Checks status of ASM instance on all nodes in the cluster
+crsctl status resource -t                    Clusterware Resource Status Check
+srvctl status database -d ORCL               STATUS OF DATABASE
+srvctl stop listener -l LISTENER_NAME        STOP A LISTENER
+srvctl start listener -l LISTENER_NAME       START A LISTENER
+crsctl stop has                              stop all the clusterware services/ resources on specific node (including DB and listener) (run as root)
+crsctl start has                             start all the clusterware services/ resources on specific node (including DB and listener) (run as root)
+crsctl stop cluster -all                     to stop csr services on all nodes of clusterware (run as root)
+crsctl start cluster -all                    to start crs services on all nodes of clusterware (run as root)
+crsctl check has                             to check if ohasd is running/ stopped (run as root)
+crsctl enable has                            enable Oracle High Availability Services autostart (run as root)
+crsctl disable has                           disable Oracle High Availability Services autostart (run as root)
+crsctl config has                            check if Oracle High Availability Services autostart is enabled/ disabled (run as root)
+srvctl status nodeapps                       to check the status of services on all nodes
+crsctl stop crs                              stop all the clusterware services/ resources ON THAT NODE! (run as root)
+crsctl start crs                             start all the clusterware services/ resources ON THAT NODE! (run as root)
+cluvfy comp scan -verbose                    Verifying scan status scan_listener                         
+srvctl config scan_listener                  Verifying scan port
+srvctl relocate scan -i 1 -n NODE1           Relocate scan listener 1 to the mentioned node
+
+-----------------------------------------------------------
+SQL Statements
+
+select name from v$database 		     				outputs how many databases exist
+desc <table_name>							describes the columns in a particular table
+select tablespace_name, table_name from all_tables;			list all tables accessable to the current user
+select tablespace_name, table_name from user_tables;			list all tables owned by the current user
+select tablespace_name, table_name from dba_tables;			list all tables in the database
+
+
+-----------------------------------------------------------
+How to Query Output to *.csv or *.txt format
+
+>!pwd									check current directory
+>spool [filename] 							set the name of output file; it will be saved in the directory from previous step
+>select column1 || "," || column2 from table;				run query and set "," as the delimeter
+test,test
+test1,test1
+test2,test2
+>spool off								turn spooling off 
+>exit 									exit SQL plus 
+
+check directory for output file
+
+
+-----------------------------------------------------------
+Setting Up the Environment
+
+1) Set alias in .bashrc:
+
+
+export PATH
+alias genv='./home/oracle/.bash_profile_grid;envo' // for grid commands
+alias denv='. /home/oracle/.bash_profile_database;envo; // for database commands
+
+. /home/oracle/.bash_profile_database
+envo
+
+2) Create bash profiles and save them in /home/oracle
+
+touch .bash_profile_database
+touch .bash_profile_grid
+
+3) Fill each bash profile with the following contents
+
+Database
+
+export TMP=/tmp
+export ORACLE_HOSTNAME=
+export ORACLE_UNQNAME=
+export ORACLE_BASE=
+export ORACLE_HOME=
+export ORACLE_SID=
+
+PATH=/usr/sbin/:$PATH:$ORACLE_HOME/bin:/opt/ora01/app/oracle/product/12.1.0/db_1/bin
+
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/lib:/usr/lib;
+export CLASSPATH=$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib;
+
+alias cdob='cd $ORACLE_BASE'
+alias cdoh='cd $ORACLE_HOME;
+alias tns='cd $ORACLE_HOME/network/admin'
+alias envo='env | grep ORACLE'
+
+umask 022
+
+
+
+Grid
+
+export TMP=/tmp
+export ORACLE_HOSTNAME=
+export ORACLE_UNQNAME=+ASM
+export ORACLE_BASE=/opt/ora01/app/oracle
+export GRID_HOME=/opt/ora01/app/grid/product/12.1.0/grid
+export GRID_SID=+ASM2
+PATH=/usr/sbin/:$PATH:$GRID_HOME/bin:/opt/ora01/app/grid/product/12.1.0/grid/bin
+
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/lib:/usr/lib;
+export CLASSPATH=$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib;
+
+alias cdob='cd $ORACLE_BASE'
+alias cdoh='cd $ORACLE_HOME;
+alias tns='cd $ORACLE_HOME/network/admin'
+alias envo='env | grep ORACLE'
+
+umask 022
+
+

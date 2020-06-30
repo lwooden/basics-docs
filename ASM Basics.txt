@@ -1,0 +1,73 @@
+ASM Basics
+
+
+Start the ASM instance:
+
+$ export ORACLE_SID=+ASM
+$ sqlplus "/ as sysdba"
+SQL> startup
+ASM instance started
+Total System Global Area 83886080 bytes
+Fixed Size 1217836 bytes
+Variable Size 57502420 bytes
+ASM Cache 25165824 bytes
+ASM diskgroups mounted
+
+
+Add disks
+-------------
+ALTER DISKGROUP disk_group_1 ADD DISK
+'/devices/disk*3',
+'/devices/disk*4';
+-- Drop a disk.
+ALTER DISKGROUP disk_group_1 DROP DISK diska2;
+
+
+ASM Views
+-----------------
+V$ASM_ALIAS
+V$ASM_CLIENT
+V$ASM_DISK
+V$ASM_DISKGROUP Displays a row for each disk group discovered by the ASM instance. V$ASM_FILE Displays a row for each file for each disk group mounted by the ASM instance. V$ASM_OPERATION Displays a row for each file for each long running operation executing in the ASM instance. 
+V$ASM_TEMPLATE
+
+
+Start asmcmd
+The ASM Command Line Utility can be started by executing the asmcmd command. Here is a Linux/Unix example:
+$ export ORACLE_SID=+ASM
+$ cd $ORACLE_HOME/bin
+$ asmcmd
+ASMCMD> exit
+
+
+$ asmcmd -p
+ASMCMD [+] > cd FLASH
+ASMCMD [+FLASH] >
+
+Change to a dir
+ASMCMD [+dgroup2/crm] > cd +dgroup1/hrms
+ASMCMD [+dgroup1/hrms] > cd DATAFILE
+ASMCMD [+dgroup1/hrms/DATAFILE] > cd ..
+ASMCMD [+]> cd +dgroup1/sample/C*
+
+ASMCMD> pwd
+
+ASMCMD [+dgroup1/prod] > du
+Used_MB Mirror_used_MB
+1251 2507
+
+ASMCMD [+dgroup1/sample/DATAFILE] > ls
+EXAMPLE.269.555342243
+SYSAUX.257.555341961
+SYSTEM.256.555341961
+UNDOTBS1.258.555341963
+UNDOTBS1.272.557429239
+USERS.259.555341963
+
+ASMCMD [+DG1_FRA] > lsct list dbs using ASM instance
+
+Deletes specified ASM files and directories.
+ASMCMD [+dgroup1/sample/DATAFILE] > rm alias293.f
+ASMCMD> rm -rf +dg/orcl/DATAFILE
+ASMCMD> rm -rf fradg/*
+
