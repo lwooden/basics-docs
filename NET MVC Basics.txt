@@ -1,0 +1,56 @@
+.NET NVC Basics
+
+
+Keyboard Shortcuts
+-----------------
+
+props<TAB> - create property with getter and setter
+
+
+Project Structure
+----------------
+
+/App_Data
+  - application data
+/App_Start
+  - a group of classes that are called when the application starts
+/Content
+  - css files, images, client side assets, etc
+/Controllers
+  - responsible for handling responses
+/Model 
+  - where all domain classes are stored
+/Scripts
+  - javascript files
+/View
+  - what we send to the user
+  - .NET expects the view file to be the same name as the controller file 
+  /Shared 
+    - "components" we can resuse
+
+packages.config
+  - like package.json in Node
+
+Web.config
+  - configuration parameters for your app (e.g. connectionString)
+
+
+
+
+
+
+Routing
+-------
+
+{controller}/{action}/{id}
+
+/movies
+  movies -> MoviesController.index()
+
+/movies/popular
+  movies -> MoviesController
+  action -> popular()
+
+/movies/edit/1
+  movies -> MoviesController
+  action -> Edit(int id -- passed to the edit action)

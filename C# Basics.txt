@@ -55,6 +55,7 @@ int[] numbers = new int[2] {1,2}
 Enums
 
 Strings
+  use verbatim strings (@"My weird text) when using special characters
   
   
 
