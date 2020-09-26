@@ -18,7 +18,7 @@ Indexing
 
 Person Index 
 	{name: Lowell Wooden, Age: 29}
-	(name: Anthony Tortorello, Age: 27}
+	{name: Anthony Tortorello, Age: 27}
 	
 Products Index
 
@@ -46,7 +46,7 @@ Node B = 500 GB -> Shared B (300 GB)
 Routing + Reading
 -----------------
 
-Shard_num = hash(_routing) % num_primary_shards
+Shard_number = hash(_routing) % num_primary_shards
 
 
 Writing
@@ -61,7 +61,7 @@ Replication
 - configured at the index level
 - works by creating copies of shareds (replica shards)
 - a shard that has been replicated is called a "primary shard"
--  primary shard and is replica shards are called a "replication group"
+- a primary shard and its replica shards are called a "replication group"
 - replica shards can serve search requests like a primary shard
 - repliaca shards are NEVER stored on the same node as their primary shard**
 - replica shards in a single-node cluster remain in an "unassinged" state until another node is added

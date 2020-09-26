@@ -40,10 +40,35 @@ Node
      Container2
 
 
-Control Node		Worker
-------------		------
-Kubernetes API		Pod
-Other Components	Pod
+Control Node		       
+------------------
+Kubernetes API
+Other Core Components
+
+Worker Node
+-----------------
+Pod 
+Pod
+
+
+KIND 3-Node Cluster Setup (DEV)
+--------------------------------------------
+kind create cluster --name lowk8s --wait 5m --config kind-multi-node.yaml (in ~/.kube)
+kind delete cluster --name lowk8s
+
+kubectl create deployment autodor --image=lwooden/testrun:firstry
+kubectl get deployments
+kubectl get pods
+kubectl describe pod <POD NAME>
+kubeclt describe service <deployment name>
+
+kubectl expose deployment autodor  --type=Loadbalancer --port 8080 // does not work
+
+To test connectivity to a application I have to:
+ - find out what node the deployment was assigend to
+ - ssh to that node
+ - curl http://<NODE-IP>:<PORT>/ping
+
 
 Commands
 --------------------
@@ -54,10 +79,12 @@ sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 kubectl version // check Kubernetes version ($Major: and $Minor:)
 kubectl get nodes
 kubectl get pods // displays default namespace
+kubectl get pods -A // displays all namespaces
 kubectl get pods -n kube-system // kube-system namespace
 kubectl get pods -o wide // more detail
 kubectl get deployments // displays list of deployments and their state
 kubectl get service // displays list of services
+kubectl get all
 
 kubectl describe node $node_name
 kubectl describe pods $pod_name

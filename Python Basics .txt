@@ -18,10 +18,14 @@ which pip
 pip list
 deactivate  // exit environment
 
+
+VirtualEnv Setup
+----------------
+
 virtualenv --python=/Library/Frameworks/Python.framework/Versions/3.6/bin/python3.6 projectOne // use a specific version of Python if you have multiple versions installed
 
 
-Pip Virtual Environment Setup
+PipEnv Virtual Environment Setup
 -----------------------------
 
 Create project folder project_1/ and cd into it

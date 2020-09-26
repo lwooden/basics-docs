@@ -18,10 +18,12 @@ npm i <package> --save-dev // saves module under the "devDependecies" section
 npm i -g yarn 
 
 yarn --version
+yarn global bin
 yarn add <package_name>
 yarn global add <package_name>
 Yarn add <package> --dev
 
+npm root -g
 npm list -g --depth=0 // get list of all globally installed packages
 yarn global list
 
