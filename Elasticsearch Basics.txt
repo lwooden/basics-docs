@@ -23,6 +23,27 @@ Person Index
 Products Index
 
 
+Re-Indexing
+----------------
+{
+POST /_reindex
+  "source": {
+  	"index": "person"
+  },
+  "dest": {
+  	"index": "person_new"
+  },
+  // ran for every document being re-indexed
+  "script": {       
+  	"source": """
+  	if (ctx._source.product_id != null) {
+  		ctx._source.product_id = ctx._source.product_id.toString();
+  	}
+  	"""
+  }
+ }
+
+
 Sharding
 -----------
 - sub-dvides indexes into smaller pieces
@@ -177,6 +198,11 @@ PUT /products
   }
 }	
 
+OR
+
+PUT /products
+
+
 
 Indexing Documents
 ------------------
@@ -189,12 +215,57 @@ POST /products/_doc
   "Id": 100
 }
 
+Mapping A Index
+--------------------
+
+[Explicit Mapping]
+
+PUT /person
+{
+  "mappings": {
+  	"properties": {
+  		"first_name": {  "type": "text" },
+  		"last_name": {  "type": "text" },
+  		"age": {  "type": "integer" },
+  		"location": {
+  			"properties": {
+  				"city": {  "type": "text" },
+  				"state": {  "type": "text" }
+  			}
+  		}
+  	}
+  }
+}
+
+
+[Add Mapping to Existing Index]
+
+PUT /person/_mapping
+{
+  	"properties": {
+  		"created_at": {  "type": "date" }
+  	}
+}
+
+[Retrieving Mapping]
+
+GET /person/_mapping 
+GET /person/_mapping/field/first_name
+
+
+
 
 Retrieving Documents
 -------------------
 
 GET /products/_doc/{id}
 
+GET /products/_search
+{
+    "query": {
+        "match_all": {}
+    }
+}
 
 
 Updating Documents
