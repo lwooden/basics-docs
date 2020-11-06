@@ -68,7 +68,47 @@ To test connectivity to a application I have to:
  - find out what node the deployment was assigend to
  - ssh to that node
  - curl http://<NODE-IP>:<PORT>/ping
+ 
+AWS EKS 1-Node Cluster Setup (DEV)
+----------------------------------------------
 
+eksctl create cluster --name=lowk8 --nodes=1 --node-type=m5.large --zones=us-east-1a,us-east-1b
+
+eksctl delete cluster --region=us-east-1 --name=lowk8
+
+kubectl port-forward pod/hello-kiamol 8080:80 // port forward to pod resource
+kubectl port-forward deploy/hello-kiamol-2 8080:80 // port forward to deployment resource
+
+kubectl apply -f pod.yml // send local file to the K8 API for deployment
+kubectl apply -f https://github.com/pod.yaml  // send remote file to the K8 API for deployment
+
+kubectl exec -it hello-kiamol-2-7f6dd54b9b-j6zvl -- sh // get interactive shell to your container
+
+kubectl logs --tail=2 hello-kiamol-2-7f6dd54b9b-j6zvl // get logs from your container
+
+kubectl cp hello-kiamol-2-7f6dd54b9b-j6zvl:/tmp/low.txt /Users/low/low.txt // move a file from pod to your local computer
+
+kubectl get svc // get list of services
+
+kubectl exec deploy/sleep -- printenv // get container environment variables
+
+kubectl create configmap sleep-config-literal --from-literal=kiamol.section='4.1' // create a config map in your cluster
+
+kubectl get cm sleep-config-literal // check config map
+
+kubectl describe cm sleep-config-literal // friendly format
+
+
+Resource Hierarchy
+-------------------------
+
+Services
+     - LoadBalancer: integrates w/ an external loadbalancer which sends traffic to the cluster; traffic is associate with the back end pod based on port and label selector
+     - ClusterIP: cluster wide ip that any pod can access; only works WITHIN the cluster; best used for comms between pods (internal)
+     - NodePort: every node in the cluster listens on the port specified and sends traffic to the target port on the pod; can route external traffic into pods as well (like a loadbalancer)
+     - ExternalName: creates a local alias in kube-dns that pods can use in to resolve external endpoints; the local alias will be used in the application as opposed to the true external domain name
+  Deployments
+            Pods
 
 Commands
 --------------------
