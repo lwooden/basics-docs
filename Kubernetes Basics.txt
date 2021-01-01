@@ -92,11 +92,52 @@ kubectl get svc // get list of services
 
 kubectl exec deploy/sleep -- printenv // get container environment variables
 
+kubectl exec deploy/graphql-api -- sh -c 'nslookup processing-api' // perform an nslookup on a clusterIP service inside a container to make sure it resolves
+
+kubectl exec deploy/graphql-api -- ping -c  1 processing-api // perform a ping from inside a container
+
 kubectl create configmap sleep-config-literal --from-literal=kiamol.section='4.1' // create a config map in your cluster
+
+kubectl create configmap graphql-env --from-env-file=./graphql.env  // create a config based on the contents of another .env file 
 
 kubectl get cm sleep-config-literal // check config map
 
 kubectl describe cm sleep-config-literal // friendly format
+
+kubectl create namespace <my-namespace>
+
+kubectl get all -n my-namespace
+
+kubectl get serviceaccount[sa] iam-test
+
+kubectl describe sa iam-test
+
+kubectl logs -l app=graphql-container --follow // trail logs as they come in
+
+kubectl get pod -l app=fluentbit-logging -o jsonpath='{.items[0].status.containerStatuses[*].name}' // get container names in a pod
+
+kubectl config view // view pretty version of your kube config
+
+kubectl config view --minify // view config for the current-context you are using
+
+kubectl config current-context // get the current cluster you are working with
+
+aws sts get-caller-identity // get your current user
+
+By default Kubernetes does not PULL images if they are already in the local cache. I may need to add "imagePullPolicy: Always" to force this to happen in the event I have a container update that has the same tag name. This will ensure I get the latest image with the latest code
+
+kubectl rollout restart deploy graphql-api // does a rolling restart on containers in deployment
+
+Using HELM for Manifest File Management
+--------------------------------------------------------
+
+helm repo add <name> <url>
+helm repo update
+helm search repo vweb --versions
+helm show values kiamol/vweb --version 1.0.0
+helm install set --set servicePort=8010 --set replicaCount=1 ch10-vweb kiamol/vweb --version 1.0.0
+helm ls 
+
 
 
 Resource Hierarchy

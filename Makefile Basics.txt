@@ -1,0 +1,58 @@
+Makefile Basics
+
+
+Makefiles are powerful declaritively styled files that define a series of tasks (functions) to carry out along with any prerequesites or dependencies
+
+They are executed using the following syntax:
+
+$ make
+
+Make automatically searches for a file named Makefile within your project or folder structure. If it finds one, it attempts to execute all of the functions inside
+
+
+Structure
+------------
+
+// define a variable
+NAME = Lowell
+
+// the "all" target takes care of calling all of the other targets in the file
+all: say_hello generate clean
+
+// by default only the FIRST target in the file is run; 
+// this setting overrides that and defines "generate as the default goal
+.DEFAULT_GOAL := generate
+
+// target
+say_hello: 
+        // recipe (steps to execute)
+        @echo "Hello ${NAME}" // @ symbol keeps the command from being displayed in stdout
+
+generate:
+        @echo "Creating empty text files..."
+        touch file-{1..10}.txt
+
+clean:
+        @echo "Cleaning up..."
+        rm *.txt           
+        
+target: prerequisites
+<TAB> recipe
+
+
+
+Example MakeFile (Terraform + Packer)
+-----------------------------------------------------
+
+terraform-init:
+				cd terraform && terraform init && cd
+				
+terraform-plan:
+				cd terraform && terraform plan && cd
+				
+terraform-apply:
+				cd terraform && terraform apply && cd
+				
+packer-build:
+				cd packer && packer build template.json && cd
+
