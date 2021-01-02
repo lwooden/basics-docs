@@ -36,10 +36,15 @@ Web.config
 
 
 
+General Workflow
+----------------
+Create/Update Model
+Create/Update Controller
+Create/Update methods in the controller to handle request
+Define views to serve to the client
 
 
-
-Routing
+Routing - App_Start/RouteConfig.cs
 -------
 
 {controller}/{action}/{id}
@@ -54,3 +59,133 @@ Routing
 /movies/edit/1
   movies -> MoviesController
   action -> Edit(int id -- passed to the edit action)
+
+Routes
+------
+
+Convention-Based Routing
+Attribute-Based Routing
+
+
+Views
+-----
+
+Partial Views => Components (React) or Partials (Handlebars)
+
+We can break up large chunks of markup into partial views so our code is easy to maintain and read
+
+Partial View names should begin with an "_" by convention
+  _NavBar
+
+@Html.Partial("_NavBar") // this is how you render the partial in the main html
+
+
+Razor Syntax
+------------
+
+You can write C# code in a view my prefixing it with the @ symbol. This is kind of like how we can write Javascript expressions in JSX using {}
+
+@if (Model.Customers.Count == 0)
+    {
+        <h2>No Customers!</h2>
+    }
+    else
+    {
+        foreach (var customer in Model.Customers)
+        {
+            <h2>@customer.Name</h2>
+        }
+    }
+
+
+Entity Framework 
+---------------
+
+- Entity Framework is a ORM (Object Relational Mapper)
+- it maps objects from the database into objects in our application
+
+Objects -> O/RM -> Relational Data
+
+DbContext (Class)
+  DbSets - represent tables in our database
+
+LINQ - used to query DbSets; Entity Framework translates LINQ queries into SQL queries at runtime
+
+Add/Modify/ Delete -> DbSets ----> Database
+
+[SETUP]
+
+Go to Tools Menu > NuGetPackage Manager > Console
+
+Enable Migrations in your project
+  PM> enable-migrations 
+  check new Migrations folder in project
+
+Add first migration
+  PM> add-migration InitialModel
+ 
+Add a DbSet for the classes you created so Entity Framework can track them
+
+Run a new migration to integrate the changes
+  PM> add-migration InitialMode -force
+
+Update the database
+  PM> update-database
+
+Check App_Data Folder For .mdf file
+  Make sure you select "Show All Files" in Solution Explorer
+
+**Always aim to make SMALL migrations! That way it's easier to roll back.
+
+
+Seeding The Database
+--------------------
+
+- the process of bootstrapping the database with test data using migrations instead of manually manipulating the database
+
+
+Create a migration
+  PM> add-migration PopulateMembershipTypes
+
+Check out the empy Migration file that was created in the Project
+
+Inset Sql statements under the Up() method
+  public override void Up()
+        {
+            Sql("INSERT INTO MembershipTypes (Id, SignUpFee, DurationInMonths, DiscountRate) VALUES (1,0,0,0");
+	}
+
+Update the database for changes to take effect
+  PM> update-database
+
+
+Overriding Default Entity Framework Conventions
+-----------------------------------------------
+
+- we can override default conventions by using data annotations (attributes)
+- we will set the "Name" property to not be nullable and a fixed length of 255 characters
+
+Add Data Annotations in the Class
+
+public class Customer
+{
+  [Required]
+  [StringLength(255)]
+  public string Name { get; set; }
+}
+
+Add a migration to capture changes to our domain model
+  PM> add-migration AddAnnotationsToCustomerModel
+
+Update the database
+  PM> update-database
+
+
+Querying Objects
+----------------
+
+
+
+ 
+
+
