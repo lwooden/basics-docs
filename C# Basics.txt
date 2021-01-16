@@ -1,7 +1,9 @@
 C# - a programming language
 
 .NET - a framework for building applications on Windows; there are different langauges that 
-can use the .NET framework (F#)
+can use the .NET framework (F#); classified as legacy 
+
+.NETCore
 
 
 C# -> IL Code -> Native Code
