@@ -6,10 +6,10 @@ With containers we can run a variety of software components across a "cluster" o
 
 We can also scale based on resource needs
 
-Server		      Server
- Container (Pod)     	Container
- Container (Pod)	Container
- Container (Pod)        Container
+Server		              Server
+Pod (Container)     Pod (Container)  
+Pod (Container)  	  Pod (Container) 
+Pod (Container)     Pod (Container)  
 
 
 Kube Master	
@@ -42,11 +42,13 @@ Node
 
 Control Node		       
 ------------------
-Kubernetes API
-Other Core Components
+kube-api-server
+other core components
 
 Worker Node
 -----------------
+kubelet
+kube-proxy
 Pod 
 Pod
 
@@ -69,6 +71,14 @@ To test connectivity to a application I have to:
  - ssh to that node
  - curl http://<NODE-IP>:<PORT>/ping
  
+ 
+ 
+ Kubeadm 3-Node Cluster Setup
+ --------------------------------------------
+ 
+ 
+ 
+ 
 AWS EKS 1-Node Cluster Setup (DEV)
 ----------------------------------------------
 
@@ -89,6 +99,7 @@ kubectl logs --tail=2 hello-kiamol-2-7f6dd54b9b-j6zvl // get logs from your cont
 kubectl cp hello-kiamol-2-7f6dd54b9b-j6zvl:/tmp/low.txt /Users/low/low.txt // move a file from pod to your local computer
 
 kubectl get svc // get list of services
+kubectl get endponts <service-name> // get list of backend pods the service is currently routing to
 
 kubectl exec deploy/sleep -- printenv // get container environment variables
 
@@ -104,17 +115,21 @@ kubectl get cm sleep-config-literal // check config map
 
 kubectl describe cm sleep-config-literal // friendly format
 
-kubectl create namespace <my-namespace>
+kubectl create namespace <namespace>
 
-kubectl get all -n my-namespace
+kubectl get all [ -n | --namespace ] <namespace>
 
-kubectl get serviceaccount[sa] iam-test
+kubectl get namespaces
+
+kubectl get [ serviceaccount | sa ] iam-test
 
 kubectl describe sa iam-test
 
 kubectl logs -l app=graphql-container --follow // trail logs as they come in
 
 kubectl get pod -l app=fluentbit-logging -o jsonpath='{.items[0].status.containerStatuses[*].name}' // get container names in a pod
+
+kubectl get pods -o wide // show ip address for each pod
 
 kubectl config view // view pretty version of your kube config
 
@@ -124,19 +139,481 @@ kubectl config current-context // get the current cluster you are working with
 
 aws sts get-caller-identity // get your current user
 
-By default Kubernetes does not PULL images if they are already in the local cache. I may need to add "imagePullPolicy: Always" to force this to happen in the event I have a container update that has the same tag name. This will ensure I get the latest image with the latest code
-
 kubectl rollout restart deploy graphql-api // does a rolling restart on containers in deployment
 
-Using HELM for Manifest File Management
---------------------------------------------------------
+kubectl drain <node-name> --ignore-daemonsets // drains a node of it's running pods/containers and any daemonsets that are running on it and prevents anymore pods from being scheduled
 
-helm repo add <name> <url>
-helm repo update
-helm search repo vweb --versions
-helm show values kiamol/vweb --version 1.0.0
-helm install set --set servicePort=8010 --set replicaCount=1 ch10-vweb kiamol/vweb --version 1.0.0
-helm ls 
+kubectl uncordon <node-name> // makes the node available to accept pod scheduling again
+
+kubectl top pod // gets raw resource usage metrics for pods
+kubectl top pod --sort-by cpu
+kubectl top pod -l app=graphql-container 
+
+kubectl get pv // gets list of persistent volumes
+kubectl get pvc // gets list of persistent volume claims
+kubectl edit pvc my-pvc --record
+
+**NOTE**: By default Kubernetes does not PULL images if they are already in the local cache. I may need to add "imagePullPolicy: Always" in the manifest to force this to happen in the event I have a container update that has the same tag name. This will ensure I get the latest image with the latest code
+
+
+Services
+-------------
+- provides a way to expose an application runnings as a set of Pods
+- clients do need to be concerned with how many pods are running or which pod they are communicating with
+
+Client Request --> Service --> Backend Pods
+
+[ Service Types ]
+- ClusterIP: expose applications INSIDE the cluster network (needs to be consumed by other pods)
+- NodePort: expose applications OUTSIDE the cluster (needs to be consumed by external clients); **NOTE** ports exposed using this type are opened up ALL NODES and the CONTROL PLANE
+- Loadbalancer: expose applications OUTSIDE the cluster (needs to be consumed by external clients) by using the cloud platforms load balancer functionality
+- ExternalName
+
+[ DNS for Services ]
+- a services FULLY QUALIFIED DOMAIN NAME can be used to reach the service from ANY NAMESPACE
+- a services SHORT NAME can be used to reach the service from within the SAME NAMESPACE it was created in
+
+service-name.namespace.svc.cluster.local -> Structure
+my-service.default.svc.cluster.local -> FQDN (external namespace reference)
+my-service -> SHORT NAME (internal namespace reference)
+
+Deployments
+-----------------
+
+
+Volumes
+-------------
+- file systems within containers are ephemeral (they exist only for the lifetime of the container)
+- volumes provide a way to allow data to exist outside of the lifecycle of a container
+- each class of storage has a particular type
+
+Common volume types:
+- hostPath: stores data in a specific dir on the host worker node
+- emptyDir: stores data in dynamically created location on the host worker node; tied to the lifespan of the pod
+
+(2) classes of storage:
+
+Volumes 
+
+spec:
+  containers:
+  - name: buzybox
+    image: buzybox
+    volumeMounts:
+    - name: my-volume
+      mountPath: /output
+  volumes:
+  - name: my-volume
+     hostPath:
+      path: /data
+
+
+Persistent Volumes - allows you to treat storage as an abstract resource to be consumed by pods (EBS, EFS, NFS, etc)
+
+
+// Create the persistent volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv
+spec:
+  storageClassName: localdisk // different types of storage services available on a particular platform
+  persistentVolumeReclaimPolicy: Recycle || Retain || Delete   // what happens when no one is using the this storage
+  capacity:
+      storage: 1Gi
+  accessModes:
+      - ReadWriteOnce
+  hostPath:
+      path: /var/output
+      
+      
+ // Create the claim for the persistent volume     
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  storageClassName: localdisk
+  accessModes:
+      - ReadWriteOnce
+  resources:
+      requests:
+          storage: 100Mi
+     
+          
+// Reference the claim in the Pod Spec
+spec:
+  containers:
+  - name: buzybox
+    image: buzybox
+    volumeMounts:
+    - name: pv-storage
+      mountPath: /output
+  volumes:
+  - name: pv-storage
+    persistentVolumeClaim:
+        claimName: my-pvc   // reference claim created above
+
+  
+Networking (Plugins)
+-----------------------------
+
+CNI Plugins - plugins that provide network connectivity between pods according to standards set by the Kubernetes network model; 
+Calico is one of the most popular general purpose CNI plugins
+
+Nodes will remain in a NOTREADY state untill a network plugin is installed
+
+[ Network Model ]
+
+Node
+- Pod 192.168.100.2 (unique IP address in the entire cluster)
+- Pod 192.168.100.3
+
+Any pod can reach any other pod simply using the Pod's IP address (over the virtual network) regardless of what node they are running on
+
+
+Network Policy
+---------------------
+
+- an object that allows you to control the flow of network comms to and from pods
+- BY DEFAULT pods are considered "non-isolated" and OPEN to all traffic;
+- when a network policy is applied, the pod is deemed "isolated" and ONLY traffic that is permitted by the policy is allowed
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: my-network-policy
+  namespace: np-test
+spec:
+  podSelector:
+    matchLabels:
+      app: db
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 172.17.0.0/16
+        except:
+        - 172.17.1.0/24
+    - namespaceSelector: # traffic from pods in the same namespace that have the defined label
+        matchLabels:
+          app: nginix
+    - podSelector: # traffic from pods with the specified label
+        matchLabels:
+          app: nginix
+    ports:
+    - protocol: TCP 
+      port: 80
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 10.0.0.0/24
+    ports:
+    - protocol: TCP
+      port: 5978
+
+
+
+
+DNS
+------
+- handled by the coreDNS service located in the kube-system namespace
+
+[ Structure ]
+pod-ip-address.namespace-name.pod.cluster.local
+192-168-10-100.default.pod.cluster.local
+
+
+
+Managing RBAC
+---------------------
+
+There (4) role-based access related objects are:
+
+Role - defines permissions within a particular namespace (e.g viewing logs for a pod in the default namespace)
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+  
+RoleBinding - links users to roles
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods // name of the binding
+  namespace: default
+subjects:
+  // you can specify more than one "subject"
+- kind: User
+  name: jane
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role || ClusterRole
+  name: pod-reader // role to bind to
+  apiGroup: rbac.authorization.k8s.io
+
+Clusterrole - defines permissions regardless of namespace (e.g  viewing logs for any pod in the cluster)
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: secret-reader
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "watch", "list"]
+  
+ClusterRoleBinding - links users to clusterroles
+
+
+Service Accounts
+-----------------------
+- service accounts are accounts used by container processes inside of Pods to authenticate and use the k8 API
+- they can be bound to clusterRoles or ClusterRoleBindings to control access to the API
+- scoped to a particular namespace
+- this also extends to AWS where pods can use IAM roles as service accounts to access other AWS services
+
+
+Managing Container Resources
+-------------------------------------------
+
+Requests - amount of resources that we think a container may use; this value is only considered during scheduling in order to determine if a node has enough resources prior to pod placement; pods can use more than what is defined here
+
+Limits - amount of resources a pod cannot exceed, otherwise the container runtime will kill it
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend
+spec:
+  containers:
+  - name: app
+    image: images.my-company.example/app:v4
+    resources:
+      requests:
+        cpu: "250m" # 1/1000th of 1 CPU (e.g. 1000m = 1 CPU)
+        memory: "64Mi"
+      limits:
+        cpu: "500m" 
+        memory: "128Mi"
+        
+        
+        
+Container Probing
+----------------------
+LivenessProde - a task that is run periodically in order to determine whether your app is healthy or not
+
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command: ['sh', '-c', 'while true; do sleep 3600; done']
+    livenessProbe:
+      exec:
+        command: ["echo", "Hello World"]
+      initialDelaySeconds: 5 // wait 5 secs after container starts before executing
+      periodSeconds: 5 // run every 5 secs
+
+StartupProbe - a task that is run only at startup time in order to determine whether your app is healthy or not
+
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.19.1
+    startupProbe:
+        httpGet:
+            path: /
+            port: 80
+        failureThreshold: 30 // has to fail 30 times before deemed unhealthy
+        periodSeconds: 10
+
+ReadinessProbe - a task that is run only at startup in order to determine whether your app is ready to recevie requests or not; ideal when your container is dependent on a downstream container being availble (e.g. a databse); the pod will not enter the READY state until the readinessProbe has completed successfully
+
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.19.1
+    readinessProbe:
+        httpGet:
+            path: /
+            port: 80
+        failureThreshold: 5
+        periodSeconds: 5
+        
+        
+        
+Multi-Container Pods
+---------------------------
+- pods that contains more than (1) container
+- best practice is to have each container run in its own pod
+- containers share the same network and storage (volume in a pod)
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-pod
+spec:
+  containers:
+   // 1st container
+  - name: busybox1
+    image: busybox
+    command: ['sh', '-c', 'while true; do echo log data > /output/output.log; sleep 3600; done']
+    volumeMounts:
+    - name: sharedvol
+       mountPath: /output  # same volume; different location in the container
+  // 2nd container
+  - name: sidecar
+    image: busybox
+    command: ['sh', '-c', 'tail -f /input/output.log']
+    volumeMounts:
+    - name: sharedvol
+       mountPath: /input  # same volume; different location in the container
+    // shared volumes created in the pod but accessible by all containers
+    volumes:
+    - name: sharedvol
+       emptyDir: {}
+       
+$kubectl logs sidecar-pod -c sidecar
+ log data
+
+
+
+Init Containers
+-------------------
+- run once to completion during the startup process of a pod
+- they run once and in the order they are defined
+
+
+
+Troubleshooting the Cluster
+------------------------------------
+
+Check node status
+  kubectl get nodes
+  kubectl describe node <nodename>
+
+Check status of k8 servies on a node
+  ssh into worker node
+  systemctl status kubelet
+  systemctl status docker
+  
+Check key system pods in kube-system namespace
+  kubectl get pods -n kube-system
+  kubectl describe pod <podname> -n kube-system
+  
+
+Check logs for key k8 services
+  journalctl -u kubelet | docker
+  less /var/log/kube-apiserver.log
+  less /var/log/kube-scheduler.log
+  less /var/log/kube-controller-manager.log
+  
+  
+Troubleshooting Apps/Containers
+------------------------------------------
+
+Get Pod status
+  kubectl get pods
+  kubectl desctibe pod <podname>
+
+Remote into a pod and run commands 
+  kubectl exec <pod> -- sh // opens a shell inside of the container running in this pod
+  kubectl exec <pod> -c <container-name> -- sh // if a pod has more than one container running
+  
+  
+Check container logs
+  kubectl logs <pod-name>
+  kubectl logs -l app=graphql-container --follow // by label
+  
+  
+Troubleshooting Networking Inside the Cluster
+-----------------------------------------------------------
+
+Deploy a container inside of your cluster to run commands from
+  deploy a contianer using image nicolaka/netshoot
+  kubectl exec netshoot -- sh
+  
+  
+
+
+
+
+
+
+
+
+Restart Policies
+--------------------
+
+Always - default
+OnFailure - only restart on failure
+Never - never restart
+
+
+Add-Ons
+------------
+- provide additional functionality
+
+Examples include:
+- Kubernetes Metrics Server
+- Calico (Networking)
+
+
+
+Backing Up etcd
+----------------------
+- etcd is the backend data storage solution k8 cluster
+- k8 objects, applications and configs are stored in etcd
+
+etcdctl --endpoints $ENDPOINT snapshot save <file-name>
+etcdctl snapshot restore <file-name> // creates another cluster and restores based on the snapshot
+
+
+
+High Availability Control Plane
+--------------------------------------
+
+Stacked etcd - etcd runs on the same server as the other components on the control plane nodes
+
+Control Plane Node 1
+- control plane components 
+- kube-api
+- etcd
+
+Control Plane Node 2
+- control plane components 
+- kube-api-server
+- etcd
+
+External etcd - etcd runs on seperate servers and the control plane nodes talk to them over the network
+
+Control Plane Node 1
+- control plane components 
+- kube-api-server
+
+Control Plane Node 2
+- control plane components 
+- kube-api-server
+
+etcd Server 1
+- etcd
+
+etcd Server 2
+- etcd
+
+etcd Server 3
+- etcd
+
+
 
 
 
@@ -150,6 +627,19 @@ Services
      - ExternalName: creates a local alias in kube-dns that pods can use in to resolve external endpoints; the local alias will be used in the application as opposed to the true external domain name
   Deployments
             Pods
+            
+            
+Using HELM for Manifest File Management
+--------------------------------------------------------
+
+helm repo add <name> <url>
+helm repo update
+helm search repo vweb --versions
+helm show values kiamol/vweb --version 1.0.0
+helm install set --set servicePort=8010 --set replicaCount=1 ch10-vweb kiamol/vweb --version 1.0.0
+helm ls 
+
+            
 
 Commands
 --------------------
@@ -187,6 +677,7 @@ kube-apiserver - serves the Kubernetes API, interface for the cluster
 kube-controller-manager - bundles several components into one package
 kube-scheduler - schedules pods to run on nodes; 
 
+[Worker Nodes]
 kubelet - agent that runs on each node and interfaces with the Kubernetes API and docker; runs as a systemd service (systemctl status kubelet
 kube-proxy - handles the network layer inter/intra node traffic; runs on each node
 
@@ -195,7 +686,7 @@ Deployments
 -------------------
 
 "Deployments" are "objects" that gives us a way to organize and maintain our pods
-- Scaling: specigy the number of replicas we want and that number of pods will be created
+- Scaling: specify the number of replicas we want and that number of pods will be created
 - Rolling Updates: gradually replace existing containers with a new update without taking them all out (no down-time)
 - Self-Healing: if a pod happens to fail or get destroy, the deployment will immediately spin up another one to replace it in order to achieve the desired state (replica set)
 

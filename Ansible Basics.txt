@@ -1,57 +1,131 @@
 
-[Install]
-
-AWS Linux 
----------
-1. yum install ansible
-2. Configure hosts file /etc/ansible/hosts
-3. Create global user (ansible) - usersadd ansible on controller
-4. Create same user on client server and give it a password - usersadd ansible + passwd ansible
-5. Grant ansible user root access in sudoers file - sudo visudo (controller and client)
-6. On controller switch to ansible user and create key - sudo su - ansible + ssh-keygen
-7. Copy public key over to client server - ssh-copy-id ansible@client_server
-8. Test passwordless ssh from server -> client as ansible user
-9. Enable logs /etc/ansible/hosts
-
-RHEL
-----
-1. Download EPEL Repo - wget
-2. Install EPEL Repo file - yum install
-3. yum install ansible
-4. Configure hosts file /etc/ansible/hosts
-5. Create universal user (ansible) - usersadd ansible on controller
-6. Create same user on client server - usersadd ansible
-7. Grant ansible user root access in sudoers file - sudo visudo on controller and client
-8. On controller switch to ansible user and create key - sudo su - ansible + ssh-keygen
-9. Copy public key over to client server - ssh-copy-id ansible@client_server
-10. Test passwordless ssh from server -> client as ansible user
-11. Enable logs /etc/ansible/hosts
+Inventory Management
+------------------------------
 
 
 
-[Install Verification]
 
-which ansible
-ansible Ñversion
+Playbook Basics
+---------------------
+
+[ Debug Output ]
+tasks:
+  - name: copy file
+    copy:
+    	src:
+    	dest:
+    register: copy_output // saves the output from the copy command
+   - name: output copy debug output
+      debug: msg="debug output: {{ copy_output }}" // prints the output to std-out
+      
+[ Conditionals ]
+      
+ 
+   
+
+
+
+
+Variables
+------------
+- can be defined in vars, vars_file, and vars_prompt; commandline, roles, blocks, and inventory files
+
+[ Group Variables ]
+
+{{group['webservers']}} // returns a list of host in the webservers group
+
+[ Magic Variables ]
+
+{{hostvars['node1']['ansible_distribution']}} // references the ansible_distribution fact on another node to help reconcile differences across groups
+
+[ Dictionary Variables ]
+
+employee: // dictonary name
+   // key:value pairs
+  name: bob
+  id: 42
+  
+ // How-To reference values in a dictionary
+ employee['name'] // the safest notation (avoid conflicts within python)
+ employee.name
+ 
+ 
+ 
+ Facts
+ ------
+ 
+ 
+ Custom Facts
+ ----------------
+ 
+ 
+ 
+ Handlers
+ ------------
+ - task that are flagged to run by using the "notify" keyword
+ - only run once
+ 
+ tasks:
+ - name: template configuration file
+    template:
+    	src:
+    	dest:
+    notify:
+    	- roll web // calling the handler
+    	
+handlers:
+  - name: restart apache
+    service: name="httpd" state="restarted"
+    listen: "roll web" // when this is called with the "notify" keyword, execute
+  
+ 
+ 
+ Roles
+------------
+- default location -> /etc/ansible/roles/<role-name> 
+- roles group a certain configuration that is applied easily across a common set of targets
+- they are easy to share and distribute
+- adhere to a specific folder structure
+- task subfolders must have a main.yml; this acts as the entrypoint
+- handlers defined in one role are accessible to all roles in the system
+
+
+// call the role in a playbook
+- hosts: local
+  become: yes
+  roles:
+  	- sample_role
+  vars:
+  	 apache_server_admin: admin@serveradmin // overrides the value set in defaults folder
+
+// role defitinition
+sample_role
+  - task: defines the plays that will be executed with the role
+       main.yml 
+  - vars: provides variables to the role (highest precedence)
+        main.yml
+   - defaults: sets values that are more than likely going to be changed by the person using the role (lowest precedence)
+         main.yml
+  - handlers
+  - files: static files that can be deployed using the role
+  - templates: template files that can be deployed using the role (e.g. config files)
+  - meta
+
 
   
-[Ad-Hoc Commands]
+Ad-Hoc Commands
+-------------------------
+ansible 192.168.1.16 -m ping // test if the control node can reach the host
+ansible 192.168.1.16 -b -m yum -a "name=screen" // yum install module
+ansible 192.168.1.16 -b -m service -a "name=httpd state=restart" // restart a service
+ansible 192.168.1.16 -m setup // gather facts about a host
+ansible 192.168.1.16 -m setup -a filter=*ipv4* // gather facts about specific properties
+ansible all -list-hosts // list host
 
-Test Ping - ansible 192.168.1.16 -m ping 
-Yum Install - ansible 192.168.1.16 -b -m yum -a "name=screen"
-Restart Service - ansible 192.168.1.16 -b -m service -a "name=httpd state=restart"
-Gather Facts - ansible 192.168.1.16 -m setup 
-Gather Facts About Specific Properties - ansible 192.168.1.16 -m setup -a filter=*ipv4*
-List Hosts - ansible all -list-hosts // verify
 
-[Install AWS CLI on Ansible Controller]
 
-yum install python-pip
-pip install awscli
-
-ansible all Ñlist-hosts
-
-[Running a Playbook Against a Remote Host]
+Running a Playbook Against a Remote Host
+----------------------------------------------------------
 
 Make sure you can resolve host (DNS or host file)
 Add hostname to /etc/ansible/hosts file
@@ -70,4 +144,70 @@ Command & // puts a process in the background
 CTRL-Z // stops a processes
 Bg // moves stopped process to background
 Fg // moves stopped process to foreground
+
+
+
+Using Ansible To Template Configuration Files
+------------------------------------------------------------
+- templates are processed using Jinja2 template language
+- allows me to provide the skeleton of a config file and dynamically inject vaules into it (e.g. httpd.conf)
+- templates are saved with .j2 extension\
+- the .j2 file has access to all of the ansible variabels that are used when the play is ran
+
+- name: Template a file to /etc/file.conf
+  template:
+    src: /mytemplates/httpd.j2
+    dest: /etc/httpd.conf
+    
+    
+// example httpd.j2 file
+{{ ansible_managed }}
+
+## General Config
+Server Root {{ http_ServerRoot }}
+Listen {{ httpd_Listen }}
+
+DocumentRoot {{ httpd_DocumentRoot }}
+
+
+
+Install
+---------
+
+[ AWS Linux ]
+1. yum install ansible
+2. Configure hosts file /etc/ansible/hosts
+3. Create global user (ansible) - usersadd ansible on controller
+4. Create same user on client server and give it a password - usersadd ansible + passwd ansible
+5. Grant ansible user root access in sudoers file - sudo visudo (controller and client)
+6. On controller switch to ansible user and create key - sudo su - ansible + ssh-keygen
+7. Copy public key over to client server - ssh-copy-id ansible@client_server
+8. Test passwordless ssh from server -> client as ansible user
+9. Enable logs /etc/ansible/hosts
+
+
+[Install AWS CLI on Ansible Controller]
+yum install python-pip
+pip install awscli
+ansible all Ñlist-hosts
+
+[ RHEL ]
+1. Download EPEL Repo - wget
+2. Install EPEL Repo file - yum install
+3. yum install ansible
+4. Configure hosts file /etc/ansible/hosts
+5. Create universal user (ansible) - usersadd ansible on controller
+6. Create same user on client server - usersadd ansible
+7. Grant ansible user root access in sudoers file - sudo visudo on controller and client
+8. On controller switch to ansible user and create key - sudo su - ansible + ssh-keygen
+9. Copy public key over to client server - ssh-copy-id ansible@client_server
+10. Test passwordless ssh from server -> client as ansible user
+11. Enable logs /etc/ansible/hosts
+
+
+[Install Verification]
+
+which ansible
+ansible Ñversion
+
 
