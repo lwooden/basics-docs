@@ -17,14 +17,15 @@ update-help
 Get-Help -Name <cmdlet>
 Get-Help *web*
 Help Get-Process // more detail
+Get-ExecutionPolicy -? // executes get-help behind the scenes
 
 
 
 Working With Modules
 ------------------
 
-Get-modules // displays list of modules in your current session
-Get-modules -ListAvailable // displays all of your modules
+Get-module // displays list of modules in your current session
+Get-module -ListAvailable // displays all of your modules
 Import-module // loads for current session
 Remove-module
 Install-Module -Name Az -AllowClobber -Scope CurrentUser // install module from PSGallery Repo

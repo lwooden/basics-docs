@@ -1,5 +1,6 @@
 ACG - AWS Advanced Networking Course
 
+
 Reserved Addresses
 ------------------
 .0 - Network Address
@@ -21,15 +22,15 @@ Netwok Refresher
 192.168.1.0 /25 = 128 addresses (64 x 2)
 192.168.1.0 /26 = 64 addressess
 
-                  _    _    _    _    _    _    _   _ 
-Decimal Value     128  64   32   16   8    4    2   1
-Bit Position      1    2    3    4    5    6    7   8
+               
+Decimal Value 128  64   32   16   8    4    2   1
+Bit Position      1      2      3     4    5    6    7   8
 
 Multi-Exit Deliniation (MED)
 
 
 Design & Implement AWS Networks
--------------------------------
+-----------------------------------------------
 
 - Source/Destination Check: if an ENI receives traffic where it recognizes that it is not the source or the destination, by default, it automatically drops the packet (if enabled)
 
@@ -51,10 +52,10 @@ Design & Implement AWS Networks
 
 
 Design & Implement Hybrid Networks at Scale
---------------------------------------------
+------------------------------------------------------------
 
-Hybrid Architectures
-_________________
+[ Hybrid Architectures ]
+
 
 People move to the cloud for primarily (2) reasons:
 
@@ -79,7 +80,7 @@ Organization IT Budget
 	CapOps - Operations 
 
 
-Software Based VPN - good for specific use cases; don’t expect 1-10 Gbps performance even with big instances due to encoding/decoding limitations in software (versus hardware)
+Software Based VPN - good for specific use cases; donÂ’t expect 1-10 Gbps performance even with big instances due to encoding/decoding limitations in software (versus hardware)
 
 AWS Managed VPN - resilent; AWS handles most of the heavy lifting; performance is better than software VPN, but if 10 Gbps is needed, consider Direct Connect
 
@@ -101,6 +102,53 @@ Routing Decisions
 CloudHUB -> MPLS
 
 
+ Transitive Networking
+-----------------------------
+
+[ Transit Gateway ]
+
+The following objects can attach to a TGW:
+- VPCs (different accounts)
+- VPN Customer Gateways
+- Direct Connect Gateways
+- Other TGWs
+
+- Attachments are AWS objects that have their own ID
+- Traffic arrivies from an associated attachment and traffic is forwarded to an attachment listed in the TGW route table
+- When attaching a VPC to Transit Gateway at least (1) subnet must be chosen from the VPC; this creates a ENI inside that subnet for the TGW to connect to; choose (2) subnets for high-availability
+- When attaching a Direct Connect Gateway this is done from the Direct Connect Console not the VPC console; DX connections to the TGW require a TRANSIT VIF (Private and Public VIFs will not work); seperate AS numbers are necessary for the DX and TGW
+- Each TGW comes with an INITIAL ROUTE TABLE where are attachements get listed in. Outside of this, up to (20) route tables can be created
+- Each attachment can be ASSOCIATED with only (1) route table
+- Only (1) default route per route table
+- Routes from VPCs to the TGW must be manually added to VPC route tables; routes from VPN Customer Gateways will be learned via BGP
+- BY DEFAULT all attachements (networks) are able to reach each other
+
+There are (4) attachments to the TGW:
+- 192.168.1.0/24 (VPC)
+- 192.168.2.0/24 (VPC)
+- 172.16.0.0/16 (DX-Gateway)
+- 192.168.3.0/24 (CGW)
+
+Main TGW Route Table
+192.168.1.0/24 (VPC) --> tgw-attach-aaaa
+192.168.2.0/24 (VPC) --> tgw-attach-bbbb
+172.16.0.0/16 (DX-Gateway) --> tgw-attach-cccc
+192.168.3.0/24 (CGW) --> tgw-attach-dddd
+
+New Custom TGW Route Table
+172.16.0.0/16 (DX-Gateway) --> tgw-attach-cccc
+192.168.3.0/24 (CGW) --> tgw-attach-dddd
+**NOTE**: VPC CIDRS are exlcuded in order to prevent them from communicating
+
+If I wanted the VPCs to talk to the other (2) networks and NOT EACH OTHER, I would need to:
+- create a new route table
+- add the networks I wanted to restrict access to (DX-Gateway and CGW)
+- associate the (2) VPC routes to the new route table; the router will process traffic coming from the VPCs (their attachments) and forward them to the other (2) networks; if one VPC tries to send traffic to the other VPC, because the custom router that each VPC attachment is associated with DOES NOT have routes for either VPC, that traffic will be dropped.
+
+
+[ VPC Endpoint Services ]
+
+
 Direct Connect
 ------------------
 
@@ -108,6 +156,18 @@ Cross-connect between customer router and the AWS router at the CO-LO or DX Loca
 - single mode fiber (1000BaseLX or 10BaseLR)
 
 Virtual Interface (VIF) = VLAN
+
+Private VIF
+   Customer Hardware -> Single VGW (Single VPC)
+   Customer Hardware -> DX Gateway -> Up to 10 VGWs (Multi-VPC)
+
+Public VIF
+  connections to public AWS services without traversing the internet
+
+Transit VIF
+
+
+
 
 Direct Connect is not secure by default. It is a physical point-to-point connection technology
 
@@ -141,7 +201,7 @@ Requirements for External ELB
 - CIDR must be at least at /27
 - Needs 8 available address to start 
 
-- Cross-Zone Load balancing ensures traffic is evenly distributed at the “instance” level, not the “availability zone” level (doesn’t take into account the instance size. Only number of instances) 
+- Cross-Zone Load balancing ensures traffic is evenly distributed at the Â“instanceÂ” level, not the Â“availability zoneÂ” level (doesnÂ’t take into account the instance size. Only number of instances) 
 - Proxy protocol can only be enabled from the AWS CLI
 
 
@@ -150,7 +210,7 @@ DNS
 -----
 - Multiple DNS questions on exam 
 - +2 resolver is only accessible within the VPC
-- Can’t use Stub or internally hosted zones and you can’t define this and delegate authority to these zone using namesever records 
+- CanÂ’t use Stub or internally hosted zones and you canÂ’t define this and delegate authority to these zone using namesever records 
 
 
 

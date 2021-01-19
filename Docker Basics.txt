@@ -59,6 +59,7 @@ docker swarm init // enables service abstraction
 docker service create -p 8080:80 --name hello-world busybox 
 docker service ls
 docker service ps <service_name>
+docker service logs <service_name>
 docker service inspect --pretty <service_name> // prints in human readable
 docker service scale <service_name>=3 // increases replica set to 3
 
@@ -92,6 +93,10 @@ docker inspect --format "{{.State.Running}}" busybox // displays the value of th
 docker inspect -f "{{.HostConfig.Links}}" busybox // displays the links in place for busybox container
 
 docker run -it --network lows-network --name network-explorer alpine:3.8 sh // creates an alpine linux based container, attaches it to my user defined network, and opens a shell prompt
+
+docker commit nginx_base // creates a image of a running container called nginx_base
+   docker images // check image list for new image
+   docker tag <new_image_id> <image_name>
 
 
 
