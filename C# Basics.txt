@@ -1,6 +1,6 @@
 C# - a programming language
 
-.NET - a framework for building applications on Windows; there are different langauges that 
+.NET is a framework for building applications on Windows; there are different langauges that 
 can use the .NET framework (F#); classified as legacy 
 
 .NETCore
@@ -40,13 +40,63 @@ CTRL + d - duplicate line
 CTRL + x - delete line
 
 
-Data Structures
----------------
+Function (Method) Types
+---------------------
+
+void - does not return anything
+
+static - a method that can be called without the need to create an instance of the class that implements it;
+there is only "one" instance of this method in memory (like "main)
+
+Console.WriteLine("Hello") // I can call this method without initializing a new instance of the Console class
+because there is only "one" instance of a console in a program
+
+
+
+
+Classes
+--------
+ 
+- in statically typed languages, EVERYTHING is a class
+- access modifiers define the security parameters around a particular property/method
+
+[Access Modifiers]
+public - code is accessible for all other classes
+private - code is only accessible within the same class
+protected - code is accessible within the same class but can be used by other classes that inherit from the base class
+internal - code is only accessible within the same assembly
+
+class Person {
+  public string firstName;
+  public string lastName;
+  
+  public void Introduce() {
+  Console.WriteLine("My name is" + firstName);
+  } 
+}
+
+
+
+Struct (Structure)
+-----------------
+
+- lightweight way to combine properties and methods (like classes)
+- when you need to create thousands of instances of a small peice of structured data it is
+more efficient to use a struct
+
+public struct Coordinates {
+  int x;
+  int y;
+
+}
+
+
 
 Arrays
-  stores a collection variables of the "same" type
-  fixed size
-  once size is specified, it cannot be changed
+------
+
+ - stores a collection variables of the "same" type
+ - fixed size; once size is specified it cannot be changed
 
 int number1
 int number2
@@ -54,12 +104,54 @@ int[] numbers = new int[2]
 int[] numbers = new int[2] {1,2}
 
 
-Enums
+Lists
+----
+
+
+Enums (Enumerations)
+--------------------
+
+- it is best to use enums when you have a number of related constants (like shipping rates)
+
+
+public enum ShippingMethod {
+ AirMail = 1.50
+ Express = 3.00
+ Overnight = 6.00
+}
+
 
 Strings
-  use verbatim strings (@"My weird text) when using special characters
+-------
+
+use verbatim strings when using special characters to keep code readable
+
+string path = "c:\\projects\\project1\\folder1" # messy
+string path = @"c:\projects\project1\folder1" # clean
+
+// Template style
+string name = string.Format("{0} {1}", firstName, lastName)
+ 
+string list = string.Join(",", numbers)
+
+[Escape Characters]
+\n - newline
+\t - tab
+\\ - backslash
+\' - quotation mark
+\" - double quotes
   
-  
+
+Database Migrations (Code-First)
+---------------------------------
+
+the process of using a series of classes to represent the structure of your database
+as your model/class changes you can apply those changes immediately to your database via migrations
+
+1) install Microsoft.EntityFrameworkCore.Tools as dependency
+2) open package manager console
+3) Run "Add-Migration <Migration_Name> to create a migration
+4) Run "Update-Database <Migration_Name>" to apply it to the database
 
 
 
@@ -83,11 +175,7 @@ Nuget - repository of commonly used dlls (think npm)
 Entity Framework - nicely integrates SQL models and objects into your c# code
 LINQ - a syntax used to write SQL queries in c#
 
-Access Identifiers
------------------
-Public - accessible from anyone
-Private - accessible only from within its class
-Protected - accessible from within its class and from its children
+
 
 Output Type
 -----------
