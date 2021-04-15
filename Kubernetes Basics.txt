@@ -86,13 +86,16 @@ eksctl create cluster --name=lowk8 --nodes=1 --node-type=m5.large --zones=us-eas
 
 eksctl delete cluster --region=us-east-1 --name=lowk8
 
+kubectl get nodes
+kubectl label nodes <node-name> purpose: reports-services
+
 kubectl port-forward pod/hello-kiamol 8080:80 // port forward to pod resource
 kubectl port-forward deploy/hello-kiamol-2 8080:80 // port forward to deployment resource
 
 kubectl apply -f pod.yml // send local file to the K8 API for deployment
 kubectl apply -f https://github.com/pod.yaml  // send remote file to the K8 API for deployment
 
-kubectl exec -it hello-kiamol-2-7f6dd54b9b-j6zvl -- sh // get interactive shell to your container
+kubectl exec -it hello-kiamol-2-7f6dd54b9b-j6zvl (pod name) -- sh // get interactive shell to your container
 
 kubectl logs --tail=2 hello-kiamol-2-7f6dd54b9b-j6zvl // get logs from your container
 
@@ -165,7 +168,8 @@ Client Request --> Service --> Backend Pods
 
 [ Service Types ]
 - ClusterIP: expose applications INSIDE the cluster network (needs to be consumed by other pods)
-- NodePort: expose applications OUTSIDE the cluster (needs to be consumed by external clients); **NOTE** ports exposed using this type are opened up ALL NODES and the CONTROL PLANE
+- NodePort: expose applications OUTSIDE the cluster (needs to be consumed by external clients)
+    **NOTE** ports exposed using this type are opened up ALL NODES and the CONTROL PLANE
 - Loadbalancer: expose applications OUTSIDE the cluster (needs to be consumed by external clients) by using the cloud platforms load balancer functionality
 - ExternalName
 
@@ -253,6 +257,59 @@ spec:
   - name: pv-storage
     persistentVolumeClaim:
         claimName: my-pvc   // reference claim created above
+        
+        
+Scheduling
+---------------
+- process of assigning pods to a node so kubelet can run them
+- scheduler is a core k8 service running in "kube-system"
+- checks against each nodes resouce requests and available resources before placing a pod
+
+nodeSelector
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: redis
+    image: redis
+  nodeSelector:
+      purpose: reports-services // assigns node based on label
+  nodeName: worker-1 // assings nodes based on explicit node name
+  
+  
+
+Daemon-Sets
+-------------------
+- automatically runs a copy of a Pod on each node
+- launches Pods on new nodes that are added to cluster immediately
+- respect normal scheduling rules; if node is in violation of any of the constraints, it will not schedule the pod there
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: my-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: fluentbit // all pods with this label will be managed by my-daemonset
+  template:
+    metadata:
+      labels:
+        app: fluentbit // ensure container has this label so it can be picked up by my-daemonset
+    spec:
+      containers:
+      - name: nginx
+        image: nginix:1.19.0
+        
+        
+Static-Pods
+---------------
+- a pod that is managed directly by the nodes kubelet process and not the k8 API
+- when a static-pod is created k8 creates a mirror-pod which is a representaiton of the static-pod
+- a mirror-pod can be viewed from the k8 API but you cannot perform any actions against it
 
   
 Networking (Plugins)

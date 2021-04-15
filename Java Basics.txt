@@ -10,6 +10,7 @@ CMD + FN + F12 - displays available methods of a class
 Build Mechanisms
 ----------------
 Maven
+  acts like a make file for group together functions and processes
   build/project management tool
   dependency management and versions
   project structure
@@ -32,8 +33,19 @@ Ant
 
 
 
-Spring 5 Basics Content
------------------------
+The Spring Framework
+--------------------------------
+
+- Spring is Java's core MVC framework used to build web applications and restful services
+- Spring functions similiar to .NET cores MVC scaffolding and dependency injection setup
+- contains a number of helper packagaes like springboot, spring initilizer to help you get started
+- wraps alot of core dependencies/packages into top level "spring-plugins" so that you don't have to download and maintain them individually yourself (GET UP AND RUNNING FASTER)
+
+(Client Request) --> Dispatcher Servlet (Front Controller) -> | Pipeline Sequence | -> Controller
+
+Depencencies - POM.xml
+---------------------------------
+
 
 
 Logging - Slf4j
