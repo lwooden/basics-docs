@@ -214,6 +214,9 @@ spec:
 
 Persistent Volumes - allows you to treat storage as an abstract resource to be consumed by pods (EBS, EFS, NFS, etc)
 
+Storage Class -> cluster resource
+PV -> cluster resource
+PVC -> namespace specific resource (consumed by pods)
 
 // Create the persistent volume
 apiVersion: v1
