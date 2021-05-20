@@ -1,0 +1,47 @@
+Django Basics
+
+
+pip install Django
+django-admin startproject notable_django
+pip install django-tastypie // api framework
+python manage.py startapp api
+
+
+notable_django
+  /api
+  /notable_django
+  manage.py 
+  
+  
+/api folder handles the actual API magic.
+/notable_django contains the settings for the configuration of the project, as well as exposing URLs. 
+
+
+we have to install our app within our project, inside notable_django/settings-py:
+
+# notable_django/settings.py
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'api' <----
+]
+
+Projects can have multiple apps installed — and those apps aren’t necessarily tied to that project. Our project here is notable_django, and our app is called api.
+
+python manage.py makemigrations
+python manage.py migration
+python manage.py runserver
+
+
+General Workflow
+-----------------
+
+Create the form
+Program the view
+Add URL pattern
+Create the template
+
