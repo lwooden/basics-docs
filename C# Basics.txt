@@ -156,6 +156,42 @@ as your model/class changes you can apply those changes immediately to your data
 
 
 
+Dependecy Injection
+-------------------
+- when a class depends on another class
+- we want our classes to depend on an "abstraction" rather than another class directly
+- this is acheived through the creation of an "interface"
+
+
+ClassA uses ClassB (dependency)
+
+public ItemsController()
+{
+  // here the constructor is creating an instance of the InMem Repository class
+  repository = new InMemItemsRepository();
+}
+
+public ItemsController(repository)
+{
+  // here the repository is being passed in and "injected" via a service into the controller class
+  this.repository = repository
+}
+
+ClassA depends on -> Interface -> which is implemented by ClassB
+
+
+Dependency A (registers) -> IServiceProvider (Service Container) -> Class (injected here)
+// this happens when the app startsup (App Startup)
+
+
+
+
+
+Data Transfer Objects - DTOs
+----------------------------
+- the contract that exists between our clients and our service
+- essentially what we are giving back to the client
+
 
 
 
