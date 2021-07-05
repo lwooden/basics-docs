@@ -1,0 +1,27 @@
+
+Problems w/ Traditional Spring
+-----------------------------------------
+- keeping up with dependecies, module availability, and version compatibablity is burdensome for us
+- deployment has to be done to external web containers/servers
+
+
+Advantages of SpringBoot
+-----------------------------------
+
+[AutoConfiguration]
+- sets up/configures everything we need within our app
+- don't have to deal with xml, java, or annotation based configuration anymore
+- if we use the web or "mvc" module, SpringBoot automatically configures the dispatcher servlet and takes care of request mapping for us
+- if we use the "orm" module, we no longer have to configure the DataSource or TransactionManager
+
+[SpringBoot Starters]
+- take care of module availability and version compatiability for us; 
+- every project has a spring-boot-starter-parent that contains all of the version information for all of the libraries that will be contained in our project
+
+[Embedded Servlet Containers]
+- provides embedded web containers for us to deploy to; default is Tomcat but also supports Jetty and Undertow
+
+[SpringBoot Actuators]
+- provides utility routes/endpoints that we can consume in our app (autoconfig, mappings, info, health, metrics)
+- can quickly intergrate 3rd party apps (prometheus) using these endpoints
+

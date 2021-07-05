@@ -1,0 +1,224 @@
+GraphQL Basics
+
+
+GraphQL functions as the glue between your clients and your database data (much like a REST API)
+
+REST APIs
+----------------
+Allows the "client" to get what they need by making explicit request. The more things the client needs, the more request the client has to make (to different endpoints)
+
+The SERVER determines what data comes back from a endpoint
+
+/GET /posts/123 // request to get post by ID
+/GET /posts?author=3421 // request to get other post by the same author for more reading
+/GET /posts/123/comments // request to get all comments for this posts
+
+GraphQL APIs
+--------------------
+Allows the "client" to get exactly what it needs with ONE request
+It exposes ONE endpoint for ALL requests
+
+POST /graphql (with a GraphQL query)
+
+The CLIENT determines what data it gets back
+
+Faster
+Flexible
+Easy to maintain
+
+Mobile clients, desktop clients, and web clients all have different needs and considerations. GraphQL helps to manage these considerations
+
+
+(4) Arguments that get passed to every resolver:
+parent
+args - contains all of the argurment values provided in the query
+ctx (context)
+info - 
+
+Workflow
+------------
+
+1. Create type definitions (Scalar type or Object)
+2. Create query defintiion
+2. Create resolver funciton
+3. Test in playground
+
+
+user: String! // will always returns a string
+Users: [User!]! // will always returns an array of User objects; will never return null
+
+ 
+Query Structure - Fetch Data
+---------------------
+
+There are (2) options when querying GraphQL
+
+1. Query scalar types
+	query {
+		title: String!
+	}
+	
+2. Query object types
+    query {
+    	users {
+    		id
+    		name
+    	}
+    }
+    
+ By design, a client cannot simply query the top level object and get all of its properties and values.
+ The clients has to explicitly define what data it wants. This is the power of GraphQL 
+    
+
+
+Relationships
+-------------------
+
+const typeDefs = `
+    type Query {
+        posts(query: String): [Post]!
+        users(query: String): [User!]!
+       }'
+
+const typeDefs = `
+    type Post {
+        id: ID!
+        title: String!
+        body: String!
+        published: Boolean!
+        author: User!
+    }'
+
+const resolvers = {
+    Query: {
+        posts(parent, args, ctx, info) {
+            if (!args.query){
+                return posts
+            } 
+
+                return posts.filter((post) => {
+                    const isTitleMatch = post.title.toLowerCase().includes(args.query.toLowerCase())
+                    const isBodyMatch = post.body.toLowerCase().includes(args.query.toLowerCase())
+                    return isTitleMatch || isBodyMatch
+                })
+        }, 
+    // resolver property has same name as our type "Post";
+    Post: { 
+        // resolver method named after property "author"
+        author(parent, args, ctx, info) { /
+            return users.find((user) => {
+                return user.id === parent.author
+            })
+        }
+    }
+    
+    
+
+query {
+ posts {
+ 	id
+ 	title
+ 	author {
+ 		name
+ 	  }
+   }
+}
+
+When this query is received, GraphQL will:
+1. Execute the "posts" resolver for each post object that exists
+2. Go back and execute the "Post" function for each post object that exists; we also have access to the "parent" objects properties to use in our function
+
+
+
+Input Types
+---------------
+
+ Instead of passing scalar types as arguments to a resolver function, I can pass an "object" that contains all of the fields/properties (scalar types) that I want to reference. This acts as an "object" argument.
+
+ // syntax with scalar types as arguments
+ createUser(name: String!, email: String!, age: Int!): User!
+ 
+    input CreateUserInput {
+        name: String!,
+        email: String!,
+        age: Int!
+    }
+    
+    // syntax with input object as argument
+    createUser(data: CreateUserInput): User! 
+    
+ I can ONLY pass in input types as arguments to a resolver function. I cannot pass custom objects. Also the input type must only contain scalar values. It cannot have objects nested within them
+ 
+ 
+
+
+
+Mutations - Change Data
+--------------
+
+Allows us to create, update, and delete our data on the server
+
+defined as a "typeDef" just like queries and other types
+need a resolver method defined to handle opersations just like queries and other types
+are defined inside of a "Mutations" object under resolvers
+    
+    // schema definitation
+   type Mutation {
+        createUser(name: String!, email: String!, age: Int!): User!
+    }
+    
+    const Mutation = {
+        
+    // resolver function
+    createUser(parent, args, ctx, info) {
+        const emailTaken = ctx.db.users.some((user) => {
+            return user.email === args.email
+        })
+
+        if (emailTaken) {
+            throw new Error('Email taken.')
+        }
+
+        const user = {
+            id: uuid(),
+            name: args.name,
+            email: args.email,
+            age: args.age
+        }
+
+        ctx.db.users.push(user)
+        return user
+    }
+
+
+Subscriptions - Subscribe to Data Changes
+-------------------
+
+Client can be notified of changes to data
+
+Uses web sockets behind the scenes to keep an open channel of communication between the client and server so the server can send updates to the client in real time
+
+
+
+
+
+How To Define A Query In Playground
+-------------------------------------------------
+
+mutation {
+  updateUser (
+  // arguments
+    data: {
+      name: "Erin Wooden"
+    }, 
+    where: {
+      id: "ckgr1k10d002j0832vpt1qnna"
+    } 
+  ) 
+   // selection set
+  {
+    name
+    id
+  }
+}
+

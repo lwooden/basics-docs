@@ -1,0 +1,91 @@
+Shell Scripting Basics
+
+
+bash_profile vs bashrc
+------------------------------
+
+
+Checking Your Environment
+-----------------------------------
+env - prints all exported (globally available) variables
+set - prints all locally scoped variables
+
+
+simple-script.sh
+
+# creates a subshell which is separate from the parent shell from which it was launched
+#!/bin/bash 
+
+# built-in shell util that says breakout of the shell when a failure/error is raised (exit status not 0)
+set -e 
+
+echo 'Hello World' // executes this command and exits
+
+
+Exit Status
+---------------
+0 - successful
+1 - failure/error
+
+> ls
+> echo $? // displays last exit status
+
+
+Escaping Characters
+------------------------------
+
+
+Using /dev/null
+---------------------
+- generally the blackhole of a system
+- when any file/output is sent here it is gone forever
+
+ls -al >> /dev/null 
+# no output will be shown
+
+
+Reading Input
+--------------------
+
+echo "Enter your First Name: "
+read FIRSTNAME
+
+echo " Your first name is: $FIRSTNAME"
+
+
+Accepting Arguments
+---------------------------
+- arguments are positional by nature
+- you can take each argument (in the order they were passed in) and assign them to variables
+
+#!/bin/bash 
+
+USERNAME=$1 // argument 1 
+PASSWORD=$2 // argument 2
+
+echo "The following username is $USERNAME and $PASSWORD
+
+$ args.sh Lowell Password1
+The following Username is Lowell and Password is Password1
+
+
+Flow Control 
+-----------------
+
+echo "Guess a number between 1 and 5: "
+read GUESS
+
+if [ $GUESS -eq 3 ]
+  then 
+      echo "You Guessed the Correct Number!"
+fi 
+
+========
+
+FILENAME=$1
+echo "Testing for the existence of a file called $FILENAME"
+
+# -a, -e, -f all check for existence (true or false) of something
+if [ -e $FILENAME ]
+  then
+       echo "File $FILENAME does exist!"
