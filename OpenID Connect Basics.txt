@@ -1,0 +1,100 @@
+OpenID Connect Basics
+
+OpenID -> OpenID Connect (OAuth 2.0)
+
+OpenID Connect is a standard that defines how a client application communicates with an identity provider to identify a user
+ ebay (3rd party client app) -> logs in with -> Apple ID (OpenID Provider)
+
+Identity Provider (IdP) - an entity that manages user attributes and credentials
+
+OpenID Connect is builds an identity layer ON TOP of the OAuth 2.0 specification
+
+OAuth 2.0 is authorization framework for access delegation
+
+
+Typical Flow
+----------------
+
+1. User visits ebay.com and chooses "Sign In With Apple ID"
+2. Client application "redirects" the user to Apple.com to authenticate
+3. Client application is granted a ID token from Apple.com to pass back to ebay.com
+4. User is granted access to ebay.com
+
+Authentication flows - define ways how you can transport an ID token from one point to another
+
+
+OAuth 2.0
+--------------
+
+Client App <-> User Agent (Browser) <->  Authorization Server (OpenID Provider)
+
+[Typical OAuth 2.0 Authorization Code Grant Type Flow]
+1. User visits coolphotos.com 
+2. coolphotos.com initiates authorization grant request by redirecting the user to the autorization server (OpenID Provider) - Facebook
+3. User authenticates via the browser
+4. Browser sends credentials in the form of a POST request to the authorization server
+5. Authorization server redirects the user back to coolphotos.com with an AUTHORIZATION CODE
+6. coolphotos.com exchanges the AUTHORIZATION CODE for an ACCESS TOKEN (this is direct communication between the client app and auth server)
+7. Authorization server sends back the ACCESS TOKEN
+8. coolphotos.com can now access my photos from Facebook
+
+The token does not does not identity me, the owner of the photos. The token permits access to the resource on behalf of the resource owner
+
+The token that comes back at the end of a "Login w/ Facebook Flow" is not for client applicaiton, but rather for the consumption (or use) of the Facebook API. The client app should not try to decode the acces token or try to make intepret the meaning of it. It simply acts as a "ticket" for acces to an event (API)
+
+The access tokens SCOPE defines what data can be returned from the API
+
+OAuth 2.0 = authorization (what you can do)
+OpenID Connect = authentication
+
+
+OpenID Connect
+----------------------
+- extends OAuth 2.0 to be able to identify a user
+- produces an ACCESS TOKEN and ID TOKEN in the form of a JWT (container)
+- JWT's carry assertions (claims) about a particular user
+- assertion (claim): a strong statement about someone or something
+
+Attribute Assertion - based on a set of attributes
+Authentication Assertion - based on how the OpenID provider authenticates the user during the flow (username/password, certificate, etc)
+Authorization Assertion - based on a user's entitlement's (classfication designation, department, etc)
+
+
+SAML 2.0 Web SSO
+--------------------------
+- still the most widely used standard for SSO
+- most new greenfield applications today use OpenID Conenct instead
+- started to fade as XML became less ideal in the early 2010s
+- identify industry started looking for JSON based standard
+- OpenID Connect filled this gap
+
+
+Identity Federation
+------------------------
+- the process of sharing identity related data between two or more organizations
+- when you log into eBay with you google account, google shares your identity attributes (stored in Google), with eBay
+- google is "federating" my identity attributes to eBay
+- federation can also happen within a single organization
+- trust domain: the teams having control and governance over an application
+- all apps controlled and governed by the same team fall under the same trust domain
+- the most common way to establish trust among domains is via X509 certificates
+- OpenID providers sign the attributes it shares with client apps using the certificate and client apps validate the signature using the public certificate if the OpenID Provider 
+
+Corporate IT Department (Identity Owner + OpenID Provider)
+  Marketing Department
+    Application 1
+  Engineerng Department
+    Application 2 
+    
+[Federation Protocols]
+OpenID Connect
+SAML 2.0 Web SSO
+WS-Federation
+Central Authentication Service (CAS)
+
+
+
+
+ 
+
+

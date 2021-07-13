@@ -1,3 +1,9 @@
+Things to learn more about:
+- beans
+- component scanning
+- class path
+
+
 
 Problems w/ Traditional Spring
 -----------------------------------------
@@ -25,3 +31,188 @@ Advantages of SpringBoot
 - provides utility routes/endpoints that we can consume in our app (autoconfig, mappings, info, health, metrics)
 - can quickly intergrate 3rd party apps (prometheus) using these endpoints
 
+
+Configuring JPA
+
+
+Running A SpringBoot Application
+---------------------------------------------
+
+[Inside SpringBoot - Embeded Tomcat Server]
+
+
+[Outsude of SpringBoot - Standalone JAR]
+ 
+ In order to run the application on any system we want we must compile our application and get a "jar" artifact. This is the articfact that we will pass to java to run on any remote system that has java installed
+ 
+ Execute maven "install" goal
+   this compiles out project and spits our a fully packaged jar file for us to execute
+   
+ Run java and reference the jar file
+    java -jar <name_of_project>.jar
+    
+This will cause our app to run just like it did when we ran it inside of Spring Boot
+
+
+
+Logging
+----------
+
+In Spring Boot all of the starter packages are included for us to log. The default implementation is sl4j.
+
+Create an instance of a Logger in your class
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ private static Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
+
+Set the log level for the application in the application.properties file
+  log.level=warn
+  log.level.org.org.springframework=error // log for a particular framework in your app
+  log.com.com.lowsandbox.restapi.controllers.ProductRestController=error // log a particular package
+  
+  
+  
+Health Checks + Metrics
+--------------------------------
+
+Spring Boot uses "actuators" to provide us with REST Endpoints that we can consume that provides us rich telemtry about 
+our app
+
+Add the actuator starter pack to your pom.xml
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		
+Check the endpoint that is exposed
+
+  2021-05-24 08:15:46.038  INFO 39728 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint(s) beneath base path '/actuator' // log line relevant to actuator running 
+  
+  http://localhost:8080/api/actuator
+  
+  Response:
+    	
+ {
+  "_links": {
+    "self": {
+      "href": "http://localhost:8080/api/actuator",
+      "templated": false
+    },
+    "health-path": {
+      "href": "http://localhost:8080/api/actuator/health/{*path}",
+      "templated": true
+    },
+    "health": {
+      "href": "http://localhost:8080/api/actuator/health",
+      "templated": false
+    }
+  }
+}
+
+Update application.properties to expose more health details
+  management.endpoint.health.show-details=always
+  re-run application and check the /health endpoint again
+  
+Add the following line to expose ALL of the actuator endpoints
+  management.endpoints.web.exposure.include=*
+  Visit http://localhost:8080/api/actuator/metrics endpoint
+  http://localhost:8080/api/actuator/metrics/<metric_name> // for more details
+  
+  
+ Enabling Security On Endpoints/Routes
+ ----------------------------------------------------
+ 
+ It is very simple to protect routes in Spring Boot
+ 
+ Add security starter pack in pom.xml
+   <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+  </dependency>
+  
+Look for line in the console output
+  Using generated security password: c8abbda3-9d80-4a11-9ee7-a96589abfb48
+  
+
+When you attempted to access any routes, you will be met with a "Login" page
+  The username is "user"
+  Password is the generated string you see in the output above
+  
+  
+  
+Thymeleaf Templates (Server-Side Rendering -- MVC)
+-----------------------------------------------------------------------
+
+Thymeleaf is the new standard template engine for rendering static and dynamic html pages. In the past, JSP (Java Server Pages) was the standard, but the language has since labeled this standard deprecated in favor of Thymeleaf
+
+Tymeleaf is very similar to other language specific template engines such as Razor (C#), and Django (Python). These engines make implementing the MVC architectures in each of the respective languages easier
+
+
+MVC Controller
+--------------------
+
+When creating a controller it is important to note the diffierence between the annotations @RestController and @Controller
+
+@RestController - used specifically to declare that your controller will function as a RESTful service providing JSON or XML to it's clients
+@Controller - used specifically to declare that your controller will function in a MVC fashion providing views to it's clients in the form of HTML
+
+Create a controller class
+
+@Controller
+public class HelloController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "hello"; // name of the "template" you will return to the browser
+    }
+    
+}
+
+Create a hello.html template file
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <title>Thymeleaf</title>
+    <body>
+        <b>Hello Thymeleaf!</b>
+    </body>
+</html>
+
+
+Passing Data To A Template
+----------------------------------------
+
+Define a new function that will handle the passing data from the model to the view
+  @GetMapping("sendData")
+    public ModelAndView sendData() {
+       ModelAndView mav = new ModelAndView("data"); // name of the template
+       mav.addObject("message", "Getting started with Tymeleaf!"); // inject data into the view
+       return mav; // return the "data.html" template to the client
+    }
+    
+    
+Disabling Caching In Thymeleaf
+------------------------------------------
+
+By default, thymeleaf caches responses on the client side so that sometime when changes are made to the template, the client will not pick up those new changes due to caching.
+
+Disabe caching my adding this to application.properties
+  spring.thymeleaf.cache=false
+  
+  
+  
+Messaging in Java
+-------------------------
+
+MOM - Message Oriented Middleware (ActiveMQ, RabbitMQ, AWS SQS)
+Sender -----> MOM (Messaging Server) <------ Receiver
+(App1)																  (App2)
+
+
+
+
+
+
+
+ 
+
+  

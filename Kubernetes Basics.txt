@@ -122,7 +122,7 @@ kubectl create namespace <namespace>
 
 kubectl get all [ -n | --namespace ] <namespace>
 
-kubectl get namespaces
+kubectl get namespace
 
 kubectl get [ serviceaccount | sa ] iam-test
 
