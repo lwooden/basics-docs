@@ -1,4 +1,4 @@
-.NET NVC Basics
+ASP.NET Basics
 
 
 Keyboard Shortcuts
@@ -80,8 +80,13 @@ Partial View names should begin with an "_" by convention
 @Html.Partial("_NavBar") // this is how you render the partial in the main html
 
 
-Razor Syntax
+Razor Pages
 ------------
+
+The standard convention for naming Razor pages is that the page itself has the extension .cshtml while the underlying model attached to the page has the .cshtml.cs extension
+
+Welcome.cshtml = Razor Page
+Welcome.cshtml.cs = Razor Page Model
 
 You can write C# code in a view my prefixing it with the @ symbol. This is kind of like how we can write Javascript expressions in JSX using {}
 

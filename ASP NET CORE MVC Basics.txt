@@ -1,0 +1,44 @@
+
+- ASP.NET Core Web Applications typically take one of the following three forms:
+
+1) An HTML web application designed for direct use by users (Razor Pages) - server-side rendered HTML pages
+
+2) An API designed for consumption by another application
+
+3) Both a web application and an API
+
+- The MVC (Model-View-Controller) framework is often responsible for handling ALL business logic and UI code for an application, so it is no surprise they can be large and complicated at times.
+
+- The MVC pattern aims to separate the management and manipulation of data from its visual representation
+
+- ASP.NET Core was designed as a way to build server-side rendered "page-based" web sites. 
+
+- Page-based websites are sites which the user browses between multiple pages, enters data into forms, and consumes basic content (blogs, videos, etc). This is much different from games and singe page applications (SPAs, React/Vue/Angular) which are built for heavy user interaction on the client side
+
+
+Model => data that needs to be displayed
+View => template that displays the data provided by the model
+Controller => updates the model and provides data for the display to the view
+
+
+Razor Pages
+------------
+
+The standard convention for naming Razor pages is that the page itself has the extension .cshtml while the underlying model attached to the page has the .cshtml.cs extension
+
+Welcome.cshtml = Razor Page
+Welcome.cshtml.cs = Razor Page Model
+
+You can write C# code in a view my prefixing it with the @ symbol. This is kind of like how we can write Javascript expressions in JSX using {}
+
+@if (Model.Customers.Count == 0)
+    {
+        <h2>No Customers!</h2>
+    }
+    else
+    {
+        foreach (var customer in Model.Customers)
+        {
+            <h2>@customer.Name</h2>
+        }
+    }
