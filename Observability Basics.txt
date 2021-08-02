@@ -1,0 +1,78 @@
+Observability Basics
+
+"Causes are infinite! Monitoring for causes is a path to ruin!" 
+
+- good ways to look into your application and understand how they function
+- improve the understanding of complex systems
+- help us more quickly grasp the impact of changes and the nature of incidents
+
+
+3 Pillars of Observability
+--------------------------------
+Logs
+Metrics
+Traces
+
+
+- structure your logs (JSON, key/value pairs)
+- we do not want to write regex expressions for all of your logging!!
+- get metric libraries (open-tracing)
+- in order to take advantage of spans we need to pass information in the headers when services are talking to one another
+- run observability tools OUTSIDE of your app infrastructure (i.e. k8). If it goes down, so does your observability!
+- observability drives design! It should be included and well thought out
+- ask the question: Can I observe it?
+
+Service Level Indicators (SLI) - 
+
+Service Level Objective (SLO) - 
+
+Service Level Agreement (SLA) - 
+
+
+RED Method - For Services
+------------------------------------
+Requests -> Are they happening?
+Error -> Are there too many of them?
+Duration -> How long did it take?
+
+USE Method - For Resources
+---------------------------------------
+Utilization -> How busy is it?
+Saturation -> How many things are waiting on you?
+Errors -> What went wrong?
+
+Collect -> Monitor -> Analyze
+ Logs -> Dashboards -> Actionable Events
+
+ 
+ 
+ Monitoring
+ -------------
+ - can be tiring; takes a lot of effort
+ - key in on user symptons (don't monitor everything you think people care about!)
+ - focus on KNOWN failures
+ - observability is NEVER complete
+ 
+ [CASE Method - For Monitoring]
+ 
+ Context-Heavy - why are you being alerted?
+ Actionable - is it impacting the user? It's slow is not valid
+ Sympton-based - symptons over causes 
+ Evaluated - is this really serious?
+ 
+ 
+ Dashboards
+ -----------------
+ - be thoughtful
+ - don't concern myself with every metric
+ - build for the reader
+ - break out details into further dashboards 
+ - orgnaize them into groups, function, tier
+ 
+ 
+ Time series data
+ 
+ 
+Getting down to request level metrics (latency, service interdependency) -> Tracing
+ 
+Put sensors in place so you can see what is going on

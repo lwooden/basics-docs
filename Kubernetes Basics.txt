@@ -140,6 +140,10 @@ kubectl config view --minify // view config for the current-context you are usin
 
 kubectl config current-context // get the current cluster you are working with
 
+kubectl config unset contexts.low-aks-cluster
+kubectl config unset users.clusterUser_Low-Playground_low-aks-cluster
+kubectl config unset clusters.low-aks-cluster
+
 aws sts get-caller-identity // get your current user
 
 kubectl rollout restart deploy graphql-api // does a rolling restart on containers in deployment
@@ -158,6 +162,7 @@ kubectl edit pvc my-pvc --record
 
 **NOTE**: By default Kubernetes does not PULL images if they are already in the local cache. I may need to add "imagePullPolicy: Always" in the manifest to force this to happen in the event I have a container update that has the same tag name. This will ensure I get the latest image with the latest code
 
+kubectl 
 
 Services
 -------------
