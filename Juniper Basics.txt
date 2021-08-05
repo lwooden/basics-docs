@@ -1,0 +1,64 @@
+Juniper Basics
+
+
+Routing
+------------
+
+Screening Router -> Security Gateway -> Internet Border Router -> Core Routers
+
+
+[Device Selection]
+J-Series or SRX = Screening Routers
+SRX Services Gateway, Branch Office SRX, Data Center SRX = Security Gateway
+MX, SRX(dc), M7i, M10i = Internet Border Router
+EX8000, MX = Core Routers
+EX,MX = Access Routers
+
+
+Working the CLI
+---------------------
+
+[The Hierarchy]
+edit (top)
+system firewall interfaces protocols chassis etc
+services login syslog
+finger 
+ftp 
+ssh
+telnet 
+xnm-ssl 
+
+> show   // operational mode
+> configure // similar to "conf t"
+# show  // configuration mode
+
+
+[edit]
+# edit system services // changes my location in the configuration tree
+[edit system services]
+
+
+# commit // write changes to running config
+# commit confirmed 1 // requires that another commit command be issued  in 1 min or a automatic rollback is performed 
+
+
+
+# set system services telnet // "set" command allows me to add a configuration
+# delete system services telnet // removes a configuration
+
+
+# show interfaces terese ge-0/0/0
+
+# edit interfaces ge-0/0/0
+# set unit 0 family inet address 10.10.20.122/24
+
+show route
+show | display detail
+show log messages | match fail 
+show | compare // compares candidate and active configs 
+
+rollback 0 // restores a fresh candidate config (prior to committing)
+rollback 1 // rolls back to previously commited config
+
+
+
