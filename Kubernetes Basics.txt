@@ -96,6 +96,7 @@ kubectl apply -f pod.yml // send local file to the K8 API for deployment
 kubectl apply -f https://github.com/pod.yaml  // send remote file to the K8 API for deployment
 
 kubectl exec -it hello-kiamol-2-7f6dd54b9b-j6zvl (pod name) -- sh // get interactive shell to your container
+kubectl exec -it hello-kiamol-2-7f6dd54b9b-j6zvl --namespace test -- sh // specific namespace
 
 kubectl logs --tail=2 hello-kiamol-2-7f6dd54b9b-j6zvl // get logs from your container
 
@@ -122,7 +123,7 @@ kubectl create namespace <namespace>
 
 kubectl get all [ -n | --namespace ] <namespace>
 
-kubectl get namespace
+kubectl get namespace // list all namespaces
 
 kubectl get [ serviceaccount | sa ] iam-test
 
@@ -600,6 +601,17 @@ Check container logs
   kubectl logs -l app=graphql-container --follow // by label
   
   
+Cluster Logging
+---------------------
+By default kubernetes only keeps (2) instances of logs in /var/log/pods:
+1. logs for the current running instance of a container/pod
+2. logs for the previously restarted instance of a container/pod
+
+They looks as follows:
+0.log - previous instance
+1.log - current instance
+  
+  
 Troubleshooting Networking Inside the Cluster
 -----------------------------------------------------------
 
@@ -701,8 +713,11 @@ helm repo add <name> <url>
 helm repo update
 helm search repo vweb --versions
 helm show values kiamol/vweb --version 1.0.0
-helm install set --set servicePort=8010 --set replicaCount=1 ch10-vweb kiamol/vweb --version 1.0.0
+helm install --set namespace=test --set image.tag=e3e3140ad30ac965c5aef04e811fb629651d9fbb graphql-api alaffia-charts/graphql-api
+helm install --upgrade --set namespace=test --set image.tag=e3e3140ad30ac965c5aef04e811fb629651d9fbb graphql-api alaffia-charts/graphql-api
 helm ls 
+helm -n <namespace> get values <release-name> // check the values you passed to a previous deployment
+helm uninstall graphql-api // uninstall a release
 
             
 
