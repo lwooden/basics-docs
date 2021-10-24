@@ -161,6 +161,8 @@ kubectl get pv // gets list of persistent volumes
 kubectl get pvc // gets list of persistent volume claims
 kubectl edit pvc my-pvc --record
 
+kubectl get ingress // displayed ingress rules that exists in the namespace
+
 **NOTE**: By default Kubernetes does not PULL images if they are already in the local cache. I may need to add "imagePullPolicy: Always" in the manifest to force this to happen in the event I have a container update that has the same tag name. This will ensure I get the latest image with the latest code
 
 kubectl 

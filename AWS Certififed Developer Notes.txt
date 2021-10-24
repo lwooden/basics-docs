@@ -1,0 +1,578 @@
+AWS Certified Developer - Associate 2021
+
+EBS
+-----
+- Multi-attach: multiple EC2s in the same availability zone
+
+
+EFS
+------
+- supports connections across all availability zones
+
+
+S3
+----
+5 GB - Single file limit
+100 MB - Multipart threshold
+
+[Storage Classes]
+- Standard:
+- IA: low per GB storage price; per GB retrieval fee
+- One Zone-IA: same as IA, but within a single AZ; 25% cheaper than IA
+- Glacier: for data accessed 1-3 times per year
+- Glacier Deep Archive: 
+- Intelligent Tiering: cycles objects between Standard and IA based on access patterns
+
+Load-Balancing
+--------------------
+[Classic]
+- TCP (L4) + HTTP/S (L7)
+- cross-zone load balancing disabled by default
+
+[Application]
+- HTTP/S (L7 ONLY)
+- url based routing
+- hostname based routing
+- query string and header based routing
+- can route to Lambda functions
+- can route to private IPs (on-prem)
+- cross-zone load balancing enabled by default
+
+
+[Network]
+- TCP/UDP
+- less latency (~100ms)
+- supports EIP assignment
+- can route to EC2
+- can route to Target Groups
+- can route to ALB
+- cross-zone load balancing disabled by default
+
+
+[Gateway]
+- operates at Layer 3 (IP)
+- supports fleets of 3rd party network appliances
+- firewalls, intrusion detection, etc
+- can route to EC2
+- can route to Private IP
+
+[Connection Draining - Deregestration Delay]
+- 3600 seconds by default (5 minutes)
+- can be set to 0 for short lived request
+
+
+Lambda
+-----------
+- can have different versions of a Lambda that can be referenced by an alias
+- by default lambdas are executed within an AWS managed VPC; they are not invoked within my VPC
+- can have a VPC configuration in order to interface with resources within the VPC (or on prem)
+
+[Limits]
+Execution = 1,000 concurent executions per region (default)
+Memory =  128 MB - 10 GB RAM
+Timeout = 3 secs - 15 minutes
+Size = 50 MB (250 MB unziped)
+Environment Variables = 4 KB
+
+[Synchronous Invocations]
+- anytime a user or service invokes a lambda (e.g. via the console, aws-cli, api-gateway request)
+
+[Asynchronous Invocations]
+- anytime a lamba is invoked by an event (e.g. an S3 PUT event, SNS, Cloudwatch)
+
+[Application Load Balancer -> Lambda]
+- a Lambda can be associated with a target group and registered with an ALB
+- the HTTP request is transformed into a JSON object
+- functions should be idempotent
+
+[Event Source Mapping]
+- pertains to Kinesis, DynamoDb Streams, SQS
+- Lambda needs to POLL these services for BATCHES in order to process
+- this happens synchronously
+
+[Destinations]
+- send the result of an async call somewhere (success or failure)
+- SQS,SNS,Lambda,Eventbridge
+- can be used in combination with Dead Letter Queues for reprocessing
+
+[Resource Based Policies]
+- give other accounts and AWS services (ALB, S3) permission to use Lambda resources
+- located in the "Configuration" section
+
+[Environment Variables]
+- Lambda makes env variables available to your source code
+- Lambda also injects its own default env variables
+- secrets can be encrypted with KMS (Lambda Service Key)
+- total size of all environment variables cannot exceed 4 KB.
+
+
+
+[Monitoring]
+- integrates w/ Cloudwatch Logs + Metrics by default
+- can enable tracing in  Configuration > Monitoring > Active Tracing
+- runs the X-Ray Daemon for me
+- make sure Lambda has appropriate AWS managed policies
+- injects XRAY related environment variables at runtime 
+
+[Performance]
+- increase RAM to get more CPU
+- can write small files (up to 512 MB) to /tmp; this area is cleared between invocations
+- perform initializations outside the function handler (like DB connections) so they will only be used once across all invocations 
+
+[External Dependencies]
+- dependencies must be installed within the project on a Linux instance and then the project must be zipped up and pushed to Lambda (via the CLI)
+- the project will then contain the 3rd party dependencies (node_modules folder) needed to run your project
+
+[CloudFormation]
+- Lambda's can be defined in-line (plain-text version of the script) in a CF template; external depenencies will not be included this way
+- Lambda's can also be referecenced via an S3 location
+
+[Layers]
+- support runtimes that are not supported by default (C++, Rust)
+- externalize dependencies so we can re-use them
+- app dependencies may not change much at all
+- source code will change often
+- this is a way to de-couple the two
+
+App Package 1 + 2 = base source code
+Layer 1 - Large Library Files (10MB)
+Layer 2 - Large Library Files (30MB)
+*both app packages can refer to Layer 1 and Layer 2 during their execution
+
+[Lambda Container Images]
+- deploy lambda function as container images UP TO 10GB from ECR
+- enables us to package large dependencies within the container instead of in layers
+- base container must implement the Lambda Runtine API
+
+FROM amazon/aws-lambda-nodejs:12
+
+[Versions + Alias]
+- by default we are referencing $LATEST; it is mutable and can be changed
+- when I'm ready to publish my code I can create a VERSION
+- versions are immutable; they cannot be changed 
+- versions have their own ARN
+- ALIAS point to versions
+
+[CodeDeploy]
+- helps shift traffic to new alias over time based on a strategy
+
+Linear
+  Linear10PercentEvery3Minutes
+  Linear10PercentEvery10Minutes
+
+Canary
+  Canary10Percent5Minutes
+  Canary10Percent30Minutes
+  
+All-At-Once
+  Shift all traffic immediately
+
+
+X-Ray
+--------
+- tool used to help devs debug/analyze distributed systems
+- provides a service map of requests end-to-end throughout the application
+- must install X-Ray agent on the EC2 instance; runs the daemon service that sends metric to the X-Ray service
+- must instrument app with X-Ray SDK; sends the trace data to the X-Ray daemon
+
+
+API Gateway
+-----------------
+- can import your own API using OpenAPI format (Swagger)
+- 29 secs for API to respond
+
+[Endpoint Types]
+EDGE OPTIMIZED
+  request are routed through Cloudfront Edge locations
+
+REGIONAL
+  for clients in the same region
+  
+PRIVATE
+  only accessible from with your VPC using a VPC endpoint
+  can use a resource policy to define access
+  
+[Deployments + Stages]
+- changes are only applied after you perform a DEPLOYMENT
+- changes are deployed to "stages" (e.g. dev, stage, prod)
+- "stage variables" can be defined per stage in order to decouple the gateway config from the backend lambda config
+
+getAttached:$(lambdaAlias)
+*this backend lambda config for API gateway will dictate which version of my getAttached function gets invoked (based on alias name)
+*I must set stage variables for each stage of my API (e.g. dev, prod)
+*resource policies must also be set  for each version of my lambda function 
+
+[Canary Deployments]
+- set a small percentage of traffic to flow to new deployments
+- can configure in Stages > Canary
+- this will create a "cancary" version of your stage to delpoy to
+
+[Integrations Types & Mapping]
+MOCK
+  API gateway returns a response with a request being sent (for testing)
+  
+HTTP/AWS 
+  configure integration request and reponse
+  setup data mapping using templates for the request/response
+  this enables us to modify the request after it hits API Gateway and modify the response before sending back to the client
+ 
+AWS_PROXY (Lambda Proxy)
+  incoming request is the input to Lambda (immutable)
+  the lambda is responsible for handling the business logic of the request/response
+  
+HTTP_PROXY
+  no mapping template
+  request is passed to the backend
+  response is forwarded to the client by API Gateway
+  
+- "Mapping Templates" can only be used if proxy functionality is disabled
+- modify request/response
+- modify query string parameters
+- modify body content
+- add headers
+- filter out unneccessary data before sending reponse
+
+
+[Caching]
+- Default TTL 300 secs (5 minutes)
+- Max is 3600 secs (1 hour)
+- cache can be invalidated in the UI or by setting a header by the client
+- cache data can be encrypted
+
+Client -> API Gateway -> Checks Gateway Cache -> IF MISS call the backend
+
+[Usage Plans & API Keys]
+USAGE PLAN
+  who can access one or more deployed API stages/methods
+  how much and how fast can they access
+  uses API keys to identify clients 
+  set throttling and quota limits per client
+
+API KEYS
+  can use with usage plan
+  throttling limits are applied at the "key" level
+  
+1. Create API and configure to require an API key and deploy to a stage
+2. Generate or import API keys to distribute to clients
+3. Create usage plan
+4. Associate API stages and API keys with the usage plan
+*key must be supplied in the x-api-key header
+
+[Monitoring]
+CLOUDWATCH LOGS
+  can be enabled at the "stage" level
+  logs contain info about request/response body
+  
+CLOUDWATCH METRICS
+  Count - number of request in a given period
+  IntegrationLatency - time to relay a message to backend and receive a response back
+  Latency - time from receiving a request from the client and sending response back to client
+
+X-RAY
+  enables tracing to get extra info about requests in API Gateway
+  gives you end-to-end full picture
+
+  
+
+
+DynamoDB
+---------------
+- NoSQL database
+- supports key-value data models
+- supports JSON, HTML, and XML
+- tight integration w/ Lambda
+- can auto-scale
+- eventual consistency: writes happen across all 3 locations in about one second (asynchronously)
+- strong consistency: all writes happen across all 3 locations at once
+- an "item" represents a "row" in a table
+- an "attribute" represents a "column" in a table
+- stores and retrives data based on primary key
+- 400 KB is the limit for a row of data
+
+[Primary Keys]
+Parition Key - a unique attribute (id)
+Compsite Key - combination of partition key + sort key
+**all items with the same partition key are stored together and sorted by the sort key
+
+[Provisioned Mode]
+- default mode
+- specify number of read/writes per sec
+- must plan before hand
+
+[On-Demand Mode]
+- automatically scale read/writes
+- no need to plan
+- pay for what you use (more expensive)
+**can switch between modes ONCE very 24 HOURS
+
+
+[Write Capacity]
+Write Capacity => 1 x 1KB per sec
+
+[Read Capacity]
+
+Read Capacity (Eventual) => 2 x 4KB sec (default)
+16 Eventually Consistent Reads per second with item size of 12 KB
+16/2 * 12/4 = 24 RCUs
+
+
+Read Capacity (Strong) => 1 x 4KB per sec
+10 Strongly Consistent Reads per second with item size of 4 KB
+10 * 4/4 = 10 RCUs
+
+10 Strongly Consistent Reads per second with item size of 6 KB (rounded up to nearest 4 KB)
+10 * 8/4 = 20 RCUs
+
+[Basic AP]
+GETITEM
+  read based on primary key
+  "projected expression" can be used to get specific attributes back
+  
+QUERY
+  returns items based on:
+  	KeyConditionExpression - partition key and/or sort key
+  	FilterExpression 
+  	can query a table, local secondary or global secondary index
+  	
+SCAN
+  reads the entire table THEN applies filter
+  consider "parallel scan"
+  "projected expression" or "filter expression" can be used to get specific attributes back
+  
+DELETEITEM
+  delete individual item
+  can perform conditional delete
+
+DELETETABLE
+  delete entire table
+  faster then DeleteItem on all items
+  
+BATCHWRITEITEM
+  up to 25 put/delete item in one call
+  up to 16 MB of data written
+  can't update items
+  
+BATCHGETITEM
+  return items from (1) or more tables
+  up to 100 items, 16 MB of data
+  items retrieved in parallel
+  
+  
+[Indexes]
+LOCAL SECONDARY INDEX
+  same partition key and different sort key
+  must be created during initialization
+  up to 5 LSIs per table
+
+GLOBAL SECONDARY INDEX
+  different partition and sort key
+  can be created anytime
+
+[Optimistic Locking]
+- conditional writes is a strategy that ensures that an item has not changed BEFORE it is updated/deleted
+- each item (row) has a "version number" that tell us whether it has been changed or not
+- when attempting to write. the version number is conditionally checked before performing the write; if it is != 1 then the write will fail
+
+[DynamoDB Accelerator - DAX]
+- seamless in-memory cache for DynamoDB
+- microsecond latecny for cache hits
+- solves the problem of querying the same data over and over again (Hot Key)
+- 5 minute TTL for cache (default)
+- up to 10 nodes in DAX cluster
+
+Client -> DAX Cluster -> DynamoDB Tables
+*if data is not available in the cache the DAX cluster will reach out to the table to get it
+
+
+[Streams]
+- tracks changes made to the table in the form of a log (insert. update, delete)
+- stored for 24 hours
+- auditing capability
+- streams can be sent to Kinesis
+- read by Lambda
+- read by Kinesis Client Library applications
+- can determine what you want to show in the stream (KEYS, NEW DATA, OLD DATA, NEW + OLD DATA)
+- made of shards (like Kinesis Data Streams)
+
+
+[Time-To-Live - TTL]
+- automatically delete items after a particular time
+- items deleted within 48 hours (asynchronous operation)
+
+[Transactions]
+- all or nothing operations to multiple items
+- consume 2x RCU and WCUs; 2 operations performed for each item (prepare + commit)
+
+3 transactional WRITES per second with item size 5 KB
+3 * 5/1 * 2 (transactional cost) = 30 WCUs
+
+5 transactional READS per second with item size 5 KB (round to nearest 4 KB)
+5 * 8/4 * 2 (transactional cost) = 20 RCUs
+
+
+[Access Control]
+- strong access control via IAM
+- VPC endpoints available
+
+
+[Query]
+- finds an item in a table using only the primary key
+
+[Scan]
+- returns all items in a table and THEN applies a filter
+- this a TWO step operation and will increase in time as the table grows
+
+
+KMS 
+------
+- use whenever handling sensitve data
+
+CMK (Customer Managed Key)
+- can only encrypt / decrypt up to 4KB of data
+- used to generate a Data Key
+- anything > 4KB requires the generation of a Data Key
+
+Symmetric Key - single key for encrypt and decrypt (default option)
+Asymmetric Key - pair of keys; encrypt data outside of KMS
+
+
+SQS
+------
+- a message queue service
+- when messages are picked up they immediately become "invisible" so that no other process can pick them up
+- this is determined by the "Visibility Timeout" setting
+- messages can hold up to 256KB of text in ANY format
+- Min retention => 1 minute
+- Max retention => 14 days
+
+Short Polling - returns response immediately even if queue is empty; you pay for empty responses
+
+Long Polling - does not return a response until a message arrives or long poll times out; saves money
+
+[Standard]
+- default
+- provide best-effort ordering 
+- possibiility for duplicates
+
+[FIFO]
+- order is strictly preserved
+- no duplicates
+- 300 TPS (transactions) limiit
+
+
+SNS
+------
+- notififcation service used to push messages to subscribers
+- pub/sub model
+
+
+
+SES
+------
+- email messaging service
+- send and receive email (delivered to S3)
+
+
+
+Kinesis
+----------
+
+
+Elastic Beanstalk
+-----------------------
+
+
+
+CI/CD
+-------
+
+[Code Commit]
+- soure and version control provided by AWS
+
+
+[Code Deploy]
+
+appspec.yml
+  scripts/
+  config/
+  source/
+
+In-Place Deployment - updates the current instances in the depolyment in a serial fashion
+
+Blue/Green - deploys new instances which will host the latest verison of the code without taking you current instances offline
+
+[BroadStages]
+- BeforeAllowTraffic (before loadbalancer registration)
+- AllowTraffic (registation)
+- AfterAllowTraffic (post registration)
+
+[Lifecycle Event Hooks]
+- App Stop
+- Download Bundle
+- BeforeInstall (before copy)
+- Install (copy)
+- AfterInstall
+- App Start
+- Validate Service
+
+
+
+
+[Code Pipeline]
+
+
+
+ECS
+------
+
+
+CloudFormation
+----------------------
+Transform - allows you to run/reuse snippets of code (e.g. Lambda, S3) outside of the main template
+
+[Nested Stacks]
+- enables re-use of CloudFormation code for common use case
+- referenced within a main template
+
+AWS::CloudFormation::Stack
+TemplateURL: https://s3.amazonaws.com/../template.yml
+
+
+
+SAM
+-------
+- Serverless Application Model: extention to Cloudformation used to define Serverless Applications
+- SAM CLI interface
+- templates are prefaced with the "Transform"; this lets CloudFormation know it is a SAM deployment 
+
+sam package
+sam deploy 
+
+
+IAM
+------
+
+[Cognito]
+- provides web ID federation (sign-up, sign-in)
+- acts as an identity broker (key cloak) between IDP's like Facebook, Google, etc
+
+User Pools - user directories used to manage sign-up and sign-in functionality
+
+Identity Pools - provide temporary AWS credentials in order to interface with AWS services
+
+IAM Role -> Identity Pool -> provides unauthenticated users the ability to query dynamoDb
+*without this setup queries to the db would fail for anyone who is not authenticated
+
+
+[Policies]
+AWS Managed - created and maintained by AWS
+
+Customer Managed - created and maintained by you
+
+In-Line - one-to-one relationship between the entity and the policy; cannot be attached to other users and groups (unless done explicitly; does not scale well)
+
+[STSAssumeRole]
+- allows customers to take tokens provided by successful authentication workflows to IDP's like Facebook/Google and use them in the assume-role-with-web-identity API call in order to get temporary AWS crednetials
+
+
+

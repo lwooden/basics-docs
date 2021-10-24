@@ -2,10 +2,16 @@ Observability Basics
 
 "Causes are infinite! Monitoring for causes is a path to ruin!" 
 
+Observability - a property of a system (number of application request handled processed); a measure of how well internal states of a system can inferred from knowledge of its external outputs (log, metric, trace)
+
 - good ways to look into your application and understand how they function
 - improve the understanding of complex systems
 - help us more quickly grasp the impact of changes and the nature of incidents
 
+Monitoring - the act of taking data from an observable system and determining health/performance
+
+Observability is the ADJECTIVE!
+Monitoring is the VERB!
 
 3 Pillars of Observability
 --------------------------------
@@ -13,7 +19,16 @@ Logs
 Metrics
 Traces
 
-
+Deteck
+   Investigate
+      Remediate
+      
+      
+Performance Monitoring
+   Troubleshooting
+      Right Sizing
+      
+      
 - structure your logs (JSON, key/value pairs)
 - we do not want to write regex expressions for all of your logging!!
 - get metric libraries (open-tracing)
@@ -76,3 +91,12 @@ Collect -> Monitor -> Analyze
 Getting down to request level metrics (latency, service interdependency) -> Tracing
  
 Put sensors in place so you can see what is going on
+
+
+Observability-As-A-Code
+ ----------------------------------
+ There are "some" things that I can well define
+ - cloudwatch agent configurations (pulumi)
+ - cloudwatch dashboard configs (pulumi)
+ - SNS topics
+

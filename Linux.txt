@@ -27,6 +27,18 @@ script recorded_session.txt // starts recording my terminal session in this file
 script --timing=recorded_sessions.txt  
 scriptreplay --timing=recorded_session.txt
 
+Working with Containers
+--------------------------------
+/sys/fs/cgroup - location where the kernel writes fata pertaining to cgroups (e.g. memory, cpu)
+*docker creates its 
+
+lsns - list available namespaces on a machine (based on users context)
+
+getpcaps <process-id> - describes the "capabilities" granted to a particular thread/process (e.g. CAP_NET_RAW, CAP_SYS_BOOT
+
+setcap 'cap_net_raw+p' <executable> - adds new capability to to a file
+
+
 
 Login Shell/ Non-Login Shell + .bashrc .bash_profile /etc/profile
 -----------------------------------------------------------------
