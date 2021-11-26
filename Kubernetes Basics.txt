@@ -90,6 +90,12 @@ kubectl config view
 kubectl config current-context 
 kubectl config use-context arn:aws:eks:us-east-1:548883107094:cluster/alaffia-eks-cluster-prod
 
+kubectl config get-clusters || delete-cluster <CLUSTER_NAME>
+kubectl config get-contexts || delete-context <CLUSTER_NAME>
+kubectl config get-users || delete-user <CLUSTER_NAME>
+
+
+
 
 kubectl get nodes
 kubectl label nodes <node-name> purpose: reports-services
