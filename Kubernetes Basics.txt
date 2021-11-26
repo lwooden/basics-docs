@@ -83,8 +83,13 @@ AWS EKS 1-Node Cluster Setup (DEV)
 ----------------------------------------------
 
 eksctl create cluster --name=lowk8 --nodes=1 --node-type=m5.large --zones=us-east-1a,us-east-1b
-
 eksctl delete cluster --region=us-east-1 --name=lowk8
+
+aws eks update-kubeconfig --name <CLUSTER_NAME>
+kubectl config view
+kubectl config current-context 
+kubectl config use-context arn:aws:eks:us-east-1:548883107094:cluster/alaffia-eks-cluster-prod
+
 
 kubectl get nodes
 kubectl label nodes <node-name> purpose: reports-services

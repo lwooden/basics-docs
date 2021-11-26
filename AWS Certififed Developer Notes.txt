@@ -271,6 +271,10 @@ CLOUDWATCH METRICS
 X-RAY
   enables tracing to get extra info about requests in API Gateway
   gives you end-to-end full picture
+  
+  
+[Authentication + Authorizatoin]
+RE-WATCH
 
   
 
@@ -476,10 +480,123 @@ SES
 
 Kinesis
 ----------
+- collect, process, analyze streaming data in real-time
+- can use for applicaiton logs, metrcis, website click streams, IOT telemetry
+- partition keys determine what shared data is written to
+
+Stream
+  Shard 1
+  Shard 2
+  Shard 3
+
+[Data Streams]
+- billing is per shard
+- data is retained for 1 day (default) up to 365 days
+- can reprocess and replay data
+- once data is inserted into Kinesis, it is immutable
+
+PRODUCERS
+  kinesis agent, application, client, sdk
+  data blob can be up to 1MB
+  1MB/sec or 1000 records per shard
+
+CONSUMERS
+  apps, lambda, firehose, analytics
+  2MB/sec per shard across all consumers - classic fan out (pull)
+  2MB/sec per consumer per shared - enhanced fan out (push)
+  
+--APIs--
+describe-stream  -> referece the stream to get the shard ID
+get-shard-iterator -> reference the stream and shard ID to get a iterator to read from the shard
+get-records -> reference the iterator to begin reading from the shard (from the beginning, middle, or end)
+
+  
+[Shard Splitting + Merging]
+
+SPLITTING
+  used to divide a "hot" shard
+  cannot split more that 2 shards in a single operation
+  increase shard throughput
+  increase cost
+  old shard will be closed and data will expire according to retention period
+  
+MERGE
+  used to merge "cold" shards
+  cannot merge more that 2 shards in a single operation
+  decreae throughput
+  decrease cost
+  old shard will be closed and data will expire according to retention period
+  
+  
+
+[Firehose]
+- fully managed service that can load streaming data into S3, Redshift, Elasticsearch, 3rd party, custom endpoints (e.g. destinations)
+- near real time
+- automated scaling
+- no storage/no replay
+- can transform data however you like using Lambda
+
+
+[Analytics]
+- perform real-time analytics on Kinesis Streams using SQL
+- create additional streams out of real-time queries 
+
+
+
+
 
 
 Elastic Beanstalk
 -----------------------
+
+[Web Envirobment vs Worker Environment]
+
+WEB Environments 
+   receive distributed traffic through ALBs
+WORKER 
+   pull/push messages onto a SQS Queue
+   can use cron.yaml file in the root for long tasks
+
+An "application" can have many "environments"
+
+[Deployment Modes]
+
+ALL-AT-ONCE: all instances are replaced in parallel; there will be downtime
+
+ROLLING: updates a few instances a time before moving on to the next batch 
+
+ROLLING W/ ADDITIONAL BATCHES: similar to rolling, but provisiong new instances in batches and leaves the current batch untouched
+
+IMMUTABLE: spins up intances in a new temporary ASG, deploys new version to the ASG, and gradually moves over the new version into the current ASG and terminates v1 instances in the current ASG
+
+CANARY/TRAFFIC SPLITTING: spins up instances in a new temporary ASG; small amount of traffic is sent to the temp ASG for a set period of time; gradually moves over the new version into the current ASG and terminates v1 instances in the current ASG
+
+BLUE/GREEN: deploy v2 in a completely separate "environment"; the new "green" environment can be validated independently and rolled back if necessary; can use Route53 to split traffic between the blue and green environments and then permanently direct traffic to new environment when ready
+
+[Lifecycle Policy]
+- Beanstalk can only hold 1000 versions of your app
+- older versions can be deleted via policy based on time and space (how many to hold onto)
+- versions that are deleted in beanstalk can be maintained in s3 as a backup
+
+
+[Extensions]
+- provides a mecahnism to programmatically defined the resources you see in the console in your code
+.ebextensions/ must be in the root of the project
+files in this directory MUST be yaml/json formatted and have a .config extension
+any resources defined in .ebextensions directory will be terminated if the environment goes away
+
+[Cloning]
+- clone an environment with the exact same config
+- useful for testing
+- can modify settings AFTER cloning is complete
+
+
+[Docker]
+
+dockerun.aws.json file - a task definition file
+
+Single Docker Deployment - does not use ECS
+Multi-Container Deployment - deploys a ECS Cluster w/ a Task Definition
 
 
 
@@ -489,6 +606,21 @@ CI/CD
 [Code Commit]
 - soure and version control provided by AWS
 
+[Code Build]
+
+- by default containers arre launched outside your VPC
+- can configure to run inside your VPC
+
+buildspec.yml (root)
+
+env
+  phases
+     install 
+     pre_build
+     build
+     post_build
+  artifacts
+  
 
 [Code Deploy]
 
@@ -519,6 +651,36 @@ Blue/Green - deploys new instances which will host the latest verison of the cod
 
 
 [Code Pipeline]
+
+
+
+[Code Star]
+- Integrated solution that groups together GitHub, CodeCommit, CodeBuild, CodeDeploy, CloudFormation, CloudWatch, Beanstalk, etc
+- Quickly create CI/CD ready projects using CodeStar 
+
+
+[Code Artifact]
+- allows AWS to act as a "proxy" between you and public 3rd party repositories (pip, npm, maven, nuget)
+- all of the traffic remains within your VPC
+- you can also publish your own artifacts
+
+AWS Code Artifact
+  Domains
+    Repository A
+    Repository B
+
+
+
+[Code Guru]
+- ML powered service for automated code reviews and application performance recommendations
+- analysis commits
+
+CodeGuru Reviewer - automated code review for static code analysis
+
+CodeGuru Profiler - recommendations about application performance during runtime
+
+
+
 
 
 
