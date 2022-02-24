@@ -3,9 +3,10 @@ Go Basics
 
 Getting Started
 --------------------
-
 go mod init <module_name>
   creates god mod file in project
+  
+go mod tidy
 
 go get <package>
   fetches a 3rd party package and downloads it to $GOPATH/pkg/mod
@@ -17,6 +18,41 @@ go run main.go
 go build
   compiles project into a binary
   
+
+  
+Pointers & References
+------------------------------
+
+When we call a function that takes an argument, that argument is copied to the function
+
+func zero(x int) {
+  x = 0
+  
+}
+func main() {
+  x := 5
+  zero(x)
+  fmt.Println(x) // x is still 5
+}
+
+In the instance above, I do not intend modify the original value of "x" in the main function
+
+func zero(xPtr *int) {
+  *xPtr = 0
+}
+func main() {
+  x := 5
+  zero(&x)
+  fmt.Println(x) // x is 0
+}
+
+Pointers reference a location in memory where a value is stored rather than the value itself. (They point to something else) By using a pointer (*int) the zero function is able to modify the original variable.
+
+In Go a pointer is represented using the * (asterisk) character followed by the type of the stored value. In the zero function xPtr is a pointer to an int.
+
+Finally we use the & operator to find the address of a variable. &x returns a *int (pointer to an int) because x is an int. This is what allows us to modify the original variable. &x in main and xPtr in zero refer to the same memory location.
+
+
   
 Data Structures
 --------------------
@@ -31,8 +67,23 @@ Maps
 
 
 
-Control Flow + Iteration
+Control Flow & Iteration
 --------------------------------
+
+func contains(vId string) ([]verse, bool) {
+
+	var tempSlice []verse
+
+	for _, item := range verses {
+
+		if item.ID == vId {
+			tempSlice = append(tempSlice, item)
+			return tempSlice, true
+		}
+	}
+
+	return tempSlice, false
+}
 
 
 
