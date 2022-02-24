@@ -1,0 +1,50 @@
+Go Basics
+
+
+Getting Started
+--------------------
+
+go mod init <module_name>
+  creates god mod file in project
+
+go get <package>
+  fetches a 3rd party package and downloads it to $GOPATH/pkg/mod
+  this MUST be done before "importing" the module and referencing in your project
+  
+go run main.go 
+  runs the main.go file in the current directory
+
+go build
+  compiles project into a binary
+  
+  
+Data Structures
+--------------------
+
+Structs
+
+Arrays
+
+Slices
+
+Maps
+
+
+
+Control Flow + Iteration
+--------------------------------
+
+
+
+  
+  
+  
+Web Frameworks
+------------------------
+GIN
+
+
+ORMs
+---------
+
+
