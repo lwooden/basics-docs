@@ -1,43 +1,41 @@
 Helm Basics
 
-// Add a remote repo and pull in latest charts
-helm repo add test-charts http://ec2-3-80-179-46.compute-1.amazonaws.com:8080
-helm repo update
+Add a remote repo and pull in latest charts
+    helm repo add test-charts http://ec2-3-80-179-46.compute-1.amazonaws.com:8080
+    helm repo update
+    
+Push to remote helm repo
+    helm push graphql-api/ test-charts
 
-// Scafold blank chart project
-helm create graphql-api 
+Scafold blank chart project
+    helm create graphql-api 
 
-// Check syntax before pushing
-helm lint graphql-api 
+Check syntax before pushing
+    helm lint graphql-api 
 
-// Push to remote helm repo
-helm push graphql-api/ test-charts
+Display all charts in a remote repo
+    helm search repo test-charts 
 
-// Display all charts in a remote repo
-helm search repo test-charts 
+Show installed charts 
+    helm ls # default namespace
+    helm ls -n <namespace> # specific namespace
 
-// Show installed charts 
-helm ls # default namespace
-helm ls -n <namespace> # specific namespace
-
-
-// Install a release and pass runtime values
+Install a release and pass runtime values
 helm install 
   --set namespace=test 
   --set image.tag=e3e3140ad30ac965c5aef04e811fb629651d9fbb 
   graphql-api 
   test-charts/graphql-api
 
-// check the values you passed to a previous deployment
-helm -n <namespace> get values <release-name> 
+Check the values you passed to a previous deployment
+    helm -n <namespace> get values <release-name> 
 
-// upgrade an existing release
+Upgrade an existing release
 helm upgrade 
   --namespace={{env.NAMESPACE}} /
   --set image.tag=e3e3140ad30ac965c5aef04e811fb629651d9fbb /
   graphql-api
   test-charts/graphql-api
   
-  
-  // uninstall a release
-  helm uninstall graphql-api 
+Uninstall a release
+    helm uninstall graphql-api 
