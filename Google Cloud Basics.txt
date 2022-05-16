@@ -1,0 +1,436 @@
+Google Cloud Basics
+
+
+Geographical Concepts
+-----------------------------
+Regions (us-east1)
+   Zones (i.e. AWS Availability Zones; us-east1b)
+     Edge Locations (i.e AWS Cloud Front, Azure Front Door)
+     
+     
+Cloud SDK and CLI
+---------------------------------    
+gcloud (compute engine, iam, etc)
+    gcloud <component> <entity> <operation> <args> <flags> // sytanx
+	gcloud init
+	gcloud auth login
+	glcoud config
+	
+gsutil (cloud storage)
+
+bq (big query)
+
+kubectl (k8)
+
+
+
+Account Structure
+-----------------------
+
+Organization
+	Folder (Departments or Teams)
+		Project (i.e. Azure Subscription)
+			Resources (all resources are bound to a project)
+     
+A project includes a set of users, APIs, billing, authentication, and monitoring
+
+
+Billing
+---------
+
+Payments Profile -> Billing Acount -> Project 1 + Project 2 ...
+
+[ Methods ]
+
+Self-Service
+	online billing linked to a debit/credit card
+Invoiced
+	handled via wiretransfers and mail (checks)
+
+
+APIs
+---------
+- allow you to interact with GCP services programmatically
+- through the API Management Console you can monitor the requests, traffic, error and latency on any ENABLED API
+- can create API credentials
+- have access to the API library
+
+
+
+IAM
+--------
+Who (Identity) -> Has What Access (Role) -> For Which Resource
+
+Member
+	Role
+		Condition
+			Metadata
+				Audit Config
+
+[ Member ] 
+- email address associated with a user, service account, or google group
+
+[ Role ]  
+- collection of permissions that indicate what a member can do on a resource
+- permissions are not granted to users directly, but to roles
+- permissions correspond 1-1 with REST API methods
+
+[ Types of Roles ]
+
+Primative
+	historical roles that existed in GCP
+	include Owner, Editor, Viewer
+	avoid these as they are too broad
+	
+Predefined
+	finer grained access-control 
+	created and maintained by Google
+	
+Custom
+	user defined 
+	
+[ Condition ]
+- grant resource access to identities only if configured conditions are met
+
+
+[ Policy ]
+- 1 policy per resource
+- 100 conditional bindings per policy
+- 1500 members or 250 Google groups per policy
+- takes up to 7 minutes for policies to update globally
+
+
+[ Service Accounts ]
+- associated with a public key pair (user or googled-managed)
+- can be attached to resources (i.e. AWS Instance Role)
+- can be impersonated by people (i.e. Assuming a role)
+
+User-Manged
+	you create the name
+	<service-account-name>@<project-id>.iam.gserviceaccount.com
+	
+Default
+	<project-id>@appspot.gserviceaccount.com
+	<project-number>-compute@developer.gserviceaccount.com
+
+
+Google-Managed
+	
+
+
+Cloud Identity Domain (i.e. Active Directory)
+	google accounts that are in an organization, but ARE NOT tied to any GSuite applications or features
+	AllAuthentitcated Users  - all service accounts or users on the internet who have authenticated with a Google account
+	AllUsers - anyone who is on the internet, including authenticated and unauthenticated users
+
+
+
+Networking
+---------------
+
+VPC
+	Subnets
+	 	Routes
+	 		Firewall Rules
+	
+
+[ VPC ]
+- no concept of an "Internet Gateway" (like Azure)
+- instances will have internet access IF they have an external IP assocaited with them
+	
+[ Subnets ]
+- subnets are associated with a REGION; instances are associated with a ZONE
+- by default instances MUST have a public IP to access Google Cloud APIs (cloud storage, etc)
+- this can be done internally by enabling "Private Google Access" on the subnet
+**subnets can be EXTENDED without stoping resourses or deleting the current subnet -- UNIQUE
+
+Reserved IP Address Per Subnet
+	1st address - network
+	2nd address - gateway
+	2nd-to-last address - future use
+	Last address - broadcast
+
+[ Routes ] 
+
+Default Route
+	path to the internet
+	path to Private Google Access (APIs)
+	
+Subnet Route
+	defines path to each subnet in the VPC
+	
+Custom Routes
+	static - created for VPN tunnels
+	dynamic - for cloud routers and dynamically routed VPN appliances
+
+[ Firewall Rules ]
+ - used to determine what flows into, out of, and within the VPC
+ - the lower the priority number the higher the importance
+ - network tags serve as "security groups" which can be applied to instances in order to apply certain rules directly to groups of instances
+ 
+
+[ VPC Peering ]
+- no overlapping CIDRs
+- non-transitive
+- must create ingress firewall rules on both ends 
+- network tags do not traverse VPCs
+
+
+[ Cloud Loadbalancing ]
+- can be global, regional, external, internal
+- are supported by backend services 
+
+HTTPS
+	only L7 option
+	distrubutes traffic based on content or geo location
+	url or content based (forwarding rules)
+
+SSL Proxy
+	L4
+	SSL connections are terminated and proxied to backend services
+	*support for TCP w/ SSL offload
+	
+TCP Proxy
+	L4
+	client TCP connections are terminated at the LB 
+	used for non-http traffic 
+	foward traffic as SSL or TCP
+	
+Network
+	L4
+	not a proxy
+	
+	
+Internal
+	L4
+	accessible within the VPC
+	
+
+[ Flow Logs ]
+
+[ Cloud VPN ]
+- must configure a "Peer VPN Gateway" and "Cloud VPN Gateway"
+- HA VPN: two interfaces and two external IPs
+- Classic VPN: single inferace and single external IP
+
+[ Cloud DNS ]
+- resembles Route 53
+
+
+Compute
+-------------
+
+Compute Engine
+	used for virtual machine workloads (i.e. EC2)
+	
+[ Classes ] 
+General Purpose - E2, N2 N2D, N1
+Memory Optimized - M1, M2
+Compute Optimized - C2
+Accelerator Optimized - A2
+
+[ Managed Instance Groups ]
+- similar to Auto-Scaling Groups
+- instances that are managed as a single entity
+- can be scaled out and scaled in based on a policy (i.e. CPU)
+- deployed across multiple zones
+
+Instance Template -> Instance Group
+
+
+[ Access Control ]
+- you can create custom SSH keys and "upload" them to the instance details (metadata)
+- you can let Google create/manage the SSH keys that you use to connect to your instances
+
+[ Snapshots ]
+- incremental by default
+- stored in Cloud Storage (regional or mult-region)
+- can be used to create a disk in any region/zone regardless of snapshot source locaiton -- UNIQUE 
+
+[ Monitoring & Logging ]
+- install the cloud monitoring agent (based on Fluentd)
+- streams data directly to Cloud Logging service
+- can also be routed to cloud storage for archiving
+
+
+Storage
+-----------
+
+Cloud Storage
+	used for object storage (i.e. S3)
+	buckets are the foundational construct
+	offers (4) discreet classes: multi-regional, regional, nearline, coldline 
+	different classes represent cost efficiency and disaster recovery options
+	can encrypt data with CMKs or Google Managed Keys
+	
+
+Cloud Filestore
+	used for file storage (i.e. EFS)
+	fully managed NFS service
+	
+
+Persistent Disk (Block Storage)
+	network storage disks that back compute instances (i.e. EBS)
+	encrypted by default
+	Standard (HDD) || Balanced (General Purpose) || SSD
+	Zonal Persistent Disk - default option (1 zone; 1 region)
+	Regional Persistent Disk - replicates between 2 zones
+	Local SSD - very high IOPs and low latency (physically attached; highest performance)
+	
+	
+	
+Databases
+---------------
+
+[ SQL ]
+
+Cloud SQL
+  highly available 
+  supports MySQL, Postgres, and SQL Server engines
+  
+Cloud Spanner
+	enterprise grade
+	globally distributed
+	strongly consistent cloud first db service
+	
+
+[ No SQL ]
+
+Cloud BigTable
+	wide-colum store
+	large scale
+	low-latency
+
+Firestore
+	rich mobile, web, and IOT applications
+	
+Firebase
+	stores and syncs data between users in real time for mobile sign-ins, applications, ads, and chat
+	
+Memorystore
+	fully managed Redis and Memcached databases
+	milisecond data access
+	
+	
+
+Kubernetes
+------------------
+
+Google Kubernetes Engince (GKE)
+	managed Kubernetes service
+	GKE Standard: pay per node (i.e EKS)
+	GKE Autopilot: pay per pod (i.e Fargate)
+	
+	
+	
+Severless
+--------------
+
+App Engine (i.e Azure App Service)
+- serverless platform thst runs your workloads as code or containers so there are no servers to manage
+- supports multiple versions of your application via traffic splitting (percentage distribution)
+- integrates with other services like load balancer and cloud sql 
+
+Standard Mode
+	apps run in Sandbox environment
+	specfic runtime versions used
+	intended to run for free or at a very low cost
+	application can scale to 0 instances when there is no traffic
+	cost based on instance hours
+
+Flexible Mode
+	apps run on docker containers
+	any versions of runtimes can be used
+	cost based on VM resources
+
+Application
+	Service
+		Version
+			Instances
+	
+
+
+Cloud Functions (i.e AWS Lambda)
+- only ONE trigger can be bound to a function at a time
+- source code is deployed to a cloud storage bucket as a zipfile -> Cloud Build prepares a container image -> Pushes it to Container Registry -> Cloud Functions uses this image to run your code
+
+
+[ HTTP Functions ] 
+- triggered by HTTP requests; there is no API gateway required -- UNIQUE
+
+[ Backround Funcitons ]
+- triggered by events (Pub/Sub, changes in a bucket)
+
+
+Cloud Build (i.e AWS CodeBuild
+
+Cloud Run (i.e. AWS CodeDeploy)
+
+Cloud Source Repository
+
+
+
+Big Data
+-------------
+
+Dataproc
+	managed service for processing large datasets
+	Hadoop, MapReduce, Apache Spark, Pig/Hiv 
+	takes under 90 secs to provision 
+	can turn off when not in use -- UNIQUE
+	
+DataFlow
+	unified serverless stream and batch processing service
+	executes Apache Bean processes
+	
+BigQuery
+	fully managed data warehouse for data analytics
+	built-in ML features
+	can stream at 100k rows per second
+	Standard SQL
+	
+Pub/Sub (i.e SNS)
+	asynchronous messaging service
+	
+Datalab
+	for visualiing, querying, and interacting with your data using programming languages
+	
+	
+	
+Operations Suite (i.e Stackdriver)
+--------------------------------------------
+- a suite of tools used for logging, monitoring, and application diagnostics
+
+Monitoring
+	requires setting up a workspace (i.e. Azure Analyics Workspace)
+	supports multi-project setup
+	leverages an agent that streams data from Compute Engine to the service
+	supports GKE
+	alerting policies
+	
+Logging
+	can accept logs from Google, AWS, on-prem resources
+	supports audit logs (console), access transparency logs (what GCP support staff does), agent logs
+	Log Viewer shows logs for one project
+	
+Error Reporting
+	real time error monitoring and alerting
+	integrated into Cloud Functions, and App Engine (standard)
+	
+Debugger
+	debugs a running application
+	
+Trace
+
+Profiler
+	
+	
+	
+
+
+
+
+
+	
+
+
