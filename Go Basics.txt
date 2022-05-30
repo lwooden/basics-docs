@@ -19,6 +19,14 @@ go build
   compiles project into a binary
   
 
+ Variable Declaration
+ ---------------------------
+ 
+ var myString string // intialize to zero value
+ myString  = "Low"
+ 
+ x := "Hello World" // shorthand way to take the type or result on the right and assign it to the variable on the left
+  
   
 Pointers & References
 ------------------------------
