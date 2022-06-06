@@ -28,6 +28,16 @@ go build
  x := "Hello World" // shorthand way to take the type or result on the right and assign it to the variable on the left
   
   
+ String Interpolation 
+ ------------------------ 
+ - the "f" stands for formatted string
+ 
+   name := "Low"
+   output := fmt.Sprintf(Hello my name is %a!, name)
+   
+   Errorf("Expected deck length of 16, but got %d!", len(d))
+
+  
 Pointers & References
 ------------------------------
 
@@ -65,14 +75,20 @@ Finally we use the & operator to find the address of a variable. &x returns a *i
 Data Structures
 --------------------
 
-Structs
+[ Structs ] 
+- talk about receivers
 
-Arrays
+[ Arrays ] 
+- discuss the difference between this and slices
+- common methods
 
-Slices
+[ Slices ] 
 
-Maps
+[ Maps ] 
 
+
+Functions
+------------
 
 
 Control Flow & Iteration
@@ -82,7 +98,7 @@ func contains(vId string) ([]verse, bool) {
 
 	var tempSlice []verse
 
-	for _, item := range verses {
+	for _, item := range verses { // _ ignores the index value since we don't need it
 
 		if item.ID == vId {
 			tempSlice = append(tempSlice, item)
@@ -94,7 +110,14 @@ func contains(vId string) ([]verse, bool) {
 }
 
 
+Error Handling Patterns
+-------------------------------
 
+
+Testing
+---------
+- files must have a _test in the name (e.g. deck_test.go)
+- test are executed by running `go test`
   
   
   

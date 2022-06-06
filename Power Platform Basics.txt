@@ -1,0 +1,118 @@
+Power Platform Basics
+
+Terminology
+-----------------
+
+Entity -> Table
+Field -> Column
+Record -> Row
+Option Set -> Choice
+Common Data Service -> Dataverse
+
+
+What Is Power Platform?
+----------------------------------
+- a suite of tools that includes Power Apps, Power Automate, Power BI, and Power Virtual Agents
+- these core services are built upon other components called Connectors, AI Builders, and Dataverse
+- these solutions also integrate with other Microsoft Platforms like Office 365, Azure, Dynamics 365
+- this suite is leveraged in order to quickly put together solutions
+- aimed at "Citizen Developers" (people who do not have Comp Sci degrees and are not Developers by trade)
+
+
+Power Apps
+-----------------
+
+[ Canvas Apps ]
+- builds apps in a drag and drop fashion from scratch, templates, or other data sources (e.g. Sharepoint List)
+
+[ Portal Apps ]
+- builds pubic facing web apps that can be browsed (anonymous or authenticated)
+- allows users to browse data contained in the Dataverse
+
+[ Model Driven Apps ]
+- builds apps on top of the Dataverse using models/relationships (e.g. think ORM)
+
+
+Power Automate
+----------------------
+- used to automate workflows and processes
+- these flows have to connect to datasources via Connectors
+
+Connectors -> Triggers (button click) -> Actions
+
+
+Power BI
+-----------
+- used to visualize and analysis data to provide intelligence in order to make organizational decisions
+
+
+Power Virtual Agents
+---------------------------
+- can be used to create chatbots that interface with customers in order to provide a service (e.g. customer support)
+
+
+
+Core Components
+------------------------
+
+[ Connectors ]
+- wrappers around APIs
+- the bridge between datasources and power applicaitons
+
+Triggers
+	notification when an event occurs
+		Polling Triggers
+		Pushing Triggers
+
+Actions
+	interaction with/on a datasource
+	
+	
+Standard Connectors 
+	interfaces to standard apps like Sharepoint, Outlook, etc
+
+Premium Connectors
+	interfaces for more complex platforms like Azure SQL, Workday
+
+Custom Connectors
+
+
+[ Dataverse - Common Data Service (CDS) ]
+- scalable database service that is used to store and manage data that's used by the Power Platform
+- is created on a per environment basis
+
+Security
+	authentication managed via Azure AD (with MFA and Conditional Access)
+	row/field level security can be enforced as well
+	
+Storage
+	stores physical data in Azure
+	
+
+Import/Export
+	can get data in and out using APIs, webhooks, and data exports
+
+[ AI Builder ]
+- provides pre-built and trainable AI models 
+
+
+Structure
+------------
+
+Geographical Region (e.g. United States)
+	Environments
+		Production Environment
+			- used for permanent workloads that will run in the organization
+		Default Environment
+			- automatically created by default for each Azure AD tenant
+			- should not be used for Production workloads due to limitations
+		Sandbox Environment
+			- non-production work
+		Trial Environment
+			- short term testing needs		
+		Developer Environment
+			- special environment restricted to a SINGLE user
+		Teams Environment
+			- auto created when Teams users start using Power Apps
+		
+

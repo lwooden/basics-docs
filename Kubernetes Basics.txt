@@ -94,8 +94,8 @@ kubectl config get-clusters || delete-cluster <CLUSTER_NAME>
 kubectl config get-contexts || delete-context <CLUSTER_NAME>
 kubectl config get-users || delete-user <CLUSTER_NAME>
 
-
-
+kubectl api-resources // list all resources currently available to you
+kubectl explain <resource> // list information about fields associated with the resource
 
 kubectl get nodes
 kubectl label nodes <node-name> purpose: reports-services
