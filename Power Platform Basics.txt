@@ -88,12 +88,32 @@ Security
 Storage
 	stores physical data in Azure
 	
-
 Import/Export
 	can get data in and out using APIs, webhooks, and data exports
 
+
 [ AI Builder ]
 - provides pre-built and trainable AI models 
+- seprate licesning model for AI Builder
+
+Pre-Built Models
+	Business Card Reader Model -- from text
+	Language Detection Model -- from text
+	Entity Extraction Model -- from text
+	Sentiment Analysis Model -- from text
+	Key Phrase Extraction -- from text
+	Text Recognitiion -- from images
+	
+Custom AI Models
+	Form Processing
+		reading and saving from standard documents
+	Object Detection
+		recognize and count things in images
+	Prediction
+		will something happen based on historically data
+	Category Classification
+		categorize text by it's meaning so its easier to analyze
+	
 
 
 Structure
@@ -115,4 +135,79 @@ Geographical Region (e.g. United States)
 		Teams Environment
 			- auto created when Teams users start using Power Apps
 		
+		
+		
+Administration & Security
+---------------------------------
+
+Security Hierarchy
+	Identity Services (Azure AD)
+	Licensing (per user)
+	Governance & Compliance (isolation of resoures by region and environment)
+	Role-Based Security Model (roles can be assigned at the environment, resource, and data level)
+	Organizational Hierarchy (division of users into Business Units and Teams within an environment)
+	Pre-Defined Roles
+	
+	
+Environment
+	Businesss Unit (Sales & Sales)
+		Teams (Ops & Production)
+		
+**Access can be deligated by business unit or even more granularly, by teams within a business unit
+
+[ Pre-Defined Security Roles ]
+
+Environment Admins
+	super users
+
+Environment Maker
+	can create resources but cannot access data within the environment
+	
+System Administrator
+	similar to EA
+	
+System Customizer
+	can customize; only can view records/entities they create
+	
+	
+[ Data Loss Prevention (DLP) Policies ]
+- you can "classify" connectors according to their data sensitivity
+
+Connectors		Classification
+---------------		------------------
+Twitter				Non-Business
+Sharepoint		Business
+Facebook			Block
+
+- DLPs can be "scoped" at the AD Tenant or Environment level
+- they can also be configured to "exclude" certain environments
+- a default group can be set for all connectors created so that there is consistency when they are first created 
+
+
+[ Data Privacy ]
+
+Users
+	clients access the GUI via TLS encryption via the browser
+Endpoint
+	 API endpoints are also protected via TLS
+Data Gateway
+	encrypted data transfer for on-prem connections
+Dataverse (CDS)
+	transparent data encryption
+	
+	
+[ Compliance & Accessibility.]
+
+Trust Center
+
+Data Location
+
+GDPR 
+
+Compliance Manager
+
+Accessibility Checker
+	
+	 
+	
 

@@ -97,6 +97,10 @@ kubectl config get-users || delete-user <CLUSTER_NAME>
 kubectl api-resources // list all resources currently available to you
 kubectl explain <resource> // list information about fields associated with the resource
 
+kubectl create deployment my-deployment --image=nginx --dry-run -o yaml // generates a sample manifest imperatively
+
+kubectl scale deployment my-deployment --replicas 5 // scales replicaset to 5
+
 kubectl get nodes
 kubectl label nodes <node-name> purpose: reports-services
 

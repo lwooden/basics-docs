@@ -313,21 +313,28 @@ Memorystore
 	
 	
 
-Kubernetes
-------------------
+Kubernetes + Containers
+----------------------------------
 
-Google Kubernetes Engince (GKE)
-	managed Kubernetes service
-	GKE Standard: pay per node (i.e EKS)
+[ Google Kubernetes Engince (GKE) ]
+- managed Kubernetes service
+
+GKE Standard: pay per node (i.e EKS)
 	GKE Autopilot: pay per pod (i.e Fargate)
+	
+[ Artifact Registry ]
+- think AWS Elastic Container Repository (ECR)
+- platform used to host container repositories similar to Docker Hub
+- used by peer services like Cloud Run and App Engine in order to deploy containers
 	
 	
 	
 Severless
 --------------
 
-App Engine (i.e Azure App Service)
-- serverless platform thst runs your workloads as code or containers so there are no servers to manage
+[ App Engine ]  
+- think Azure App Service
+- serverless platform that runs your workloads as code or containers so there are no servers to manage
 - supports multiple versions of your application via traffic splitting (percentage distribution)
 - integrates with other services like load balancer and cloud sql 
 
@@ -350,23 +357,26 @@ Application
 	
 
 
-Cloud Functions (i.e AWS Lambda)
+[ Cloud Functions ] 
+- think AWS Lambda and Azure Functions
 - only ONE trigger can be bound to a function at a time
 - source code is deployed to a cloud storage bucket as a zipfile -> Cloud Build prepares a container image -> Pushes it to Container Registry -> Cloud Functions uses this image to run your code
 
+HTTP Functions
+	triggered by HTTP requests; there is no API gateway required -- UNIQUE
 
-[ HTTP Functions ] 
-- triggered by HTTP requests; there is no API gateway required -- UNIQUE
-
-[ Backround Funcitons ]
-- triggered by events (Pub/Sub, changes in a bucket)
+Backround Funcitons
+	triggered by events (Pub/Sub, changes in a bucket)
 
 
-Cloud Build (i.e AWS CodeBuild
+[ Cloud Build ] 
+- think AWS CodeBuild
 
-Cloud Run (i.e. AWS CodeDeploy)
+[ Cloud Run ] 
+- think AWS CodeDeploy
 
-Cloud Source Repository
+[ Cloud Source Repository ]
+- think AWS CodeCommit
 
 
 
