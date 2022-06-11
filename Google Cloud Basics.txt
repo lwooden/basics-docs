@@ -374,6 +374,18 @@ Backround Funcitons
 
 [ Cloud Run ] 
 - think AWS CodeDeploy
+- platform that allows me to develop and deploy highly scalable containerized applications using my favorite language (Go, Python, Java, Node.js, .NET, and more) in a serverless manner
+- can deploy your applications as services or jobs
+
+Services
+	used to run code that responds to web requests, or events
+	can be controlled via versions for rollback, traffic splitting between versions, etc
+	can used Ingress settings to control whether the service is public or private
+	can scale to 0 and scale up based on request load -- UNIQUE
+	can set a minimum of (1) instances if absolutely needed
+
+Jobs
+	used to run code that performs work (a job) and quits when the work is done.
 
 [ Cloud Source Repository ]
 - think AWS CodeCommit

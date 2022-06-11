@@ -81,11 +81,20 @@ To test connectivity to a application I have to:
  
 AWS EKS 1-Node Cluster Setup (DEV)
 ----------------------------------------------
-
 eksctl create cluster --name=lowk8 --nodes=1 --node-type=m5.large --zones=us-east-1a,us-east-1b
 eksctl delete cluster --region=us-east-1 --name=lowk8
+aws eks update-kubeconfig --name <CLUSTER_NAME> // updates kube-config w/ credentials
 
-aws eks update-kubeconfig --name <CLUSTER_NAME>
+Azure AKS 1-Node Cluster Setup (DEV)
+----------------------------------------------
+deploy resource group, vnet, subnets, etc using pulumi
+
+az aks create --resource-group pulumi-dev-rg --name lowk8-aks --node-count 1 --enable-addons monitoring --generate-ssh-keys
+
+az aks delete --name lowk8-aks --resource-group pulumi-dev-rg
+
+az aks get-credentials --resource-group pulumi-dev-rg --name lowk8-aks // updates kube-config w/ credentials
+
 kubectl config view
 kubectl config current-context 
 kubectl config use-context arn:aws:eks:us-east-1:548883107094:cluster/alaffia-eks-cluster-prod

@@ -1,52 +1,747 @@
-Azure Fundamentals
+Azure Basics
 
-1. Resource Organization
+Azure Active Directory
+-----------------------------
+- azure ad tenants exist outside of the subscription 
+- they are associated (or shared) with a subscription via a trust relationship
+- they can also be associated with SaaS offerings (like O365)
+- subscriptions can only trust ONE Azure AD tenant
 
-Subscription 
- Region 
-  Tenant
-   Resouce Group
+[ Users ]
+Synced Users - replicated from on-premises AD infra
+Cloud Users - created directly in Azure AD
 
-2. Azure Active Directory
+[ Licesning ]
+- done on a per-user basis
 
-- extenstion of the benefits of an on-prem Domain Controller into the cloud
+[ Objects ]
+Users
+Groups
+	users can be assinged dynamically based on attributes (i.e. Department name)
+Service Principles
+	these are mapped to enterprise applications or other Azure resources
+	can be assumed by VMs (like Instance roles) instead of using access keys
+Devices
+	hybrird Azure AD join	
+	
+[ Authentication & Authorization ]
 
+Azure AD Connect #1
+	syncs users from on-prem AD structure
+	takes the password hash and then hashes it again, and then stores it in AAD
+	users can then authenticate against AAD and use the power of Cloud Auth
+	
+Pass-Through Authentication #2
+	for organizations that do not trust their user info being stored in the cloud
+	authentication request are sent to AAD -> request are stored in a queue
+	agents that are running on the on-prem DC are polling the AAD queue
+	processes those request and then sends back a response
 
-3. Virtual Networks
-
-- each subscription can have many virtual networks
-- cannot expand across regions
-- can be "linked" across regions
-
-VNet 1			VNet 2
- Subnet 1		 Subnet 1
-   Security Groups         Security Groups
- Subnet 2		 Subnet 2
-
-4. Virtual Machines (VMs)
-
-- organized into "resource groups" and launched in "virutal networks"
-
-
-5. Azure Storage
-
-- leverages the distrbuted storage model (multiple copies of data on multiple systems)
-- provisioned inside of a "resouce group"
-- allows those resources to use this storage
-
-Types:
-
-Blobs 
- Tables | act as shared excel spreadhseets or small databases; unique to Azure
-  Queues 
-   Files | act as remote "fileshares"; unique to Azure
-
-
-- Disc are encrypted by default
-- Users can chose to deploy w/ ssh keys or to define a user ahead of time
-- Virtual networks have the option for pushing traffic data to a log 
-- Virtual machines can be configured to shutdown daily (by default)
+Federation #3
+	
+	
+[ Azure Active Directory Domain Services - Traditional AD Service ]
+- creates (2) DCs that are fully managed
+- you do not have access to them
+- supports "basic" group policies
+- supplies Kerberos/NTLM/LDAP interfaces for legacy apps/systems
+**It is normally better to just extend your on-prem DC and setup custom DNS in Azure
 
 
+[ Self Service Password Reset ]
+- user must enroll in SSPR service in order to be able to verify identity of people trying to make changes to credentials
+- SSPR is enabled at the Tenant level and is licensed on a per-user basis
+- an authentication method must be set in the enrollment to help with verification (password, authenticator app, SMS, etc)
+- can be enabled for "All Users" or a "Group" of users in your AAD structure
+- can determine the number of auth methods needed to successfully reset (two-factor)
+- passwordreset.microsoft.com (URL for resets)
+
+
+[ MFA ] 
+- can be enfornced based on trusted IP list (e.g user in the corporate network don't have to use MFA)
+- can be enforced based on time-range using One-Time ByPass (e.g. 300 seconds, 1 hour)
+
+
+[ Identity Protection ]
+- enabled at the Tenant level and is licensed on a per-user basis (Premium P2 Licensing)
+- automates the detection and remediation of identity-based risks
+- provides data and reports within the portal
+- integrate with security monitoring tools
+- all about identifying RISK
+- User Risk Policy: 
+- Sign In Policy: 
+
+[ Conditional Access ] 
+- Premium P1 Licensing
+- Signal (IP, device used, risk level) + Decision (block or allow access) + Enforcement
+- more fine-grained policies than Identity Protection/MFA
+- can define specific applications, devices, location
+- can set to Report Only when just starting out in order to test drive policies in your organization
+
+
+[ PIM ]
+
+
+[ Access Reviews ]
+- go to Azure AD > Identity Governance > Access Reviews
+- must first onboard your Azure AD Tenant (P2 License Required)
+- create reviews
+- reviews access in the "Access Pane"
+- supports security group and app reviews
+
+
+Identity Management
+-----------------------------
+
+[ Managed Identities ]
+- act like Instance Roles in AWS
+- no need to store the secret like we do when we register an application 
+- supports several Azure Resources
+
+Azure Resource is assigned a Managed Identity
+Managed Identity establishes a Service Principal within Azure
+Azure Resources talk to the IMDS (Instance Metadata Service) to get tokens in order to invoke actions against other services
+
+App Service > Identity > System Assigned > Change status to "ON"
+
+
+[ User Identities ]
+
+
+Governance
+----------------
+
+[ Org Strucuture ]
+
+Azure Tenant
+  Subscriptions 
+     Resource Groups
+     
+**tags can be applied at the sub, rg, and resource level 
+
+[ Management Groups ]
+- allows us to apply policies easily to subscriptions 
+
+Root Management Group
+  top of the hierarchy 
+  policies applied here are "global"
+
+Management Group Hierarchy
+  up to 6 levels 
+  one management group can have multiple children 
+  one mg sub can only have one parent 
+
+Subscriptions 
+  function like the "children"
+  policies flow down to the subs
+
+[ Azure Policy ]
+
+Monitoring for a condition 
+  does the resource “location” property = “US West”?
+
+Trigger
+  what to do if the condition is met
+  append, audit, deny, modify 
+
+Assignment 
+  policies must be assigned to a scope 
+  management group, subscription, resource group, resource 
+
+[ Initiatives ] 
+- an object that ties together multiple policies in order to achieve an overall goal 
+
+// Example //
+Location (Scope): Low Dev Subscription
+Name: Allowed Locations
+Definitions (Policies): 1) allowed locations 2) allowed locations for resource groups 
+
+[ Blueprints ]
+
+
+Secrets Management
+-----------------------------
+
+[ Azure Key Vault ] 
+- functions like Secrets Manager in AWS
+- the endpoint for your vault can be set to public or private
+
+KeyVault (container - HSM w/ API)
+  Secret Information (secrets, keys, certificates, etc)
+     Access Policies (security)
+     
+     
+
+ Data Storage Solutions
+ --------------------------------
+ 
+[ Storage Accounts ]
+- should be nested within a resource group
+- 3 different properties associated with a storage account: 
+  Kind
+  Performance Tier
+  Replication
+  Access Tier
+
+Azure Blobs
+	object oriented storage (similar to S3)
+
+Azure Files 
+	traditional file sharing services; desinged for SMB connectivity; default quota is 5TB
+	internal access: REST, SMB 2.1 and SMB 3.0
+	public internet: REST, SMB 3.0
+
+Azure Tables 
+	simple storage for non-relational semi-structured data (key/value store)
+
+Azure Queues 
+	simple messaging service (similar to SQS)
+
+Naming convention is as follows:
+<storageaccountname>.<service>.core.windows.net
+
+lowsandbox.blob.core.windowns.net
+lowsandbox.files.core.windows.net
+lowsandbox.files.queue.windows.net
+lowsandbox.table.core.windows.net
+
+
+[ Storage Account Replication ] 
+
+Local Redundant Storage (LRS) 
+	3 copies of data within a SINGLE data center
+
+Zone Redundant Storage (ZRS)
+	3 copies across (3) availability zones in the primary region
+	
+Geo Redundant Storage  (GRS) 
+	3 copies across within a SINGLE data center and x3 async copies into another region 
+	
+Geo Zone Redundant Storage (GZRS)
+	3 copies across (3) availability zones in the primary region and x3 copies in another region
+
+**Forced Failover - the ability to tell Azure to update the underlying storage account DNS record to point to the secondary endpoint instead of the primary; check "Last Synced Time"; only supported in GRS or RA-GRS
+
+
+[ Storage Account Security ] 
+- all storage account services come with public endponts by default
+
+Storage Firewall
+	shapes network access to storage accounts
+
+Access Keys
+	gives a user/service full management and data layer access 
+
+Shared Access Signatures (SAS)
+	a URI that describes what a types of permission a user/service has; permissions cannot be modified after the SAS is generated
+
+Role Based Access (RBAC)
+	provides access based to the management and data layer based on Azure Active Directory
+	
+- Create a "Service Principal" (AAD Dashboard > App Registration)
+- Register an application in AAD by giving it a secret
+- Associate the service principal with a role (Access Control IAM)
+- a successful login by the app (via the api) returns a "token" that the app can then use to pass to a service to perform an action 
+
+
+Data Processing Solutions
+-----------------------------------
+
+Azure Databricks
+
+Synapse
+
+
+
+Databases
+--------------
+
+
+Structured Data Options (rows and columns)
+	
+[  Azure SQL Database ]
+- supports "some" SQL features but not all
+Autoscale
+
+Service Tiers
+	General Purpose
+	Business Critical (Always-On Availability Group)
+	Hyperscale (Sharding)
+	
+Pricing
+	DTU
+		- Data Transaction Unit (represents CPU, memory, IOPS)
+		- pricing per database
+		- limited compute, memory, IO
+		- includes backups, patching, HA
+
+	vCore
+		- more control over resources
+		- pricing per database
+		- supports Managed Instances
+		- higher resource limits
+		-  includes backups, patching, HA
+
+	
+
+
+[ Azure SQL Elastic Pool ] 
+- allows you to put multiple databases in a single logical SQL Server and all of the databases share the resources of the server
+- resource allocation for each database is managed dynamicaly by the service
+	
+[  Azure SQL Managed Instances ]
+- PaaS offering within your VNET
+- supports most SQL features
+- has many features not available in Azure SQL (i.e. SQL Server agent)
+
+[  Azure SQL Single Database ]
+- can only create (1) database
+
+[  Azure SQL Edge ]
+- very ligtweight
+- optimized for IOT
+- 500mb memory footprint
+
+	
+
+Semi Structured Options (JSON, XML)
+
+[  Azure Tables  ]
+- backed by an Azure Storage Account
+- stores data that may change structure as "entities" in tabular format (semi-structured)
+- focuses on storing alot of data at a low price point 
+- pricing is determined per GB of storage
+- 20k operations per second
+- latency guarantees
+
+Partition Key - functions like Cosmos DB
+Row Key - must be included with every entitiy
+
+**these properties must be referenced in any query in order for data to be returned
+
+[  Azure Cosmos DB ]
+- NoSQL database engine 
+- Supports local firewall settings (IP whitelisting)
+- Supports private or public endpoints
+- Multi-model (key/value pairs, documents, graphs, columnar)
+- Global scale performance 
+- Active/Active across regions (multi-master)
+- multi-region
+- different consistency models (strong, eventual)
+- supports multiple API types:
+	SQL/MongoDB
+	Cassandra 
+	Table (key/value)
+	Gremlin (graph)
+	
+	
+Cosmos Account (where the API is defined)
+  Database (where throughput is defined)
+    Container (where the data lives (partition key is defined here)
+      Item (the actual data)
+      
+Logical Partitions
+	Physical Partitions
+
+Parition Key
+Unique Key
+
+*Partiion keys are immutable! Containers must be deleted if you want to change them
+
+US customer data -> Server 1
+Canda customer data -> Server 2
+
+Pricing
+	Request Units (RUs)  - abstract way to measure/charge for resources required to interact w/ data
+	Cosmos appends an "item id" with each document in order to identify each unique document (1 document = 1 RU)
+
+Point Read - requesting (1) item
+In-Partition - requesting data located in a single partition (WHERE CUSTOMER = US)
+Cross-Partion -  requesting data located in more than one partition (US and Canada)
+
+Replication
+	replicates data seemlessly between regions (read replicas)
+	multi-region writes (read/write replicas)
+
+
+
+
+Networking
+--------------
+
+[ Virtual Networks ] 
+- lose 5 addresses with each subnet
+- for Gateway subnets it's best to provision a /27 (16 addresses) so you can run Express Route and S2S VPN
+- Express Route is not encrypted 
+- default paths are 1) intra-vnet traffic 2) internet connectivity
+- peering now allows for routing to be automatically configured from both Vnets using the wizard
+- peering can happen across region and subscriptions (must know resource-id)
+- non-transitive
+
+[ Network Security Groups ] 
+- NSGs are linked to subnets
+- focused on filtering traffic, not routing (Security Groups)
+- can apply to the subnet or interface level
+- cannot remove Default Rules
+- can modify based on "Priority" (lower the number, higher the priority)
+- by default ALL INBOUND ACCESS is enabled on a "Basic" SKU Public IP
+- by default ALL INBOUND ACCESS is blocked on "Standard" SKU Public IP
+-  SERVICE TAGS abstract references to Azure services since recording IP addresses for those services is complex
+
+[ Application Security Groups ] 
+- logical container for network interfaces
+- NICs are associated with ASGs
+- "Web-ASG" would apply to the NIC of all VMs in the "Web Fleet"
+- ASGs are scoped to Vnets; all NICs must be in the same Vnet
+
+[ Routes ]
+
+
+[ Azure Firewall ] 
+- works by creating a user-defined route to set the Firewall as the default route instead of the VNET router
+- can configure outbound HTTP/s traffic by FQDN
+- can before SNAT and DNAT through the Firewall
+- threat intelligence
+- integration w/ Azure Monitor
+- can have multiple public IPs assigned
+
+- must be deployed to a dedicated subnet called "AzureFirewallSubnet" /26 is the minimum
+- custom routes (user defined routes) must be in place to route traffic from VMs to the Firewall Service
+
+Network Rule Collection
+	focused on outbound traffic
+	basic source/destination rulesets (similar to NSGs)
+
+Application Rule Collection
+	focused on outbound traffic
+	layer 7 filtering (FQDN)
+	allow http/https traffic from ANY to www.google.com with a rule named "google-allow"
+
+NAT Rule Collection
+	focused on in-bound traffic
+
+
+[ Azure Bastion ]
+- must be deployed to a dedicated subnet called "AzureBastionSubnet" /27 is the minimum
+- RDP/SSH sesions are wrapped in a SSH tunnel via the Bastion Service
+
+[ Transitive Connectivity ]
+- VPN Gateways can be used to establish connectivity between V-Nets and on-prem networks
+- VPN Gateway resources are deployed into a special subnet called "Gateway Subnet"
+- connections are terminated over the internet (public IP address)
+- Allow Forwarded Traffic
+- Allow Gateway Transit must be enabled in the hub vnet to pass traffic transitively to other spoke vnets
+- Use Remote Gateway must be enabled in the spoke vnet to tell it to use the gateway that is configured in the hub vnet
+
+
+[ Service Endpoints ]
+- configured at the subnet level of a Vnet
+- provides a new "private" route for resources in the vnet to reach Mircosoft services
+- provides the private address as a source IP address when accessing services
+- DOES NOT establish private IP address for the services being accessed (like Private Link)
+- not all services support service endpoints so check before implementing
+
+
+[ Private Link ] 
+- private IP addresses within a subnet that point to a particular service
+
+
+[ WAN Connectivity ] 
+
+Point-to-Site
+
+Site-to-Site
+
+ExpressRoute
+
+
+Virtual Machines - Compute
+-------------------------------------
+
+[ Instance Sizes ] 
+
+[ VM Scale Sets ]
+
+[ Availability Sets ] 
+
+[ Managed Disks ] 
+- capacity of the disk goes up
+- so does the performance (I/O, throughput)
+
+Standard HDD
+
+Standard SSD
+
+Premium SSD
+	can increase the performance tier w/o making the disk bigger
+	can also lower it again
+
+Ultra Disk
+	Capacity
+	IOPS - can modify dynamically
+	Throughput - can modify dynamically
+	
+	
+
+Azure Update Management
+------------------------------------
+- functions like AWS SSM Patch Manager
+
+Log Analytics Agent reports package status -> Automation Account
+Hybrid Runbook Worker check for maintainence window and deployment
+If there are updates that need to be applied, it executes the necessary commands (can configure pre/post actions)
+
+Automation Account > Update Management
+
+
+Azure Backup
+-------------------
+- Backup-As-A-Service
+- Supports files, folders, machine state, and app-aware backups (i.e SQL)
+
+Recovery Services Vault (repository for backup data)
+  Workload (windows, linux, SQL)
+     Backup Agent (installed on the OS)
+     
+
+
+Microsoft Azure Recovery Services (MARS) Agent
+- windows only
+- supports file, folder, and system-state backups
+- three times per day
+
+Microsoft Azure Backup Server (MABS)
+- windows/linux
+- supports traditional style backups
+- supports file/folder, application aware, system-state backups
+- customize backup frequency
+
+Azure Virtual Machine Backup Extenstion
+- windows/linux
+- uses virtual machine extension to backup a virtual machine
+- restores virtual machine, disks, and files
+- once per day
+
+Microsoft Data Protection Manager (DPM)
+- on-prem backup solution
+- supports tape
+
+
+Azure Site Recovery
+---------------------------
+- recover from a region/site failure
+- automated recovery processes
+- supports windows/linux
+
+Replicated Items (workloads that are replicated)
+  Replication Policies (recovery point objectives and recovery point retention)
+    Replication Plans
+    
+
+Load Balancing
+--------------------
+
+[ Azure Load Balancer ]
+- layer 4 distribution
+- session affinity, health checks
+- Basic SKU => TCP + HTTP
+- Standard SKU => TCP + HTTP + HTTPS
+- public/private
+- port forwarding
+- SNAT for outside access via the Load Balancer
+- can associate multiple public IPs
+- can assocaite VMs or scale sets to backend pool
+
+Health Probes
+Load balancing Rules
+Inbout NAT Rules
+Out Rules
+
+
+[ Azure Application Gateway ]
+- layer 7 distribution
+- Standard V2 SKU => static public IP
+- must be deployed to a dedicated subnet called "AppGatewaySubnet" /27 is the minimum
+
+[ Azure Traffic Manager ] 
+- providing high availability across regions
+- primarily DNS driven
+- can route to many different endpoints (azure services, load-balancers, services outside of Azure)
+
+Client makes request to www.lowsandbox.com (Traffic Manager) -> TM responds with an IP (DNS Lookup) -> Client the goes direct to the service
+
+How does the Traffic Manager decide what IP address to send back to the client?
+
+Routing Methods
+	Priority
+	Weighted
+	Performance
+	Geographic
+	Multi-value
+	Subnet
+
+http://lowsandbox.trafficmanager.net  // Entrypoint
+
+
+[ Azure Front Door - CDN ] 
+- Microsoft global edge network
+
+
+[ Web Application Firewalls ] 
+- sit in front of application gateways and front door deployments
+- application gateway protection => virtual network level in your regions
+- front protection => outside the vnet, at the edge
+- web application firewalls are enabled inside of the application gateway and front door service settings
+- WAF polices can be associated at the application gateway level or at the listener level
+
+
+
+Virtual Machines
+----------------------
+
+
+
+Virtual Machines -  Images
+-----------------------------------
+- decide how much I want to "bake-in" to the image and how much bootstrapping I want to handle outside of the instance post provisioning
+- handled via sysprep.exe (Windows) and sudo waagent -deporivision+user (Linux)
+- highlight a VM > Capture
+
+
+
+Automation
+---------------
+
+[ ARM Templates ] 
+- resources are deployed to a resource group
+- two different deployment modes
+- Complete: everything in the template must match what is in the resource group; if there is something in the template that is not in the resource group it will be deleted
+- Incremental: if resource does not exist in the resource group, it will be created; if the resource already exist, it will be updated; no resources are deleted
+- can be deployed via Powershell, AzureCLI, the portal, VSCode
+- you can auto-generate a template by using the "Export Template" option on an existing resource group 
+
+
+[ Runbooks ] 
+- similiar to CloudFormation/Lambda
+- supports Powershell or Python scripting
+- simplify orchestration of complex multi-step tasks
+- you must install/enable the modules under the "Shared Resources" section for the resources that you want to interact with (e.g. Az.Compute for VMs)
+
+Automation Account
+  Run As Account (created in your Azure tenant for priviledges)
+      Automation Runbooks
+         Automation Worker
+
+
+Monitoring 
+---------------
+
+[  Azure Monitor ]
+- multi-facted solution comprised of several separate and distinct services
+- diagnostic settings can be configured for multiple types of resources/services that define what data you want to send and where you want to send it
+- to send logs to Log Analytics -> Log Analytics Agent
+- to send logs to Azure Monitor -> Azure Diagnostics Agent
+
+Diagnostics Agent
+Log Analytics Agent
+Dependency Agent
+
+[Metrics]
+- small, time-based data
+- collected a regular intervals
+- sent to Azure Monitor for high level dashboarding and reporting
+- sent to Log Analytics for advance querying capibility
+- sent to Event Hub
+
+[Logs]
+- large, often verbose information
+- collected sporadically
+- sent to Log Analytics workspaces for detailed viewing of the text data
+- sent to Event Hub
+- sent to Storage for long term archiving
+
+
+[ Activity Logs ] 
+- scoped to subscription level events (create, delete, update) -- i.e. AWS CloudTrail
+- only displays WRITE operations
+- stored for 90 days by default
+
+
+[ Alerts and Action Groups ] 
+
+target resource to monitor (VM)
+  condition (CPU)
+    action group (action to take once the alert triggers)
+      email, SMS, push notification, voice call, invoke Azure Function, invoke Logic App, call a WebHook, integration with ITSM, invoke Runbook
+
+
+[ Log Analytics Workspace ] 
+- workspaces are deployed geographically
+
+Workpace
+  Data Sources
+      Analytics
+      
+[ Azure Monitor Insights ] 
+- prepackaged monitors for specific services (e.g. Azure VMs, Containers, SQL, etc)
+
+VM Insights
+Network Insights
+Container Insights
+App Insights (instrumentation library must be integrated into project)
+
+
+[Azure Security Center]
+- provides recomendations on how to improve security posture (like AWS Config)
+- can tie into workflow automation (via Logic Apps) to do something when certain conditions or alerts are raised
+
+[Azure Sentinel]
+
+
+Events 	
+----------
+
+[ Event Hub ] 
+
+[ Event Grid ] 
+- events are generated at the source (i.e Storage, Subscription, Resource Group) -> Event Grid -> Handler (i.e Azure Function, Service Bus, Logic App, Azure Automation)
+
+[ Messaging ]
+
+Azure Queues
+	basic FIFO
+	
+Azure Service Bus
+	supports queues and topics (like SNS)
+	suited for more complex use cases
+	mainly of microservice implementation (support dead-letter queues, etc)
+	
+	
+APIs
+------
+
+[ Azure API Management ]
+- fully managed API service (i.e AWS API Gateway)
+- highly configurable
+
+
+
+Computer Options (Bottom to Top)
+---------------------------------------------
+
+SaaS
+
+Application Services
+	Functions (writing code)
+	Logic Apps (no-code)
+	App Service
+	
+Container Services
+	AKS
+	ACI
+	
+IaaS
+	Azure VMs
+      
 
 
