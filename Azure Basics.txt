@@ -256,11 +256,12 @@ Data Processing/Integration Solutions
 - can use to orchestrate data movement
 - can transform data at scale
 
-
+// Workflow
 Connect And Collect
 	Transform and Enrich
 		CI/CD and Publish
 			Monitor
+			
 
 [ Azure Data Lake ]
 - provides a repository where you can upload and store huge amounts of unstructured data with an eye toward high-performance big data analytics
@@ -268,6 +269,7 @@ Connect And Collect
 - Data Lake Storage Gen2 builds on Azure Blob storage capabilities to optimize it specifically for analytics workloads
 - supports RBAC for security
 - can handle ad hoc data in batches or streaming data
+
 
 [ Azure Data Bricks ]
 - Big Data and Machine Learning platform, which empowers developers to accelerate AI and innovation
@@ -286,14 +288,8 @@ Databricks Machine Learning
 	ntegrated end-to-end machine learning environment incorporating managed services for experiment tracking, 
 	model training, feature development and management, and feature and model serving.
 
+
 [ Azure Synapse Analytics ]
-
-
-
-
-
-
-Synapse
 
 
 
