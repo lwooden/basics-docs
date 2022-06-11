@@ -365,6 +365,46 @@ Replication
 
 
 
+Serverless + Containers
+--------------------------------
+
+[ Azure App Service ]
+- provides fully managed hosting for web applications including websites and web APIs
+- applications may be deployed using code or containers
+
+// Concepts
+App Service Plan (defines a set of compute resources for a web app to run)
+	App
+	
+**Plans define OS, region, number of VMs, size, pricing tier (Free,Shared, Basic, Standard, Premium, etc)
+
+[ Azure Container Instance (ACI) ]
+- fastest and simplest way to run a container in Azure
+- exposes my container groups directly to the internet with an IP address and a fully qualified domain name (FQDN)
+- can deploy within a pre-defined Vnet
+- concepts like scale, load balancing, and certificates are not provided with ACI containers
+- to scale to five container instances, you create five distinct container instances
+
+[ Azure Container Apps ] 
+- enables me to run microservices and containerized applications in a serverless Kubernetes-centric way
+- access to HTTPs ingress for my app
+- autoscaling with the ability to scale to 0
+- split traffic across multiple verisons
+- access to Kubernetes microservice enhancer like Daper
+- pull containers from ANY registry (public/private)
+- can deploy within a pre-defined Vnet
+- logs for containers are sent to a Log Analytics Workspace
+
+// Constructs
+Container App Environment (secure boundary around a group of container apps)
+	Container App (workload)
+
+[ Azure Kubernetes Service (AKS) ]
+
+
+[ Azure Functions ]
+
+
 
 Networking
 --------------
