@@ -1,0 +1,652 @@
+DevOps Basics
+
+
+Planning
+--------------
+
+Epic
+	Features
+		User Stories
+			Task
+
+[ Epic ] 
+- organizational level strategy
+- can have multiple epics, but they should relate
+- significant initiative that might impact multiple products
+- long term strategy for a product
+- should have a business case (financial apporval)
+- epics should drive value
+
+Business Epic
+	value to what we are doing
+
+Enabler Epic
+	required for me to move forward as a company
+	enhancement in order to produce future business
+	something you can build upon
+	
+[ Features ] 
+- part of my product roadmap
+- should translate into a release of software
+- if it cannot transalate into a piece of software then it is more of an epic
+- should have benefits, acceptance criteria
+- talking about "months" as far as time goes
+
+[ User Stories ]
+- easy to read
+- smallest unit of value
+- what is the value? why are we doing this?
+- product owner should review
+- Title, Desc, Acceptance Criteria
+
+
+
+
+
+
+<----------Week 0---------->
+
+Git Strategy
+-----------------
+
+Master Branch
+	Staging Branch
+		Release Branch
+			Feature Branch
+			Bug Branch
+			Lab Branch
+			
+Work from the bottom up! 
+
+Lab, Bug, and Feature -> Feature Branch
+Feature Branch -> Release Branch
+Release Branch -> Staging Branch
+Staging Branch -> Master
+** -> means merge into
+
+Pull requests are "requests" to "merge" into "another" branch instead of just merging directly into a branch that is not your own.
+
+git branch // list all of the branches in your repository
+git checkout -b example // makes a copy of master and creates a branch called example
+git push -u <set-upstream> origin example // pushes local branch to remote repo and creates that same branch on the remote
+git checkout master // switches you back to the master branch
+
+Package Management w/ npx
+--------------------------------------
+NPX is an NPM package executor. Just like npm install, it goes out to the NPM registry and grabs pacakges for you to use in your projects. NPX also installs CLI tools from the npm registry for you (create-react-app, angular/cli), and invokes them. When it’s done, the installed package won’t be installed anywhere in your globals, so you won’t have to worry about pollution (or maintance) in the long run.
+
+npx @angular/cli new <app name> --directory=./ # working directory of the container
+npx create-react-app <app name>
+
+
+AWS CLI
+-------------
+
+If you have multiple AWS accounts you will probably need a way to switch between those accounts when using the AWS CLI.
+
+aws configure // configuration for default account
+aws configure --profile lowSandbox
+aws configure --profile lowStaging
+aws configure --profile lowProduction
+
+export AWS_DEFAULT_PROFILE=lowSandbox // creates an environment variable that sets the value of your default profile to lowSandbox
+
+aws ec2 describe-instances // will run using the credentials you entered when you ran aws configure without --profile
+
+aws ec2 describe-instances --profile lowSandbox // will run using the credentials associated with the profile used
+
+
+
+<----------Week 1---------->
+
+
+Docker
+----------
+
+1. Create a docker-compose file to define how you want to build the docker image for your different services
+2. Create containers from the docker image(s) you made in the previous step
+
+docker-compose build api
+
+docker-compose run api
+
+docker-compose [up | down]
+
+docker-compose up -d // launches all services defined in docker compose file into container in the background
+
+docker-compose ps [-a] // shows running containers or [a]ll containers
+
+docker ps -a --format "{{.ID}}: {{.Names}}"
+
+docker-compose run -p 3002:3000 web 
+
+docker-compose run [service] [command]
+  docker-compose run api npm install
+
+docker-compose logs // displays logs for all services that are currerntly running
+
+docker-compose logs -f // follows the most current logs
+
+docker-compose logs -f <service name> // follows the most current logs of the service defined
+
+docker-compose exec devdb mysql -u root -p // runs command and exits if no prompt is sent back
+
+docker-compose exec devdb mysql -u apidevuser -p
+
+docker-compose exec api yarn add loopback-connector-mysql
+
+docker exec -it devdb /bin/bash // establish an interactive shell session with the container
+
+docker rmi <image_id> // delete images
+
+docker rm <container_id> // clean up old stopped containers
+
+
+
+
+Setting up API Development Environment
+-----------------------------------------------
+
+docker-compose build --no-cache --pull api
+docker-compose run api lb
+docker-compose run api lb model
+docker-compose up
+
+
+Setting up React Development Environment
+-----------------------------------------------
+
+Build a fresh image of the web container based on the web dockerfile
+	docker-compose build --no-cache --pull web
+
+Build react app baseline in the container
+	docker-compose run web npx create-react-app .
+
+Double check all packages are installed
+	docker-compose run web yarn
+	
+Launch container
+	docker-compose run web
+
+
+
+Code Style Enforcement w/ ESLint
+-----------------------------------------------
+
+Believe it or not code review can be a drain on productivity and speed when you are working with a team environment. I write code this way. One person codes this way. Another that way. We are all looking at different styles which will take time to decipher. This will have an impact on productivity.
+
+Decide on a style and code it into eslint and make it apart of your process to overcome this challenge!
+
+
+
+API Test Coverage
+-------------------
+
+docker-compose exec api yarn add mocha sinon chai nyc -d
+
+Mocha always looks for the folder "test" at the root of your project
+It is best to have the test folder mirror your overall project structure so you can centralize all your tests in one place
+
+Nyc shows you how much of your code base is covered by test. It is only focused on the files that are included in the test folder and not
+the entire project
+
+
+React Testing
+-------------------
+
+jest
+enzyme
+
+Enzyme uses a method called "snapshots." What happens is, jest (the test suite), takes a snapshot of the component
+the way that it will be after being transpiled from jsx to javascript. It will then create a folder in your project called _snapshots. This file holds the structure of your component (as rendered). When you make a change to an element in your component and you run the test again it will fail because it does not match the last snapshot that jest took of your component. So the goal is render the test as "failed" if a change has been made to a component
+
+
+API Bootstraping w/ Loopback
+--------------------------------------
+
+Sits on top of express
+
+Install loopback globally
+  npm install loopback-cli -g
+
+Run loopback cli commands
+  lb
+  lb model
+
+
+Web + API Connection
+-------------------------------
+
+yarn add axios
+
+
+
+<----------Week 3---------->
+
+
+AWS Launch Configuration
+------------------------------------
+
+the blueprint to use when launching a particular EC2 instance
+
+
+AWS Auto-Scaling Group
+------------------------------------
+
+Defines how many of the servers you defined in your launch config should be up at all times and under what circumstances should it increase/decrease the amount of instances
+
+
+AWS ECS
+--------------
+
+AWS ECS functions as the high-level "club" (cluster) that your ECS Docker hosts are going to be assocaited with. These docker hosts are traditional EC2 instances that you normally launch for any typical workload.
+
+1. Pick an AMI that will function as the base for your Container Host Image
+2. Bootstrap that image using user data so it can join the ECS Cluster you created previously
+3. Create a Launch Configuration and define the image and the bootstrapping process (VPC, security groups, user data, etc)
+4. Associate a Auto-Scaling group with the Launch Configuration
+
+
+[High Level Steps]
+1. Prep Production API Dockerfile
+2. Build the image and push it to ECR
+3. Create KMS key to encrypt database password in SSM (Simple System Manager)
+4. Create ECS Task IAM Role
+5. Create ECS Task Definition
+6. Create ECS Service IAM Role
+7. Create ECS Service
+8. Connect to Application Load Balancer
+
+[TASK DEFINITION]
+
+  Take Name - api-container
+  Task Role  - defines what the container can do in context of AWS Services; what can the container talk to?
+  
+  Memory Limit 
+    Soft Limits - suggestions; can grab more memory if it needed and available
+    Hard Limits - if reached, ECR will kill the container
+    
+  Port Mappings
+     0 - tells AWS to pick a random port from the ephemeral range
+     
+  Environments
+     Essential - if this container goes down, the whole task stops; separate different containers into separate task definitions to avoid contention of resources
+     
+  Environment Variables
+     NODE_ENV = production
+	 SSM_DB_PWD  = RDS_DB_PWD
+	 MYSQL_HOST_NAME  = RDS Endpoint
+	 MYSQL_DATABASE = RDS DB Name
+	 MYSQL_USER  = Your RDS DB Master Username
+	 AWS_DEFAULT_REGION = us-east-1
+	 
+   Storage and Logging
+      Log Configuration
+
+***NEVER UPDATE DIRECTLY!!! CREATE A REVISION!!!***
+
+[SERVICE]
+
+  Configure Service
+     Replica - how many copies you want spread across the cluster
+     Daemon - (1) copy of an internal service (like a saml broker) on each instance in the cluster
+     Number of Task - 3 (one on each instance)
+     
+   Task Placements
+      AZ Balanced Spread - the best
+      Binpack - stuff as many task as you can on (1) server
+      
+
+[METRICS]
+
+Cluster -> Metrics
+  Metrics page displays information with respect to the total amout of resources availble in your entire cluster
+
+Service -> Metrics
+  Metrics page displays information with respect to the total amout of resources assigned to the service
+
+
+AWS SSM
+--------------
+
+Create Parameter in Paramter Store
+
+Update ECSRole to be able to get the new parameter
+
+Create new revision of Task Definition
+  include new environment variable key/value pair
+  
+Update code to use new paramater (new export statement)
+
+Push new version of docker image up to ECR (tag as latest)
+
+Update Service to use new revision of Task Definition
+
+
+Prepping For Production
+--------------------------------
+
+
+Create .dockerignore file to ignore the files and dirs that are not needed for Prod (test coverage, lint, nyc , etc)
+  
+Log into ECR using your AWS CLI credentials (default or profile) 
+  $(aws ecr get-login --no-include-email --region us-east-1) -- include $ symbol
+  
+Build image using classic docker command in the directory where "Dockerfile" is located
+  docker build -t lowdevops/api .
+ 
+ Tag your image
+   docker tag lowdevops/api:latest 726728011995.dkr.ecr.us-east-1.amazonaws.com/lowdevops/api:latest
+   
+ Push your image
+   docker push 726728011995.dkr.ecr.us-east-1.amazonaws.com/lowdevops/api:latest
+   
+ Create KMS Key (Symmetrical)
+ 
+ Create Parameter Store in Systems Manager Service
+   key=value
+   
+ Create Custom ECS Role
+ 
+ Attach Inline Policies
+    Allow ECS Containers to Access KMS Key to Decrypt
+    Allow ECS Containers to Get SSM Databse Password Paramater
+    
+Create Log Group For Service (API, Web) Logs
+  
+
+
+<----------Week 5---------->
+
+CONTINOUS INTEGRATION
+
+Circle CI
+-------------
+
+Sign up
+
+Create IAM User For CircleCI
+  Determine what the CircleCI user needs to do
+    Create a task definition (DescribeTask, RegisterTask)
+    Update service (UpdateService)
+    Interact w/ ECR (GetAuthToken)
+    All ECR Actions on Specific Repository
+    RolePass
+
+Create Inline Policy since it is a one-and-done type policy
+
+Set up Environment Variables in CircleCI For AWS CLI
+  AWS_ACCESS_KEY_ID
+  AWS_ACCOUNT_ID
+  AWS_SECRET_ACCESS_KEY
+  AWS_DEFAULT_REGION
+  
+Create folder in Project for CircleCI Config File
+  .circleci
+  
+  
+ Build sequence:
+ 	
+ 	Code is pushed to master branch
+ 	
+ 	.circleci/config.yml is processed
+ 	
+ 	all jobs in config.yml are executed
+ 	  $IMAGE environment variable is exported
+ 	  
+ 	./deploy.sh is called
+ 	  $IMAGE environment varible is used
+ 	  
+ 	./create-updated-task.js is called
+ 	
+***Every job AND every command runs in it's own shell!!!!***
+***Paths defined in the config.yml file are relative to the project folder***
+
+
+DOMAIN NAME + HTTPS CERTIFICATE
+
+Go to Route53
+
+Create a Public Hosted Zone
+  Take note of the Nameservers in your hosted zone
+  
+Login into the admin panel of your current domains registrar (GoDaddy, etc)
+
+Go to DNS settings and input the (4) NameServers listed in your public hosted zone and place them in there
+
+Go to Route53 and create an "A" record for a subdomain for your api endpoint (staging-api.example.com)
+   Set the record as an "Alias" (to bind the A record to a AWS resource)
+   Choose the ALB as the "Alias Target"
+   
+   
+
+<----------Week 6---------->
+
+
+DEPLOYING REACT APP ON S3
+
+React
+--------
+
+Static web apps that go in S3 have to be truly static in nature. They have to be "built down" into static HTML/CSS
+because there is no server-side processing with S3
+
+Environment variables have to be static strings
+
+yarn run build (react-script build) produces a production ready package of your application and places it in a folder called "build." Initially it is "ignored" by git.
+
+The artificats created in the "build" folder (after yarn run build is run) is what will be put inside of S3
+
+
+S3
+----
+
+(2) buckets 
+     app
+     logs
+
+To create a bucket to serve a static static site the bucketname must be the url of your domain
+  staging-web.lowsandbox.com
+  staging-web-logs.lowsandbox.com
+      /cdn
+      /root
+
+Place contents of "build" folder inside of staging-web.lowsandbox.com
+
+Go to "Properties" and enable "Static Website Hosting"
+
+Define index document in the bucket (index.html)
+
+Enable Server Access Logging
+   Prefix means the "key" that identifies your subfolder
+   root/
+   
+Update Permissions to make application accessible
+   Add bucket policy that allows anyone to s3:GetObject on this specific bucket
+   **YOU WILL NOT BE ABLE TO ACCESS THE APP UNTIL YOU DO THIS***
+   
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::<BUCKET NAME>/*"
+        }
+    ]
+}
+   
+   
+Cloudfront
+--------------
+
+Origin Domain Name
+  Who do you want to serve as?
+  staging-web.lowsandbox.com
+  
+Origin Path 
+  Cloudfronts perspective of the "root" of the bucket/folder (where index.html is)
+  
+Restrict Bucket Access
+  Force users to "always" use the CDN endpoint and not allow direct access to the S3 bucket
+  
+Viewer Protocol Policy
+  Redirect HTTP -> HTTPS
+  
+ Compress Objects Automatically (.gzip)
+   Yes - makes the payload smaller for easier consumption
+   
+<----Distribution Settings--->
+
+Price Class
+    Use All Edge Locations - most expensive
+
+Default Root Object
+	 index.html
+
+Logging 
+	 on -> logging bucket cdn/
+	 
+
+Invalidation = the process used to trigger updates on edge locations
+	 
+	 
+Route53
+------------
+
+Associate custom domain name with the Cloudfront "domain name" using "alias"
+	 de6yo4lrszytp.cloudfront.net -> staging-web.lowsandbox.com 
+	 
+	 
+	 
+
+CirceCI
+-----------
+
+Update in-line policy for CircleCI user
+   Add S3 permissions to put and list buckets and objects
+   Add Cloudfront permissions to invalidate the cache and update with new contents from origin
+	
+
+Set up Environment Variables in CircleCI For AWS CLI
+   AWS_ACCESS_KEY_ID
+   AWS_ACCOUNT_ID
+   AWS_SECRET_ACCESS_KEY
+   AWS_DEFAULT_REGION
+   REACT_APP_API_URL
+   AWS_S3_BUCKET
+   AWS_CLOUDFRONT_ID
+
+
+
+
+BUILD PROCESS
+------------------------
+
+CircleCi spins up docker image and moves to working directory
+
+Checkout code
+
+Install node modules (and cache them for future test)
+
+Run snapshot tests on React Component
+
+Build down the app into static files
+    yarn build
+
+Reference REAC_APP_API_URL in build process
+
+Run deploy script
+   Update the contents of S3
+   Inform Cloudfront that we updated the origns content
+   
+   
+
+   
+<----------Week 7---------->
+
+
+AUTO-SCALING
+---------------------
+
+We have to scale the container host as well as the containers themselves; we must set cloudwatch alerts for the ECS Instances as well as the ECS Services.
+
+We will have ECS monitor how much CPU the ECS Cluster (hosts) and ECS Service (contianers) is using together (one logical unit)
+
+ECS Task Definition = Contianer
+Task are launched from task defitions which produce containers
+
+
+Scaling Options
+--------------------
+
+Simple Scaling - very specifc, but lacks flexibility; if CPU is over 50% add 1 instance
+
+Step Scaling - more fine grained; different "levels" of scalling based on specific conditions; if > 50% add 1; if > 60% add 2, etc
+
+**Target Tracking - more intelligent; maintains number of instances based on an average (70% CPU); EC2's and/or containers will be added or taken away based on this figure; uses machine learning on the backend to learn
+
+Scale Out Policy
+EC2 Auto Scaling = Taget 75% CPU Utilization -> More Servers
+ECS Service = Target 50% CPU Utilization -> More Tasks
+
+Cooldown Period - time to let new instances settle peform evaluating criteria again
+
+
+Set Up
+---------
+
+Create IAM Role For Auto-Scaling
+	Elastic Container Service Autoscale
+		Default Autoscaling Role
+
+Create Cloudwatch Alarms For ECS Service (CPU < 5 & CPU > 5)
+	Metric -> ClusterName, ServiceName
+	Period = how often is the data point collected
+	2 out of 5 datapoints = For any 5 consecutive alarm data points, the alarm will go into the ALARM state if at least 2 out of 5 data points breach the alarm threshold
+	
+Create Cloudwatch Alarms For ECS Container Host Instances (CPU < 5 & CPU > 5)
+	Metric -> ClusterName
+	Period = how often is the data point collected
+	2 out of 5 datapoints = For any 5 consecutive alarm data points, the alarm will go into the ALARM state if at least 2 out of 5 data points breach the alarm threshold
+	
+Update ECS Service 
+		Change Service Auto Scale Option to "Configure Service Autoscaling..."
+		Define Min/Max
+		Select IAM Role for Service Auto Scaling
+		Add Scaling Policy
+
+Update Auto Scaling Group (For Cluster)
+		Open Auto Scaling Groups
+		Click "Scaling Policies" Tab
+		Add Policy
+		Choose type of policy (Target Tracking is the default)
+		
+   
+Test Scaling Policy
+	Install ab (Apache Benchmark) tool -- yum install httpd-tools
+	ulimit -a 
+	ulimit -n 2048
+	ab -k -c 100 -n 20000 https://staging-api.lowsandbox.com/ # This will send 20000 requests to our endpoint in a batch of 100 requests at a time
+	
+api-scale-target
+ecsCluster-scale-target
+
+
+<----------Week 7---------->
+
+
+CLOUD FORMATION
+
+When a stack gets "updated" its important to understand the course of action AWS will take. There are (3) types of actions depending on the resource:
+
+No interruption
+Replacement
+  
+
+
+
+  
+
