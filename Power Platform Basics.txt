@@ -40,10 +40,92 @@ Power Automate
 
 Connectors -> Triggers (button click) -> Actions
 
+// Flow Types
+
+Cloud Flows
+	Automated - initiated via trigger
+	Scheduled - predefined time/frequency
+	Instant - invoked direcltly from the UI
+
+Business Process Flows
+	guided experience for model driven apps (i.e on-boarding application)
+
+Desktop Flows (UI)
+	Robotic Process Automation
+
+
+// Actions
+
+Loop
+	run until a condition is met
+
+Switch
+	executes a given piece of logic based on input (case)
+
+Do Until
+	execute until a condition is true
+
+Apply to Each
+	executes for each item in an array
+	
+Expressions
+	runs manually created logic
+	
+	
+// Approvals
+
+Approvals
+	flows that run based on the approval of a request (accept/reject)
+	
+
+
+
 
 Power BI
 -----------
 - used to visualize and analysis data to provide intelligence in order to make organizational decisions
+
+// Components
+
+PowerBI Desktop (Create)
+	connect and model data using desktop app
+	access to many data sources
+	transform
+	modeling 
+	
+PowerBI Service (Share)
+	cloud based service; publish and share from the browser
+	access to some data sources
+	dashboard
+	workspaces for collaboration
+	sharing within an organization
+	
+PowerBI Mobile (Consume)
+	consume data via the mobile app
+
+
+[ Dataset ] 
+- collection of data
+- used to build visualization
+
+[ Reports ]
+- collection of visuals
+
+[ Visualization ]
+- a single visualization of data
+
+[ Dashboard ]
+- a single page of visualization(s)
+
+[ Workspaces ] 
+- collaborative space for dashboards, reports, and datasets
+
+
+Workspace
+	Datasets
+	Reports
+	Dashboards
+
 
 
 Power Virtual Agents
@@ -188,10 +270,13 @@ Facebook			Block
 
 Users
 	clients access the GUI via TLS encryption via the browser
+	
 Endpoint
 	 API endpoints are also protected via TLS
+	 
 Data Gateway
 	encrypted data transfer for on-prem connections
+	
 Dataverse (CDS)
 	transparent data encryption
 	
