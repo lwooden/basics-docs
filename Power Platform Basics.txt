@@ -131,7 +131,35 @@ Workspace
 Power Virtual Agents
 ---------------------------
 - can be used to create chatbots that interface with customers in order to provide a service (e.g. customer support)
+- empowers team to build chatbots without the need for developers or AI scientist
+- reduce cost by automating responses to common inquiries 
+- customer satisfaction by creating a strong self-service eco-system
+- chatbots can be published to Teams, mobile apps, or custom websites
+- has it's own licesning apart from other Power Platform Apps
 
+// Core Components
+
+[ Topic ] 
+- a topic of conversation for a chatbot
+
+Trigger Phases
+	Pricing?
+	How much?
+	
+Nodes
+	Message Node - Show messages
+	Question Node - Ask question to a user and capture input
+	Action Node - Execute Actions -> call Power Automate Flows in the same environment
+	
+	
+[ Entities ] 
+- identify information supplied by a user
+- Phone number, Email, First Name, etc
+- this information is used as "inputs" in down stream flows
+
+
+[ Monitoring ]
+- Analytics tab will provide full insight into the chatbots performance
 
 
 Core Components
