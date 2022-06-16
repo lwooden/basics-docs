@@ -204,7 +204,7 @@ Import/Export
 
 [ AI Builder ]
 - provides pre-built and trainable AI models 
-- seprate licesning model for AI Builder
+- separate licesning model for AI Builder
 
 Pre-Built Models
 	Business Card Reader Model -- from text
@@ -223,6 +223,8 @@ Custom AI Models
 		will something happen based on historically data
 	Category Classification
 		categorize text by it's meaning so its easier to analyze
+		
+**Custom models can be embedded inside of Canvas Apps and Power Automate Flows
 	
 
 
