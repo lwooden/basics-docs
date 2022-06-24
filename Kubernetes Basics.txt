@@ -112,6 +112,7 @@ kubectl scale deployment my-deployment --replicas 5 // scales replicaset to 5
 
 kubectl get nodes
 kubectl label nodes <node-name> purpose: reports-services
+kubectl get nodes --show-labels
 
 kubectl port-forward pod/hello-kiamol 8080:80 // port forward to pod resource
 kubectl port-forward deploy/hello-kiamol-2 8080:80 // port forward to deployment resource
@@ -146,6 +147,7 @@ kubectl describe cm sleep-config-literal // friendly format
 kubectl create namespace <namespace>
 
 kubectl get all [ -n | --namespace ] <namespace>
+kubectl get pods --all-namespaces
 
 kubectl get namespace // list all namespaces
 
@@ -412,10 +414,21 @@ spec:
 DNS
 ------
 - handled by the coreDNS service located in the kube-system namespace
+- queries for services within the same namepsace work using short and fully qualified names
+- queries for services in a different namespace fail using short name
+- queries for services in a different namespace work using fully qualified names
 
-[ Structure ]
+// Structure
 pod-ip-address.namespace-name.pod.cluster.local
-192-168-10-100.default.pod.cluster.local
+service-name.namespace-name.svc.cluster.local
+
+192-168-10-100 # short name
+192-168-10-100.default.pod.cluster.local # fqdn
+
+user-db # short 
+user-db.default.svc.cluster.local #fqdn
+
+
 
 
 

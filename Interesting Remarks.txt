@@ -1,0 +1,17 @@
+Interesting Remarks
+
+Move the authority to where the information is — David Marquet Navy Captain
+#Security #Organization
+
+It’s important that we have a clear context and apply solutions that are harmonious with the broader system. 
+#Dev
+
+The application platform is often where we find ourselves at the intersection of apps and infrastructure. Concerns such as developer experience (devx) are typically a key tenet in this area.
+#Dev
+
+ Historically, we have witnessed a lot of pain when organizations hold the view of having a “Kubernetes” strategy — or when they assume that Kubernetes will be an adequate forcing function for modernizing how they build and run software. Kubernetes is a technology, a great one, but it really should not be the focal point of where you’re headed in the modern infrastructure, platform, and/or software realm. We apologize if this seems obvious, but you’d be surprised how many executive or higher-level architects we talk to who believe that Kubernetes, by itself, is the answer to problems, when in actuality their problems revolve around application delivery, software development, or organizational/people issues. Kubernetes is best thought of as a piece of your puzzle, one that enables you to deliver platforms for your applications. We have been dancing around this idea of an application platform, which we’ll explore next.
+ #K8
+
+
+A major trade-off to many prebuilt application platforms is the need to conform to their view of the world. With abstractions come opinions on how your applications should be architected, packaged, and deployed.
+#Dev #K8

@@ -25,12 +25,14 @@ Power Apps
 [ Canvas Apps ]
 - builds apps in a drag and drop fashion from scratch, templates, or other data sources (e.g. Sharepoint List)
 
+[ Model Driven Apps ]
+- builds apps on top of the Dataverse using models/relationships (e.g. think ORM)
+
 [ Portal Apps ]
 - builds pubic facing web apps that can be browsed (anonymous or authenticated)
 - allows users to browse data contained in the Dataverse
 
-[ Model Driven Apps ]
-- builds apps on top of the Dataverse using models/relationships (e.g. think ORM)
+
 
 
 Power Automate
@@ -92,6 +94,7 @@ PowerBI Desktop (Create)
 	access to many data sources
 	transform
 	modeling 
+	can publish to BI Service
 	
 PowerBI Service (Share)
 	cloud based service; publish and share from the browser
@@ -125,6 +128,8 @@ Workspace
 	Datasets
 	Reports
 	Dashboards
+	
+**Datasets can be shared across the "new" workspace experience
 
 
 
@@ -149,13 +154,15 @@ Trigger Phases
 Nodes
 	Message Node - Show messages
 	Question Node - Ask question to a user and capture input
-	Action Node - Execute Actions -> call Power Automate Flows in the same environment
+	Action Node - Execute Actions (e.g. call Power Automate Flows in the same environment)
 	
 	
 [ Entities ] 
 - identify information supplied by a user
 - Phone number, Email, First Name, etc
 - this information is used as "inputs" in down stream flows
+- many are prebuilt
+- can also be custom
 
 
 [ Monitoring ]
