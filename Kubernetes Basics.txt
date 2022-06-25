@@ -612,7 +612,9 @@ spec:
         
 Container Probing
 ----------------------
-LivenessProde - a task that is run periodically in order to determine whether your app is healthy or not
+
+[ LivenessProde ] 
+- a task that is run periodically in order to determine whether your app is healthy or not
 
 spec:
   containers:
@@ -624,8 +626,10 @@ spec:
         command: ["echo", "Hello World"]
       initialDelaySeconds: 5 // wait 5 secs after container starts before executing
       periodSeconds: 5 // run every 5 secs
+      
 
-StartupProbe - a task that is run only at startup time in order to determine whether your app is healthy or not
+[ StartupProbe ]  
+- a task that is run only at startup time in order to determine whether your app is healthy or not
 
 spec:
   containers:
@@ -637,8 +641,10 @@ spec:
             port: 80
         failureThreshold: 30 // has to fail 30 times before deemed unhealthy
         periodSeconds: 10
+        
 
-ReadinessProbe - a task that is run only at startup in order to determine whether your app is ready to recevie requests or not; ideal when your container is dependent on a downstream container being availble (e.g. a databse); the pod will not enter the READY state until the readinessProbe has completed successfully
+[ ReadinessProbe ]  
+- a task that is run only at startup in order to determine whether your app is ready to recevie requests or not; ideal when your container is dependent on a downstream container being availble (e.g. a databse); the pod will not enter the READY state until the readinessProbe has completed successfully
 
 spec:
   containers:
