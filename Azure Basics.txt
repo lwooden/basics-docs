@@ -4,23 +4,27 @@ Azure Active Directory
 -----------------------------
 - azure ad tenants exist outside of the subscription 
 - they are associated (or shared) with a subscription via a trust relationship
-- they can also be associated with SaaS offerings (like O365)
 - subscriptions can only trust ONE Azure AD tenant
+- they can also be associated with SaaS offerings (like O365)
 
 [ Users ]
 Synced Users - replicated from on-premises AD infra
 Cloud Users - created directly in Azure AD
 
-[ Licesning ]
+[ Licensing ]
 - done on a per-user basis
 
 [ Objects ]
+
 Users
+
 Groups
 	users can be assinged dynamically based on attributes (i.e. Department name)
+	
 Service Principles
 	these are mapped to enterprise applications or other Azure resources
 	can be assumed by VMs (like Instance roles) instead of using access keys
+	
 Devices
 	hybrird Azure AD join	
 	
@@ -419,6 +423,7 @@ App Service Plan (defines a set of compute resources for a web app to run)
 **Plans define OS, region, number of VMs, size, pricing tier (Free,Shared, Basic, Standard, Premium, etc)
 
 [ Azure Container Instance (ACI) ]
+- similar to Google Cloud Run
 - fastest and simplest way to run a container in Azure
 - exposes my container groups directly to the internet with an IP address and a fully qualified domain name (FQDN)
 - can deploy within a pre-defined Vnet
@@ -469,6 +474,7 @@ Networking
 -  SERVICE TAGS abstract references to Azure services since recording IP addresses for those services is complex
 
 [ Application Security Groups ] 
+- think AWS Security Groups
 - logical container for network interfaces
 - NICs are associated with ASGs
 - "Web-ASG" would apply to the NIC of all VMs in the "Web Fleet"
@@ -524,6 +530,8 @@ NAT Rule Collection
 
 [ Private Link ] 
 - private IP addresses within a subnet that point to a particular service
+- no longer need to expose the microsoft service publicly (e.g. your storage account)
+- other connected VNets or on-prem networks can access services in your VNet using private addressing
 
 
 [ WAN Connectivity ] 
@@ -541,6 +549,7 @@ Virtual Machines - Compute
 [ Instance Sizes ] 
 
 [ VM Scale Sets ]
+- think AWS Auto-Scaling Groups
 
 [ Availability Sets ] 
 
@@ -624,13 +633,19 @@ Load Balancing
 [ Azure Load Balancer ]
 - layer 4 distribution
 - session affinity, health checks
-- Basic SKU => TCP + HTTP
-- Standard SKU => TCP + HTTP + HTTPS
 - public/private
 - port forwarding
 - SNAT for outside access via the Load Balancer
 - can associate multiple public IPs
 - can assocaite VMs or scale sets to backend pool
+
+Basic SKU
+	TCP
+	HTTP
+	
+Standard SKU 
+	TCP 
+	HTTP + HTTPS
 
 Health Probes
 Load balancing Rules
@@ -640,15 +655,17 @@ Out Rules
 
 [ Azure Application Gateway ]
 - layer 7 distribution
-- Standard V2 SKU => static public IP
 - must be deployed to a dedicated subnet called "AppGatewaySubnet" /27 is the minimum
+
+Standard V2 SKU
+	static public IP
 
 [ Azure Traffic Manager ] 
 - providing high availability across regions
 - primarily DNS driven
 - can route to many different endpoints (azure services, load-balancers, services outside of Azure)
 
-Client makes request to www.lowsandbox.com (Traffic Manager) -> TM responds with an IP (DNS Lookup) -> Client the goes direct to the service
+Client makes request to www.lowsandbox.com (Traffic Manager) -> TM responds with an IP (DNS Lookup) -> Client then goes direct to the service
 
 How does the Traffic Manager decide what IP address to send back to the client?
 
@@ -664,7 +681,9 @@ http://lowsandbox.trafficmanager.net  // Entrypoint
 
 
 [ Azure Front Door - CDN ] 
+- think AWS Cloud Front
 - Microsoft global edge network
+- can integrate with services such as App Service, Storage
 
 
 [ Web Application Firewalls ] 
@@ -678,7 +697,11 @@ http://lowsandbox.trafficmanager.net  // Entrypoint
 
 Virtual Machines
 ----------------------
-
+B, Dsv3, Dv3, Dasv4, Dav4, DSv2 - General Purpose. <-> AWS T/M Family
+Esv3, Ev3, Easv4, Eav4, Ebdsv5, Ebsv5 - Memory Optimized <-> AWS R/Z Family
+F, Fs, Fsv2, FX - Compute Optimized <-> AWS C Family
+HB, HBv2, HBv3, HC, H - High Performance Compute <-> AWS P Family
+L - Storage Optimized <-> AWS L/D Family
 
 
 Virtual Machines -  Images
@@ -726,14 +749,14 @@ Diagnostics Agent
 Log Analytics Agent
 Dependency Agent
 
-[Metrics]
+[ Metrics ]
 - small, time-based data
 - collected a regular intervals
 - sent to Azure Monitor for high level dashboarding and reporting
 - sent to Log Analytics for advance querying capibility
 - sent to Event Hub
 
-[Logs]
+[ Logs ]
 - large, often verbose information
 - collected sporadically
 - sent to Log Analytics workspaces for detailed viewing of the text data
@@ -766,16 +789,16 @@ Workpace
 - prepackaged monitors for specific services (e.g. Azure VMs, Containers, SQL, etc)
 
 VM Insights
-Network Insights
-Container Insights
-App Insights (instrumentation library must be integrated into project)
+	Network Insights
+		Container Insights
+			App Insights (instrumentation library must be integrated into project)
 
 
-[Azure Security Center]
+[ Azure Security Center ]
 - provides recomendations on how to improve security posture (like AWS Config)
 - can tie into workflow automation (via Logic Apps) to do something when certain conditions or alerts are raised
 
-[Azure Sentinel]
+[ Azure Sentinel ]
 
 
 Events 	

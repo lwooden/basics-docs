@@ -1,5 +1,8 @@
 Interesting Remarks
 
+Cloud is where we are computing. Cloud-native is how we are computing!
+#Cloud 
+
 Move the authority to where the information is — David Marquet Navy Captain
 #Security #Organization
 
