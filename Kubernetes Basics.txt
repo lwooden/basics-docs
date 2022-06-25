@@ -85,6 +85,7 @@ eksctl create cluster --name=lowk8 --nodes=1 --node-type=m5.large --zones=us-eas
 eksctl delete cluster --region=us-east-1 --name=lowk8
 aws eks update-kubeconfig --name <CLUSTER_NAME> // updates kube-config w/ credentials
 
+
 Azure AKS 1-Node Cluster Setup (DEV)
 ----------------------------------------------
 deploy resource group, vnet, subnets, etc using pulumi
@@ -94,6 +95,17 @@ az aks create --resource-group pulumi-dev-rg --name lowk8-aks --node-count 1 --e
 az aks delete --name lowk8-aks --resource-group pulumi-dev-rg
 
 az aks get-credentials --resource-group pulumi-dev-rg --name lowk8-aks // updates kube-config w/ credentials
+
+
+Static Pod Location
+--------------------------
+/etc/kubernestes/manifest 
+**If you move one of these files to /tmp temporarily, the static pod/component will cease to run; after the file is restored, the pod/component will be rebuilt
+
+
+CNI Config Locaiton
+--------------------------
+find /etc/cni/net.d/ ## find CNI info here
 
 
 Common Commands
@@ -186,6 +198,14 @@ kubectl scale deployment my-deployment --replicas 5 --record // scales replicase
 kubectl rollout restart deploy graphql-api // does a rolling restart on containers in deployment
 
 
+// Daemon Sets
+kubectl get ds
+
+
+// Stateful Sets
+kubectl get sts
+
+
 // Roles
 kubectl get roles [ -n <NAMESPACE> ]
 
@@ -267,15 +287,7 @@ aws sts get-caller-identity // get your current user
 
 
 
-
-
-
-
-
-
-
-
-
+<------ DEEP DIVE -------->
 
 
 Services
