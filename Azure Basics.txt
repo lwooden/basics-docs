@@ -1,5 +1,15 @@
 Azure Basics
 
+
+
+Cloud SDK and CLI
+---------------------------------    
+azure-cli
+	az login
+	az account list
+	az resource list
+	
+
 Azure Active Directory
 -----------------------------
 - azure ad tenants exist outside of the subscription 
@@ -42,6 +52,12 @@ Pass-Through Authentication #2
 	processes those request and then sends back a response
 
 Federation #3
+
+Temporary Access Pass -- NEW
+	great option for introducing passwordless authentication
+	can define the lifetime of the pass (how long it is valid for)
+	must be enabled via AAD > Security > Authentication Methods > Temporary Access Pass
+	
 	
 	
 [ Azure Active Directory Domain Services - Traditional AD Service ]
@@ -279,7 +295,7 @@ Connect And Collect
 - Big Data and Machine Learning platform, which empowers developers to accelerate AI and innovation
 - managed Apache Spark platform
 
-// Environments
+// Environments //
 Databricks SQL
 	for analysts who want to run SQL queries on their data lake, create multiple visualization types to explore query results from different 
 	perspectives, and build and share dashboards.
@@ -312,7 +328,7 @@ Service Tiers
 	Business Critical (Always-On Availability Group)
 	Hyperscale (Sharding)
 	
-Pricing
+// Pricing //
 	DTU
 		- Data Transaction Unit (represents CPU, memory, IOPS)
 		- pricing per database
@@ -409,8 +425,8 @@ Replication
 
 
 
-Serverless + Containers
---------------------------------
+Serverless 
+--------------
 
 [ Azure App Service ]
 - provides fully managed hosting for web applications including websites and web APIs
@@ -422,13 +438,23 @@ App Service Plan (defines a set of compute resources for a web app to run)
 	
 **Plans define OS, region, number of VMs, size, pricing tier (Free,Shared, Basic, Standard, Premium, etc)
 
+[ Azure Static Web Apps ]
+- automatically builds and deploys full stack web apps to Azure from a code repository
+- focus on light frontend frameworks like React, Angular, Next.js, Remix.js
+- support backends (APIs) for server side processing w/ Azure Functions, App Service, ACI
+
+
+Containers
+---------------
+
 [ Azure Container Instance (ACI) ]
 - similar to Google Cloud Run
 - fastest and simplest way to run a container in Azure
 - exposes my container groups directly to the internet with an IP address and a fully qualified domain name (FQDN)
 - can deploy within a pre-defined Vnet
-- concepts like scale, load balancing, and certificates are not provided with ACI containers
+- concepts like scale, load balancing, and certificates ARE NOT provided with ACI containers
 - to scale to five container instances, you create five distinct container instances
+
 
 [ Azure Container Apps ] 
 - enables me to run microservices and containerized applications in a serverless Kubernetes-centric way
@@ -443,11 +469,22 @@ App Service Plan (defines a set of compute resources for a web app to run)
 // Constructs
 Container App Environment (secure boundary around a group of container apps)
 	Container App (workload)
+	
 
 [ Azure Kubernetes Service (AKS) ]
 
 
+
+Functions
+-----------------
+
 [ Azure Functions ]
+
+
+[ Azure Durable Functions ] -- NEW UNIQUE
+- extension of Azure Functions
+- allows me to write STATEFUL functions 
+- functions that can run for extended periods of time or that depend on other async actions kicking off
 
 
 

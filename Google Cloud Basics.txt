@@ -1,13 +1,7 @@
 Google Cloud Basics
 
 
-Geographical Concepts
------------------------------
-Regions (us-east1)
-   Zones (i.e. AWS Availability Zones; us-east1b)
-     Edge Locations (i.e AWS Cloud Front, Azure Front Door)
-     
-     
+
 Cloud SDK and CLI
 ---------------------------------    
 gcloud (compute engine, iam, etc)
@@ -23,6 +17,13 @@ bq (big query)
 kubectl (k8)
 
 
+
+Geographical Concepts
+-----------------------------
+Regions (us-east1)
+   Zones (i.e. AWS Availability Zones; us-east1b)
+     Edge Locations (i.e AWS Cloud Front, Azure Front Door)
+     
 
 Account Structure
 -----------------------
@@ -350,6 +351,8 @@ Flexible Mode
 	any versions of runtimes can be used
 	cost based on VM resources
 
+// Concept
+
 Application
 	Service
 		Version
@@ -373,7 +376,7 @@ Backround Funcitons
 - think AWS CodeBuild
 
 [ Cloud Run ] 
-- think AWS CodeDeploy
+- think Azure Container Apps/ACI
 - platform that allows me to develop and deploy highly scalable containerized applications using my favorite language (Go, Python, Java, Node.js, .NET, and more) in a serverless manner
 - can deploy your applications as services or jobs
 
@@ -410,6 +413,12 @@ BigQuery
 	built-in ML features
 	can stream at 100k rows per second
 	Standard SQL
+		
+BigLake
+	platform that unifies data-warehouses and data-lakes
+	can discover/create tables based on data that lives in Amazon S3 or Azure Data Lake --UNIQUE
+	powered by BigQuery
+	can apply table, row, column level security policies on object store tables
 	
 Pub/Sub (i.e SNS)
 	asynchronous messaging service
