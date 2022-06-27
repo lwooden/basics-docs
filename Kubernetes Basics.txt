@@ -97,13 +97,13 @@ az aks delete --name lowk8-aks --resource-group pulumi-dev-rg
 az aks get-credentials --resource-group pulumi-dev-rg --name lowk8-aks // updates kube-config w/ credentials
 
 
-Static Pod Location
+Static Pod Location (On Node)
 --------------------------
 /etc/kubernestes/manifest 
 **If you move one of these files to /tmp temporarily, the static pod/component will cease to run; after the file is restored, the pod/component will be rebuilt
 
 
-CNI Config Locaiton
+CNI Config Locaiton (On Node)
 --------------------------
 find /etc/cni/net.d/ ## find CNI info here
 
@@ -130,6 +130,10 @@ kubectl explain <resource> // list information about fields associated with the 
 kubectl get all [ -n <NAMESPACE>
 kubectl get namespaces
 kubectl get [ pods | sa | cm | secrets | roles | rolebinding ] --all-namespaces
+
+
+// Exporting Manifests from Existing Resources
+kubectl get service hellworldexample-helloworld -o yaml > service.yaml 
 
 
 // Nodes
