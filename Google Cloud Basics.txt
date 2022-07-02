@@ -123,6 +123,10 @@ Cloud Identity Domain (i.e. Active Directory)
 	google accounts that are in an organization, but ARE NOT tied to any GSuite applications or features
 	AllAuthentitcated Users  - all service accounts or users on the internet who have authenticated with a Google account
 	AllUsers - anyone who is on the internet, including authenticated and unauthenticated users
+	
+	
+[ Identity Aware Proxy - IAP ]
+- 
 
 
 
@@ -138,6 +142,9 @@ VPC
 [ VPC ]
 - no concept of an "Internet Gateway" (like Azure)
 - instances will have internet access IF they have an external IP assocaited with them
+
+VPC Service Controls
+	
 	
 [ Subnets ]
 - subnets are associated with a REGION; instances are associated with a ZONE
@@ -230,14 +237,24 @@ Memory Optimized - M1, M2
 Compute Optimized - C2
 Accelerator Optimized - A2
 
+**You can also create custom machine types that fit your exact specification -- UNIQUE
+
 [ Managed Instance Groups ]
-- similar to Auto-Scaling Groups
+- think AWS Auto-Scaling Groups; Azure VM Scale Sets
 - instances that are managed as a single entity
 - can be scaled out and scaled in based on a policy (i.e. CPU)
 - deployed across multiple zones
 
 Instance Template -> Instance Group
 
+[ Startup Scripts ]
+- think UserData from AWS
+- can be set at launch time or retrieved from a Cloud Storage Bucket (via a object url)
+
+[ Metadata Service ]
+- endpoint available within your environment that allows you to access specific information about your instance on the fly
+- http://metadata/computeMetadata/v1/instance/attributes/<node>
+- can be access by your startup scripts 
 
 [ Access Control ]
 - you can create custom SSH keys and "upload" them to the instance details (metadata)
@@ -260,9 +277,14 @@ Storage
 Cloud Storage
 	used for object storage (i.e. S3)
 	buckets are the foundational construct
-	offers (4) discreet classes: multi-regional, regional, nearline, coldline 
+	(3) availability options: regional, dual-regional, multi-regional
+	(4) discreet classes: standard, nearline (30 day min), coldline (90 day min), archive (1 yr min)
 	different classes represent cost efficiency and disaster recovery options
 	can encrypt data with CMKs or Google Managed Keys
+	object lifecycle mamagement for tiering
+	retention policy to mandate delettion based on age
+	policy locks bind the policy to the bucket; cannot be deleted until all objects are deleted
+	object holds to prevent deletion of an object in case of an investigation
 	
 
 Cloud Filestore
@@ -272,6 +294,7 @@ Cloud Filestore
 
 Persistent Disk (Block Storage)
 	network storage disks that back compute instances (i.e. EBS)
+	performance is based on the disk capacity attached to an instance and the number of vCPUs that the instance has
 	encrypted by default
 	Standard (HDD) || Balanced (General Purpose) || SSD
 	Zonal Persistent Disk - default option (1 zone; 1 region)
@@ -301,9 +324,20 @@ Cloud BigTable
 	wide-colum store
 	large scale
 	low-latency
+	
+// Row Key Design
+You can collapse multiple column values into the "Row Key" as ONE value
+
+Vehicle		LAT	LONG	COMPANY	ROUTE
+M117		40.7. -73.9	Metro			86
+
+Vehicle					LAT		LONG
+Metro#86#M117 	40.7.  	-73.9	
+**Result after performing "Field Promotion" on the Company and Route colums to create a better indexable row key
 
 Firestore
 	rich mobile, web, and IOT applications
+	strongly consistent
 	
 Firebase
 	stores and syncs data between users in real time for mobile sign-ins, applications, ads, and chat
@@ -311,6 +345,14 @@ Firebase
 Memorystore
 	fully managed Redis and Memcached databases
 	milisecond data access
+	
+	
+Data
+------
+
+Cloud Data Loss Prevention API
+	can de-identify sensitive data in text content
+	uses a de-identification transformation to mask, delete, or otherwise obscure the data
 	
 	
 
@@ -374,6 +416,8 @@ Backround Funcitons
 
 [ Cloud Build ] 
 - think AWS CodeBuild
+- great for building containers
+-  include cloudbuild.yml file in the repository
 
 [ Cloud Run ] 
 - think Azure Container Apps/ACI
@@ -438,6 +482,8 @@ Monitoring
 	leverages an agent that streams data from Compute Engine to the service
 	supports GKE
 	alerting policies
+	provides insight into System Metrics (e.g. CPU, disk, etc)
+	supports User Defined Metrics (e.g. HTTP status codes)
 	
 Logging
 	can accept logs from Google, AWS, on-prem resources
@@ -457,8 +503,8 @@ Profiler
 	
 	
 	
-
-
+Google Cloud Armour
+----------------------------
 
 
 
