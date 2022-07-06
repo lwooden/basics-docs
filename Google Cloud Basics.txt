@@ -126,7 +126,11 @@ Cloud Identity Domain (i.e. Active Directory)
 	
 	
 [ Identity Aware Proxy - IAP ]
-- 
+- managed solution for authenticating and authorizing users
+- supports Compute Engine, App Engine, and GKE
+
+1. Users are directed to Google to  autenticate in to get AT
+2. Authorization is driven via IAM
 
 
 
@@ -143,7 +147,13 @@ VPC
 - no concept of an "Internet Gateway" (like Azure)
 - instances will have internet access IF they have an external IP assocaited with them
 
-VPC Service Controls
+// VPC Service Controls
+- defines a service perimieter around protected resources
+- enforces special rules at the border
+- is independent of IAM or firewall policies (higer level)
+
+Inbound Access FROM authorized VPC networks only
+Outbound Access TO whitelisted IP ranges only
 	
 	
 [ Subnets ]
@@ -176,6 +186,16 @@ Custom Routes
  - the lower the priority number the higher the importance
  - network tags serve as "security groups" which can be applied to instances in order to apply certain rules directly to groups of instances
  
+ **Firewall Rules can be configured at the organizational or folder level (Hierarchical Firewall Policy); they will be inherited by the projects below them
+ 
+ // 7 Components
+ Direction -- Ingress/Egress
+ Priority -- High/Low
+ Action -- Allow/Deny
+ Status -- Enabled/Disabled
+ Target -- Network Tags
+ Soure -- CIDR Range
+ Port/Protocol -- TCP:80,443
 
 [ VPC Peering ]
 - no overlapping CIDRs
@@ -438,6 +458,67 @@ Jobs
 - think AWS CodeCommit
 
 
+API Management
+-----------------------
+
+[ Cloud Endpoints ]
+- the classic method
+- container based solution
+- deploys a sidecar proxy container alongside your primary container (think K8 multi-container pod)
+- built on top of nginx 
+- v2 of the service uses Envoy as the underlying Proxy Container
+
+[ API Gateway ]
+- completely serverless 
+- just provide API configuration spec
+- supports the following backends: App Engine, Cloud Run, Cloud Functions
+
+
+AI/ML
+--------
+- pre trained API offered by Google
+- exposed by an API
+- most features return a response with a confidence score
+
+[ Cloud Vision API ]
+
+Face Detection
+Landmark Detection
+Logo Detection
+Label Detection
+Object Detection
+Web Entities
+Text Detection (OCR Support)
+Explicit Content Detection
+
+
+[ Video Intelligence API ]
+
+Detects Shot Changes
+Tracks Objects
+Logo Detection
+Transcribing
+Label Detection
+Text Detection
+Explicit Content Detection
+Face/Person Detection
+Streaming/Live Feed
+Celebrity Detection
+
+[ AutoML API ]
+- fine tune your own custom models based off Googles models
+
+[ Speach to Text API ]
+
+[ Text to Text API ] 
+
+[ Transalation API ]
+
+[ Natural Language API ]
+
+
+
+
 
 Big Data
 -------------
@@ -472,37 +553,97 @@ Datalab
 	
 	
 	
+Encryption
+--------------
+
+[ Cloud KMS ]
+
+
+Secrets Management
+-----------------------------
+
+[ Cloud Secret Manager ]
+
+
+	
 Operations Suite (i.e Stackdriver)
 --------------------------------------------
 - a suite of tools used for logging, monitoring, and application diagnostics
 
-Monitoring
-	requires setting up a workspace (i.e. Azure Analyics Workspace)
-	supports multi-project setup
-	leverages an agent that streams data from Compute Engine to the service
-	supports GKE
-	alerting policies
-	provides insight into System Metrics (e.g. CPU, disk, etc)
-	supports User Defined Metrics (e.g. HTTP status codes)
-	
-Logging
-	can accept logs from Google, AWS, on-prem resources
-	supports audit logs (console), access transparency logs (what GCP support staff does), agent logs
-	Log Viewer shows logs for one project
-	
-Error Reporting
-	real time error monitoring and alerting
-	integrated into Cloud Functions, and App Engine (standard)
-	
-Debugger
-	debugs a running application
-	
-Trace
+[ Cloud Monitoring ] 
+- requires setting up a workspace (i.e. Azure Analyics Workspace)
+- supports multi-project setup and multi-cloud
+- leverages an agent that streams data from Compute Engine to the service
+- supports GKE
+- alerting policies
+- provides insight into System Metrics (e.g. CPU, disk, etc)
+- supports User Defined Metrics (e.g. HTTP status codes)
 
-Profiler
+// Uptime Checks -- UNIQUE
+**can perform the following
+Expired SSL checks
+Pass custom headers
+Perform basic auth 
+	
+[ Cloud Logging ] 
+- can accept logs from Google, AWS, on-prem resources
+- supports audit logs (console), access transparency logs (what GCP support staff does), agent logs
+- Log Viewer shows logs for one project
+- can configure "exclusions" to decide WHAT you really want
+
+// Logs Router
+**sends logs to different "sinks" or endpoints
+1. Default Sink - Default Logs Bucket
+2. Big Query
+3. Pub/Sub
+4. Custom Log Bucket
+	
+[ Cloud Error Reporting ]  -- UNIQUE
+- real time error monitoring and alerting
+- consolidates all errors within a single pane of glass
+- erros are deduplicated and grouped together into an "issue"
+- how many occurences? when was it last seen?
+- integrated into Cloud Functions, and App Engine (standard)
+
+**Makes it incredibly easy to locate, discover, and address errors in apps
+	
+[ Cloud Debugger ]
+- debugs a running application without interupting the live service
+- the service takes a snapshot of the live service 
+- allows you to insert breakpoints in the snapshot of the app and look for errors
+	
+[ Cloud Trace ]
+- instrument my apps w/ OpenTelemetry, OpenCensus, Google SDK
+
+Trace
+	the total time it takes for a request to make it end-to-end
+	
+Span
+	the time it took for a particualr "segment" of a request path
+
+[ Profiler ] 
 	
 	
 	
+Security Command Center -- UNIQUE
+------------------------------------
+- a suite of tools used to help improve/maintain the security posture of a project/organization
+- more so designed to be configured for an organization
+
+[ Web Security Scanner ]
+- will crawl a url of a Compute Engine, App Engine, or GKE web app
+- checks for common vulnerablilites and exploits
+- create a series of "scans"
+- can set authentication method and frequency of the scan 
+- work in progess; not highly valuable at the moment
+
+
+[ Container Scanning API ]
+- performs container scanning on images in Artifact Registry
+
+
+
+
 Google Cloud Armour
 ----------------------------
 
