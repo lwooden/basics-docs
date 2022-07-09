@@ -40,7 +40,49 @@ Enabler Epic
 - Title, Desc, Acceptance Criteria
 
 
+Fundamentals of Application Design
+---------------------------------------------
 
+[ App Migration Patterns ] 
+- Lift and Shift
+- Improve and Move
+- Rip and Replace
+
+*Get the 12 Factor Application book
+
+[ Testing Methodologies ]
+
+Unit Testing
+	test an individual component, function, or microservice
+	white-box testing
+	
+Integraiton Testing
+	test components grouped together
+	black-box testing
+	
+Performance Testing
+	test responsiveness of individual components
+	request response model
+	
+Load Testing
+	test the entire app under heavy load
+	
+	
+
+Deployment Patterns 
+----------------------------
+
+Rolling
+	older versions gradually phased out
+	new version roll in
+
+Blue/Green
+	two separate versions of an application
+	perform deployment on one-side
+	switch dns to point to the updated version
+
+Canary/Traffic Splitting
+	splits traffic between a newer version and an older versions
 
 
 

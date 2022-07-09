@@ -49,12 +49,14 @@ Invoiced
 	handled via wiretransfers and mail (checks)
 
 
-APIs
----------
+Service APIs
+------------------
 - allow you to interact with GCP services programmatically
 - through the API Management Console you can monitor the requests, traffic, error and latency on any ENABLED API
 - can create API credentials
 - have access to the API library
+
+gcloud services enable // enables service APIs from the command line
 
 
 
@@ -148,12 +150,32 @@ VPC
 - instances will have internet access IF they have an external IP assocaited with them
 
 // VPC Service Controls
-- defines a service perimieter around protected resources
+- defines a service perimeter around protected resources
 - enforces special rules at the border
 - is independent of IAM or firewall policies (higer level)
 
 Inbound Access FROM authorized VPC networks only
 Outbound Access TO whitelisted IP ranges only
+
+[ Shared VPC ]
+- connects resources from multiple projects to a common network
+- resources can communicate with each other securely and efficiently using internal IPs from that network
+- you must designate a project as a "host" project and attach one or more other "service" projects to it
+- shared VPC connects projects within the same organization
+
+// Constraints
+
+A project that participates in Shared VPC is either a host project or a service project:
+
+A host project contains one or more Shared VPC networks. A Shared VPC Admin must first enable a project as a host project. After that, a Shared VPC Admin can attach one or more service projects to it.
+
+A service project is any project that has been attached to a host project by a Shared VPC Admin. This attachment allows it to participate in Shared VPC. It's a common practice to have multiple service projects operated and administered by different departments or teams in your organization.
+
+A project cannot be both a host project and a service project simultaneously. Thus, a service project cannot be a host project to further service projects.
+
+You can create and use multiple host projects; however, each service project can only be attached to a single host project. For an illustration, see the multiple host projects example.
+
+You can create networks, subnets, secondary address ranges, firewall rules, and other network resources in the host project. The host project can then share selected subnets, including secondary ranges, with the service projects. Services running in a service project can use Shared VPC to communicate with resources running in the other service projects.
 	
 	
 [ Subnets ]
@@ -376,14 +398,35 @@ Cloud Data Loss Prevention API
 	
 	
 
-Kubernetes + Containers
-----------------------------------
+ Containers
+---------------
+
+[ Cloud Run ] 
+- think Azure Container Apps/ACI
+- platform that allows me to develop and deploy highly scalable containerized applications using my favorite language (Go, Python, Java, Node.js, .NET, and more) in a serverless manner
+- can deploy your applications as services or jobs
+
+Services
+	used to run code that responds to web requests, or events
+	can be controlled via versions for rollback, traffic splitting between versions, etc
+	can used Ingress settings to control whether the service is public or private
+	can scale to 0 and scale up based on request load -- UNIQUE
+	can set a minimum of (1) instances if absolutely needed
+
+Jobs
+	used to run code that performs work (a job) and quits when the work is done.
+
 
 [ Google Kubernetes Engince (GKE) ]
 - managed Kubernetes service
 
 GKE Standard: pay per node (i.e EKS)
 	GKE Autopilot: pay per pod (i.e Fargate)
+	
+// Workload Identity Service
+- maps a kubernetes service account -> IAM account
+- roles can then be assigned to the IAM account so that pods can access other Google Services
+	
 	
 [ Artifact Registry ]
 - think AWS Elastic Container Repository (ECR)
@@ -439,23 +482,33 @@ Backround Funcitons
 - great for building containers
 -  include cloudbuild.yml file in the repository
 
-[ Cloud Run ] 
-- think Azure Container Apps/ACI
-- platform that allows me to develop and deploy highly scalable containerized applications using my favorite language (Go, Python, Java, Node.js, .NET, and more) in a serverless manner
-- can deploy your applications as services or jobs
-
-Services
-	used to run code that responds to web requests, or events
-	can be controlled via versions for rollback, traffic splitting between versions, etc
-	can used Ingress settings to control whether the service is public or private
-	can scale to 0 and scale up based on request load -- UNIQUE
-	can set a minimum of (1) instances if absolutely needed
-
-Jobs
-	used to run code that performs work (a job) and quits when the work is done.
 
 [ Cloud Source Repository ]
 - think AWS CodeCommit
+
+
+[ Cloud Code ]
+
+
+
+Asynchronous Messaging
+----------------------------------
+
+[ Cloud Task ]
+- lets you separate out pieces of work that can be performed independently, outside of your main application flow
+- task are placed on a queue to be processed, asynchronously, using handlers that you create
+- supported handlers/workers are App Engine, Cloud Functions, Cloud Run, GKE, Compute Engine
+- max size of task/message	1MB
+- task/message retention 30 days
+
+
+[ Cloud Pub/Sub ]
+- think AWS SNS
+- asynchronous messaging service
+- max size of task/message	10MB
+- task/message retention 7 days
+
+
 
 
 API Management
@@ -512,7 +565,7 @@ Celebrity Detection
 
 [ Text to Text API ] 
 
-[ Transalation API ]
+[ Translation API ]
 
 [ Natural Language API ]
 
@@ -544,9 +597,6 @@ BigLake
 	can discover/create tables based on data that lives in Amazon S3 or Azure Data Lake --UNIQUE
 	powered by BigQuery
 	can apply table, row, column level security policies on object store tables
-	
-Pub/Sub (i.e SNS)
-	asynchronous messaging service
 	
 Datalab
 	for visualiing, querying, and interacting with your data using programming languages
