@@ -97,7 +97,9 @@ az aks get-credentials --resource-group pulumi-dev-rg --name lowk8-aks // update
 Google GKS 1-Node Cluster Setup (DEV)
 ----------------------------------------------
 deploy vpc, subnets, etc using pulumi
-
+gcloud services enable container // enable GKS api 
+gcloud container clusters create lowk8-gke --cluster-version=1.24 --num-nodes=1 --network="low-sandbox-dev-vpc" --subnetwork="dev-private" --zone=us-east1-b --addons=HttpLoadBalancing,HorizontalPodAutoscaling
+gcloud container clusters get-credentials lowk8-gke --region=us-east1-b
 
 Static Pod Location (On Node)
 --------------------------
@@ -247,8 +249,9 @@ kubectl logs --tail=2 hello-kiamol-2-7f6dd54b9b-j6zvl // get logs from your cont
 kubectl logs -l app=graphql-container --follow // trail logs as they come in w/ label app=graphql-container
 
 
-// Events
+// Events + Cluster Information
 kubectl get events -A --sort-by=.metadata.creationTimestamp // get events from all namespaces
+kubectl cluster-info dump
 
 
 // Resource Monitoring
