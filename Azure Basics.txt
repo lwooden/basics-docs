@@ -429,14 +429,20 @@ Serverless
 --------------
 
 [ Azure App Service ]
-- provides fully managed hosting for web applications including websites and web APIs
+- provides fully managed hosting for HTTP based web applications and backend APIs
 - applications may be deployed using code or containers
+- supports running workloads on both Linux or Windows
 
 // Concepts
 App Service Plan (defines a set of compute resources for a web app to run)
 	App
 	
 **Plans define OS, region, number of VMs, size, pricing tier (Free,Shared, Basic, Standard, Premium, etc)
+
+// Deployment Slots
+- live apps with their own host names
+- app content and configuration elements can be swapped between two deployment slots, including the production slot
+- this enables deployment strategies like Blue/Green
 
 [ Azure Static Web Apps ]
 - automatically builds and deploys full stack web apps to Azure from a code repository

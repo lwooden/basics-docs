@@ -89,12 +89,14 @@ aws eks update-kubeconfig --name <CLUSTER_NAME> // updates kube-config w/ creden
 Azure AKS 1-Node Cluster Setup (DEV)
 ----------------------------------------------
 deploy resource group, vnet, subnets, etc using pulumi
-
 az aks create --resource-group pulumi-dev-rg --name lowk8-aks --node-count 1 --enable-addons monitoring --generate-ssh-keys
-
 az aks delete --name lowk8-aks --resource-group pulumi-dev-rg
-
 az aks get-credentials --resource-group pulumi-dev-rg --name lowk8-aks // updates kube-config w/ credentials
+
+
+Google GKS 1-Node Cluster Setup (DEV)
+----------------------------------------------
+deploy vpc, subnets, etc using pulumi
 
 
 Static Pod Location (On Node)
