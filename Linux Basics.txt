@@ -671,7 +671,7 @@ Managing Bootloder Process
 
 
 Updating Kernel
----------------
+----------------------
 Method #1 - Using YUM
 yum list kernel // displays currently installed and available kernels
 yum update kernel // updates kernel using yum

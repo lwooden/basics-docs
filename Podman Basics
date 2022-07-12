@@ -1,0 +1,52 @@
+Podman Basics
+
+
+podman info
+
+podman ps --all
+
+podman images
+podman pull <image>
+
+podman run -it <image>
+podman run -d --name test_container <image>
+
+podman exec -it test_container /bin/bash
+
+podman start test_container
+podman stop test_container
+
+podmam rm -a 
+podman rmi <image>
+
+skopeo inspect <image>
+
+
+Setup Container to Run as Systemd Service (Rootless Mode)
+---------------------------------------------------------------------------------
+
+Create config directory in home to store systemd files
+	mkdir ~/.config/systemd/user
+
+Launch the container
+	podman run -d --name test_container -p 80:8080 <image>
+	
+Generate systemd unit files
+	podman generate systemd --name test_container --files --new
+	
+Inspect new systemd unit file
+	less ~/.config/systemd/user/test_container.service
+
+Enable linger to allow for persistent non-root systemd containers to run
+	loginctl enable-linger
+	loginctl show-user cloud_user | grep linger
+	"Linger=yes"
+	
+Reload daemon files (at the user level)
+	systemctl --user daemon-reload
+	
+Enable new container service (at the user level)
+	systemctl --user enable  --now test_container.service
+
+	
+
