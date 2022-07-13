@@ -130,6 +130,7 @@ App Service > Identity > System Assigned > Change status to "ON"
 [ User Assigned ]
 - created as a standalone resource
 - can be shared with other resources/services
+**user-assigned managed identities can only be assigned to resources hosted in Azure Cloud!
 
 
 Governance
@@ -196,22 +197,53 @@ KeyVault (container - HSM w/ API)
      
      
 
- Data Storage Solutions
- --------------------------------
+Storage Solutions
+-----------------------
  
-[ Storage Accounts ]
-- should be nested within a resource group
-- 3 different properties associated with a storage account: 
-  Kind
-  Performance Tier
-  Replication
-  Access Tier
+[ Storage Account ]
+- foundation layer for all things storage
+- associated with a resource group
+
+// Concept //
+
+Storage Account (bucket)
+	Container (folder)
+		Files (objects)
+
+
+// Storage Account Options //
+
+Location
+	US East
+	
+Kind
+	StorageV2 (general purpose v2)
+	BlockBlob Storage
+	File Storage
+	
+Performance
+	Standard
+	Premium
+	
+Replication
+	LRS
+ 	ZRS
+ 	GRS
+ 	RA-GRS
+
+Access Tier
+	Hot (instant access)
+	Cool (instant access)
+	Archive (delayed access -- 1+ hours)
+	
+ 	
+// Storage Account Services //
 
 Azure Blobs
 	object oriented storage (similar to S3)
 
 Azure Files 
-	traditional file sharing services; desinged for SMB connectivity; default quota is 5TB
+	traditional file sharing services; desinged for SMB/NFS connectivity; default quota is 5TB
 	internal access: REST, SMB 2.1 and SMB 3.0
 	public internet: REST, SMB 3.0
 
@@ -220,6 +252,7 @@ Azure Tables
 
 Azure Queues 
 	simple messaging service (similar to SQS)
+	FIFO based
 
 Naming convention is as follows:
 <storageaccountname>.<service>.core.windows.net
@@ -258,6 +291,13 @@ Access Keys
 
 Shared Access Signatures (SAS)
 	a URI that describes what a types of permission a user/service has; permissions cannot be modified after the SAS is generated
+	
+// Types of SAS 
+Service SAS - specific to one service (blob, table, queue, files)
+Account SAS - specific to the storage account level
+
+// SAS Policies
+
 
 Role Based Access (RBAC)
 	provides access based to the management and data layer based on Azure Active Directory
@@ -316,11 +356,11 @@ Databricks Machine Learning
 Databases
 --------------
 
-
 Structured Data Options (rows and columns)
 	
 [  Azure SQL Database ]
 - supports "some" SQL features but not all
+
 Autoscale
 
 Service Tiers
@@ -329,18 +369,19 @@ Service Tiers
 	Hyperscale (Sharding)
 	
 // Pricing //
-	DTU
-		- Data Transaction Unit (represents CPU, memory, IOPS)
-		- pricing per database
-		- limited compute, memory, IO
-		- includes backups, patching, HA
 
-	vCore
-		- more control over resources
-		- pricing per database
-		- supports Managed Instances
-		- higher resource limits
-		-  includes backups, patching, HA
+DTU
+	Data Transaction Unit (represents CPU, memory, IOPS)
+	pricing per database
+	limited compute, memory, IO
+	includes backups, patching, HA
+
+vCore
+	more control over resources
+	pricing per database
+	supports Managed Instances
+	higher resource limits
+	includes backups, patching, HA
 
 	
 
@@ -485,6 +526,7 @@ Functions
 -----------------
 
 [ Azure Functions ]
+- think AWS Lambda, Cloud Functions
 
 
 [ Azure Durable Functions ] -- NEW UNIQUE
@@ -848,11 +890,18 @@ Events
 ----------
 
 [ Event Hub ] 
+- managed streaming platform and event ingestion service
+- can process millions of events per second
+- mainly used to collect data from IoT devices
+- must enable "data capture" to deliver streaming data to Event Hub -> Azure Blob or Azure Data Lake Storage
 
 [ Event Grid ] 
-- events are generated at the source (i.e Storage, Subscription, Resource Group) -> Event Grid -> Handler (i.e Azure Function, Service Bus, Logic App, Azure Automation)
+- events are generated from Azure Services (i.e Storage, Subscription, Resource Group) -> Event Grid -> Handler (i.e Azure Function, Service Bus, Logic App, Azure Automation)
+- must create a "Topic" in order to send events to Event Grid
 
-[ Messaging ]
+
+Asynchronous Messaging 
+----------------------------------
 
 Azure Queues
 	basic FIFO
@@ -860,15 +909,25 @@ Azure Queues
 Azure Service Bus
 	supports queues and topics (like SNS)
 	suited for more complex use cases
-	mainly of microservice implementation (support dead-letter queues, etc)
+	mainly for microservice implementation (support dead-letter queues, etc)
 	
 	
-APIs
-------
+API Management
+------------------------
 
 [ Azure API Management ]
 - fully managed API service (i.e AWS API Gateway)
 - highly configurable
+
+// Policies
+- I can change API behavior through configuration using policies
+- policies are a collection of statements that are run sequentially on the request or response of an API
+- format for policies is XML
+- policies include things like rate-limit by key or by subscription
+
+// Versions & Revisions
+Versions - allows me to expose breaking changes for my API; requires publishing for changes to go live
+Revision - allows me to add non-breaking changes to my API; users can consume the new changes using a diff query string on the same endpoint; 
 
 
 
