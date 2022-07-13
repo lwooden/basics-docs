@@ -203,6 +203,7 @@ Storage Solutions
 [ Storage Account ]
 - foundation layer for all things storage
 - associated with a resource group
+- encrypted-at-rest by default (using microsoft managed key) -- UNIQUE
 
 // Concept //
 
@@ -241,11 +242,14 @@ Access Tier
 
 Azure Blobs
 	object oriented storage (similar to S3)
+	snapshot support; point-in-time instance of an object
+	version support; maintains multiple copies of an object
 
 Azure Files 
 	traditional file sharing services; desinged for SMB/NFS connectivity; default quota is 5TB
 	internal access: REST, SMB 2.1 and SMB 3.0
 	public internet: REST, SMB 3.0
+	snapshot support; point-in-time instance of a file
 
 Azure Tables 
 	simple storage for non-relational semi-structured data (key/value store)
@@ -628,19 +632,36 @@ Site-to-Site
 ExpressRoute
 
 
-Virtual Machines - Compute
--------------------------------------
 
-[ Instance Sizes ] 
+Compute (Virtual Machines)
+------------------------------------
+
+[ Instance Families ] 
+
+B, Dsv3, Dv3, Dasv4, Dav4, DSv2 - General Purpose -> AWS T/M Family
+Esv3, Ev3, Easv4, Eav4, Ebdsv5, Ebsv5 - Memory Optimized -> AWS R/Z Family
+F, Fs, Fsv2, FX - Compute Optimized -> AWS C Family
+HB, HBv2, HBv3, HC, H - High Performance Compute -> AWS P Family
+L - Storage Optimized -> AWS L/D Family
+
+
+[ Images ]
+- decide how much I want to "bake-in" to the image and how much bootstrapping I want to handle outside of the instance post provisioning
+- handled via sysprep.exe (Windows) and sudo waagent -deporivision+user (Linux)
+- highlight a VM > Capture
+
 
 [ VM Scale Sets ]
 - think AWS Auto-Scaling Groups
 
+
 [ Availability Sets ] 
 
+
 [ Managed Disks ] 
-- capacity of the disk goes up
-- so does the performance (I/O, throughput)
+-  as capacity goes up, so does performance (I/O, throughput)
+
+// Types //
 
 Standard HDD
 
@@ -652,8 +673,7 @@ Premium SSD
 
 Ultra Disk
 	Capacity
-	IOPS - can modify dynamically
-	Throughput - can modify dynamically
+	IOPS/Throughput can modified indepently of capacity -- UNIQUE
 	
 	
 
@@ -673,11 +693,11 @@ Azure Backup
 - Backup-As-A-Service
 - Supports files, folders, machine state, and app-aware backups (i.e SQL)
 
+// Concept
 Recovery Services Vault (repository for backup data)
   Workload (windows, linux, SQL)
      Backup Agent (installed on the OS)
      
-
 
 Microsoft Azure Recovery Services (MARS) Agent
 - windows only
@@ -707,6 +727,7 @@ Azure Site Recovery
 - automated recovery processes
 - supports windows/linux
 
+// Concept
 Replicated Items (workloads that are replicated)
   Replication Policies (recovery point objectives and recovery point retention)
     Replication Plans
@@ -779,24 +800,6 @@ http://lowsandbox.trafficmanager.net  // Entrypoint
 - WAF polices can be associated at the application gateway level or at the listener level
 
 
-
-Virtual Machines
-----------------------
-B, Dsv3, Dv3, Dasv4, Dav4, DSv2 - General Purpose. <-> AWS T/M Family
-Esv3, Ev3, Easv4, Eav4, Ebdsv5, Ebsv5 - Memory Optimized <-> AWS R/Z Family
-F, Fs, Fsv2, FX - Compute Optimized <-> AWS C Family
-HB, HBv2, HBv3, HC, H - High Performance Compute <-> AWS P Family
-L - Storage Optimized <-> AWS L/D Family
-
-
-Virtual Machines -  Images
------------------------------------
-- decide how much I want to "bake-in" to the image and how much bootstrapping I want to handle outside of the instance post provisioning
-- handled via sysprep.exe (Windows) and sudo waagent -deporivision+user (Linux)
-- highlight a VM > Capture
-
-
-
 Automation
 ---------------
 
@@ -808,6 +811,7 @@ Automation
 - can be deployed via Powershell, AzureCLI, the portal, VSCode
 - you can auto-generate a template by using the "Export Template" option on an existing resource group 
 
+**Great 3rd party tooling includes Pulumi and Bicep
 
 [ Runbooks ] 
 - similiar to CloudFormation/Lambda
@@ -815,6 +819,7 @@ Automation
 - simplify orchestration of complex multi-step tasks
 - you must install/enable the modules under the "Shared Resources" section for the resources that you want to interact with (e.g. Az.Compute for VMs)
 
+// Concept
 Automation Account
   Run As Account (created in your Azure tenant for priviledges)
       Automation Runbooks
