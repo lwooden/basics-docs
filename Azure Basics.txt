@@ -204,6 +204,8 @@ Storage Solutions
 - foundation layer for all things storage
 - associated with a resource group
 - encrypted-at-rest by default (using microsoft managed key) -- UNIQUE
+- all storage account services come with public endponts by default
+- use Storage Explorer to browse Storage Accounts
 
 // Concept //
 
