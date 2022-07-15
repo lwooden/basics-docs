@@ -21,10 +21,10 @@ datacenter:
 roles: &wphost                  # the anchor allows me to reuse data in my file
   - webserver
   - database
-downtime_sch: |                 # use | literal style (newline support)
+downtime_sch: |                 # use | for literal style; uses new lines
   2018-10-31 - kernal upgrade
   2019-02-02 - security fix 
-comments: >                      # use > literal replaces newlines with spaces (folded style)
+comments: >                      # use > for folded style; replaces newlines with spaces
   Experience high I/O
   since 2018-10-01.
   Currently investigating.
