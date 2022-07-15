@@ -15,16 +15,16 @@ Block Style
 ---                                        # Multi-Document Stream - Alexandria host data
 host: sandbox.local
 datacenter:
-  location: !ALX Alexandria
+  location: ! ALX Alexandria
   rack: !!str 6                      #changes data-type to string w/o using quotes
   row: 1
 roles: &wphost                  # the anchor allows me to reuse data in my file
   - webserver
   - database
-downtime_sch: |
+downtime_sch: |                 # use | literal style (newline support)
   2018-10-31 - kernal upgrade
   2019-02-02 - security fix 
-comments: >
+comments: >                      # use > literal replaces newlines with spaces (folded style)
   Experience high I/O
   since 2018-10-01.
   Currently investigating.
