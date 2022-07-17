@@ -298,6 +298,9 @@ Access Keys
 
 Shared Access Signatures (SAS)
 	a URI that describes what a types of permission a user/service has; permissions cannot be modified after the SAS is generated
+	sv = signed version
+	sr = signed resource >> b=blob bv=blobversion bs=blobsnapshot c=container d=directory
+	sp = signed permissions
 	
 // Types of SAS 
 Service SAS - specific to one service (blob, table, queue, files)
