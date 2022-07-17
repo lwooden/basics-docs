@@ -190,6 +190,7 @@ Secrets Management
 [ Azure Key Vault ] 
 - functions like Secrets Manager in AWS
 - the endpoint for your vault can be set to public or private
+- handles the provisioning, storage, and rotation of SSL/TLS certificates (think AWS Certificate Manager)
 
 KeyVault (container - HSM w/ API)
   Secret Information (secrets, keys, certificates, etc)
@@ -432,25 +433,33 @@ Row Key - must be included with every entitiy
 - Supports private or public endpoints
 - Multi-model (key/value pairs, documents, graphs, columnar)
 - Global scale performance 
+- can hot add or remove regions on demand w/ no interruption -- UNIQUE
 - Active/Active across regions (multi-master)
 - multi-region
 - different consistency models (strong, eventual)
-- supports multiple API types:
-	SQL/MongoDB
-	Cassandra 
-	Table (key/value)
-	Gremlin (graph)
-	
-	
+
+// Supported APIs
+
+SQL
+MongoDB
+Cassandra 
+Table (key/value)
+Gremlin (graph)
+
+// Constructs	
+
 Cosmos Account (where the API is defined)
   Database (where throughput is defined)
     Container (where the data lives (partition key is defined here)
       Item (the actual data)
       
-Logical Partitions
-	Physical Partitions
+Logical Partitions - formed based on the value of a partition key that is associated with each item in a container. All the items in a logical partition have the same partition key value; In addition to a partition key that determines the item's logical partition, each item in a container has an item ID which is unique within a logical partition. Combining the partition key and the item ID creates the item's index, which uniquely identifies the item. A logical partition consists of a set of items that have the same partition key.
 
-Parition Key
+Physical Partitions - Internally, one or more logical partitions are mapped to a single physical partition. Typically smaller containers have many logical partitions but they only require a single physical partition.
+
+// Keys
+
+Parition Key - It's the best practice to have a partition key with many distinct values, such as hundreds or thousands (high cardinality) 
 Unique Key
 
 *Partiion keys are immutable! Containers must be deleted if you want to change them
@@ -458,18 +467,27 @@ Unique Key
 US customer data -> Server 1
 Canda customer data -> Server 2
 
-Pricing
-	Request Units (RUs)  - abstract way to measure/charge for resources required to interact w/ data
-	Cosmos appends an "item id" with each document in order to identify each unique document (1 document = 1 RU)
+// Consistency Levels (High > Low)
+
+Strong 
+	Bounded Staleness
+		Session
+			Consistent Prefix
+				Eventual
+
+// Pricing
+
+Request Units (RUs)  - abstract way to measure/charge for resources required to interact w/ data
+Cosmos appends an "item id" with each document in order to identify each unique document (1 document = 1 RU)
 
 Point Read - requesting (1) item
 In-Partition - requesting data located in a single partition (WHERE CUSTOMER = US)
 Cross-Partion -  requesting data located in more than one partition (US and Canada)
 
-Replication
-	replicates data seemlessly between regions (read replicas)
-	multi-region writes (read/write replicas)
+// Replication
 
+- replicates data seemlessly between regions (read replicas)
+- multi-region writes (read/write replicas)
 
 
 Serverless 
@@ -841,6 +859,8 @@ Diagnostics Agent
 Log Analytics Agent
 Dependency Agent
 
+**Can configure Availability Test on web applications (simple ping and advance multi-step test) -- UNIQUE (GCP does this to)
+
 [ Metrics ]
 - small, time-based data
 - collected a regular intervals
@@ -896,27 +916,46 @@ VM Insights
 Events 	
 ----------
 
-[ Event Hub ] 
-- managed streaming platform and event ingestion service
-- can process millions of events per second
-- mainly used to collect data from IoT devices
-- must enable "data capture" to deliver streaming data to Event Hub -> Azure Blob or Azure Data Lake Storage
-
 [ Event Grid ] 
 - events are generated from Azure Services (i.e Storage, Subscription, Resource Group) -> Event Grid -> Handler (i.e Azure Function, Service Bus, Logic App, Azure Automation)
 - must create a "Topic" in order to send events to Event Grid
 
 
+[ Event Hub ] 
+- managed big data streaming platform and event ingestion service
+- can process millions of events per second
+- mainly used to collect data from IoT devices
+- must enable "data capture" to deliver streaming data to Event Hub -> Azure Blob or Azure Data Lake Storage
+
+// Concepts
+Event Hub Client
+	Event Hub Producer
+	Event Hub Consumer
+
+Partition
+	order sequence of events held in Event Hub
+	
+
+
 Asynchronous Messaging 
 ----------------------------------
 
-Azure Queues
-	basic FIFO
+[ Azure Queues ] 
+- basic FIFO
+- supports messages up to 64 KB in size
+- commonly used to create a backlog of work to process asynchronousl
 	
-Azure Service Bus
-	supports queues and topics (like SNS)
-	suited for more complex use cases
-	mainly for microservice implementation (support dead-letter queues, etc)
+[ Azure Service Bus ] 
+- supports queues, publish/subscribe (topics and subscriptions), and other advance patterns
+- suited for more complex use cases
+- mainly for microservice implementation (support dead-letter queues, etc)
+- supports messages up to 256 KB in size
+- supports advance filtering for subscribers
+
+// Concepts
+Service Namespace
+	Service Bus Queue
+	
 	
 	
 API Management
