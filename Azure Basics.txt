@@ -184,20 +184,6 @@ Definitions (Policies): 1) allowed locations 2) allowed locations for resource g
 [ Blueprints ]
 
 
-Secrets Management
------------------------------
-
-[ Azure Key Vault ] 
-- functions like Secrets Manager in AWS
-- the endpoint for your vault can be set to public or private
-- handles the provisioning, storage, and rotation of SSL/TLS certificates (think AWS Certificate Manager)
-
-KeyVault (container - HSM w/ API)
-  Secret Information (secrets, keys, certificates, etc)
-     Access Policies (security)
-     
-     
-
 Storage Solutions
 -----------------------
  
@@ -346,6 +332,7 @@ Connect And Collect
 - managed Apache Spark platform
 
 // Environments //
+
 Databricks SQL
 	for analysts who want to run SQL queries on their data lake, create multiple visualization types to explore query results from different 
 	perspectives, and build and share dashboards.
@@ -479,7 +466,6 @@ Strong
 				Eventual
 
 // Pricing
-
 Request Units (RUs)  - abstract way to measure/charge for resources required to interact w/ data
 Cosmos appends an "item id" with each document in order to identify each unique document (1 document = 1 RU)
 
@@ -488,9 +474,29 @@ In-Partition - requesting data located in a single partition (WHERE CUSTOMER = U
 Cross-Partion -  requesting data located in more than one partition (US and Canada)
 
 // Replication
-
 - replicates data seemlessly between regions (read replicas)
 - multi-region writes (read/write replicas)
+
+[ Azure Redis Cache ]
+-  in-memory data store based on the Redis software
+-  can be used as a distributed data or content cache, a session store, a message broker
+
+// Key Expiration
+- set an expiration value on your keys
+- an expiration removes keys proactively instead of waiting until there's memory pressure
+- when eviction happens because of memory pressure, it can cause more load on your server
+
+// Eviction Policy
+Volatile-lru
+	default policy
+	only keys that have a TTL value set with a command like EXPIRE are eligible for eviction
+	
+Allkeys-lru
+	evicts any keys under memory pressure
+
+
+
+
 
 
 Serverless 
@@ -907,6 +913,15 @@ VM Insights
 	Network Insights
 		Container Insights
 			App Insights (instrumentation library must be integrated into project)
+			
+			
+// App Insight Categories
+
+Users - how many people used your app
+Session - how may sessions included certain pages
+Events - how often certain pages and features are used
+Retention - how often users return to use the app
+Impact - analyzes how load times and other properties influence conversion rates for various parts of your app
 
 
 [ Azure Security Center ]
@@ -969,14 +984,57 @@ API Management
 - highly configurable
 
 // Policies
-- I can change API behavior through configuration using policies
+- can change API behavior through configuration using policies
 - policies are a collection of statements that are run sequentially on the request or response of an API
 - format for policies is XML
 - policies include things like rate-limit by key or by subscription
 
+Rate Limits - usually used to protect against short and intense volume bursts
+
+<rate-limit calls="number" renewal-period="seconds"> -- per the subscription as a whole
+<rate-limit-by-key calls="number" renewal-period="seconds" -- per individual subscribers
+                   increment-condition="condition"
+                   increment-count="number"
+                   counter-key="key value" 
+                   retry-after-header-name="header name" retry-after-variable-name="policy expression variable name"
+                   remaining-calls-header-name="header name"  remaining-calls-variable-name="policy expression variable name"
+                   total-calls-header-name="header name"/> 
+                   
+
+Quotas - used for controlling call rates over a longer period of time (e.g. month)
+
+<quota calls="10000" bandwidth="40000" renewal-period="3600" /> -- per the subscription as a whole
+<quota-by-key calls="10000" bandwidth="40000" renewal-period="3600"  -- per individual subscribers
+                  increment-condition="@(context.Response.StatusCode >= 200 && context.Response.StatusCode < 400)"
+                  counter-key="@(context.Request.IpAddress)" />
+
+
+Set Quota
+
 // Versions & Revisions
 Versions - allows me to expose breaking changes for my API; requires publishing for changes to go live
 Revision - allows me to add non-breaking changes to my API; users can consume the new changes using a diff query string on the same endpoint; 
+
+
+Secrets Management
+-----------------------------
+
+[ Azure Key Vault ] 
+- functions like Secrets Manager in AWS
+- the endpoint for your vault can be set to public or private
+- handles the provisioning, storage, and rotation of SSL/TLS certificates (think AWS Certificate Manager)
+
+KeyVault (container - HSM w/ API)
+  Secret Information (secrets, keys, certificates, etc)
+     Access Policies (security)
+     
+     
+[ Azure App Config ]
+- complements Azure Key Vault
+- provides a service to centrally manage application settings and feature flags
+- regional service scope
+- can perfrom bulk import of settings into the service
+- can export key-values from the service
 
 
 
