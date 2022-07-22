@@ -496,9 +496,6 @@ Allkeys-lru
 
 
 
-
-
-
 Serverless 
 --------------
 
@@ -560,6 +557,23 @@ Functions
 
 [ Azure Functions ]
 - think AWS Lambda, Cloud Functions
+- supports local development environment
+- a function must have exactly one trigger
+
+// Bindings
+- stored in function.json file
+
+"bindings":[
+        // ... bindings here
+        {
+            "type": "bindingType",
+            "direction": "in",
+            "name": "myParamName",
+            // ... more depending on binding
+        }
+    ]
+    
+
 
 
 [ Azure Durable Functions ] -- NEW UNIQUE
@@ -567,7 +581,11 @@ Functions
 - allows me to write STATEFUL functions 
 - functions that can run for extended periods of time or that depend on other async actions kicking off
 
-
+// Types of Functions
+Orchestrator functions - describe how actions are executed and the order in which actions are executed
+Activity functions - the basic unit of work in a durable function orchestration (e.g. checking orders, sending notifications)
+Entity functions - define operations for reading and updating small pieces of state
+Client functions - 
 
 Networking
 --------------
