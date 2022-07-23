@@ -496,15 +496,15 @@ Allkeys-lru
 
 
 
-Serverless 
---------------
+Hosting Platforms
+-------------------------
 
 [ Azure App Service ]
 - provides fully managed hosting for HTTP based web applications and backend APIs
 - applications may be deployed using code or containers
 - supports running workloads on both Linux or Windows
 
-// Concepts
+// Concept
 App Service Plan (defines a set of compute resources for a web app to run)
 	App
 	
@@ -514,6 +514,7 @@ App Service Plan (defines a set of compute resources for a web app to run)
 - live apps with their own host names
 - app content and configuration elements can be swapped between two deployment slots, including the production slot
 - this enables deployment strategies like Blue/Green
+- supports traffic splitting between deployment slots
 
 [ Azure Static Web Apps ]
 - automatically builds and deploys full stack web apps to Azure from a code repository
@@ -521,8 +522,8 @@ App Service Plan (defines a set of compute resources for a web app to run)
 - support backends (APIs) for server side processing w/ Azure Functions, App Service, ACI
 
 
-Containers
----------------
+Container Platforms
+---------------------------
 
 [ Azure Container Instance (ACI) ]
 - similar to Google Cloud Run
@@ -553,7 +554,7 @@ Container App Environment (secure boundary around a group of container apps)
 
 
 Functions
------------------
+-------------
 
 [ Azure Functions ]
 - think AWS Lambda, Cloud Functions
@@ -589,6 +590,10 @@ Client functions -
 
 Networking
 --------------
+
+[ Availability Zones ] 
+- 3 availability zones per region
+	
 
 [ Virtual Networks ] 
 - lose 5 addresses with each subnet
@@ -954,6 +959,7 @@ Events
 
 [ Event Grid ] 
 - events are generated from Azure Services (i.e Storage, Subscription, Resource Group) -> Event Grid -> Handler (i.e Azure Function, Service Bus, Logic App, Azure Automation)
+- must create a namespace
 - must create a "Topic" in order to send events to Event Grid
 
 
