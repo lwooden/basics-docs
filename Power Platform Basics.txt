@@ -27,6 +27,7 @@ Power Apps
 
 [ Model Driven Apps ]
 - builds apps on top of the Dataverse using models/relationships (e.g. think ORM)
+- use a component-focused approach to develop the app
 
 [ Portal Apps ]
 - builds pubic facing web apps that can be browsed (anonymous or authenticated)
@@ -197,6 +198,7 @@ Custom Connectors
 [ Dataverse - Common Data Service (CDS) ]
 - scalable database service that is used to store and manage data that's used by the Power Platform
 - is created on a per environment basis
+- all data is stored in tables
 
 Security
 	authentication managed via Azure AD (with MFA and Conditional Access)

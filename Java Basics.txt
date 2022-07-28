@@ -9,12 +9,14 @@ CMD + FN + F12 - displays available methods of a class
 
 Build Mechanisms
 ----------------------
-Maven
-  acts like a make file for group together functions and processes
-  build/project management tool
-  dependency management and versions
-  project structure
 
+[ Maven ]
+- acts like a make file for group together functions and processes
+- build/project management tool
+- dependency management and versions
+- project structure
+
+// Important POM.xml Properties
 Archetype = Template
 GroupId = 
 Artifact
@@ -27,33 +29,50 @@ Maven Goals = the result the maven module method should produce (i.e. compile ->
 *ALWAYS reimport your maven project after make changes to it or your pom file
 
 
-Gradle
+[ Gradle ] 
 
-Ant
+[ Ant ]
 
 
 Java Core Concepts
 ----------------------------
 
-JPA  (Java Persistence API) -
-Hibernate - 
+
+Working With Databases
+---------------------------------
+
+[ JPA - Java Persistence API ] 
+
+
+[ Hibernate ] 
 
 
 
 
 
+Variable Declaration
+---------------------------
+
+
+Funcitions
+--------------
 
 
 
 
 
+Object Oriented Programming Constructs
+------------------------------------------------------
 
+[ Class ] 
+- blueprint for a house; we can build as many houses as we want based on the blueprint
 
-Class - blueprint for a house; we can build as many houses as we want based on the blueprint
+[ Instance ]  
+- each house I build using the blueprint is called an instance
 
-Instance - each house I build using the blueprint is called an instance
+[ Reference ] 
+- each house I build has a physical location on the disk; I can copy that reference as many times as I like, but there is only one house
 
-Reference - each house I build has a physical location on the disk; I can copy that reference as many times as I like, but there is only one house
 
 House blueHouse = new House("blue")
 House anotherHouse = bluehouse // this is a reference to the same "physical" object blueHouse (in memory)
@@ -90,6 +109,7 @@ public void printMethod () { // same name as method in Superclass
 	System.out.println("Printed in Subclass");
 	}
 }
+
 
 Constructor Chaining
 -----------------------------
