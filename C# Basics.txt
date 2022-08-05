@@ -31,13 +31,23 @@ Inside of Program is a method called "Main"; this is where everything kicks off
 
 
 Visual Studio Shortcuts
------------------------
+-------------------------------
 
 cw <tab> - console.writeline()
 CTRL + SHIFT + B - Build project
 CTRL + F5 - run project
 CTRL + d - duplicate line
 CTRL + x - delete line
+
+
+Running A DotNet App
+------------------------------
+
+# Run a project
+dotnet <project.dll> // usaully located at <PROJECT_ROOT>/bin/Debug/
+
+# Run a prebuilt assembly
+dotnet run <project.dll>
 
 
 Function (Method) Types

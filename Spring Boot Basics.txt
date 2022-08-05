@@ -14,20 +14,20 @@ Problems w/ Traditional Spring
 Advantages of SpringBoot
 -----------------------------------
 
-[AutoConfiguration]
+[ AutoConfiguration ]
 - sets up/configures everything we need within our app
 - don't have to deal with xml, java, or annotation based configuration anymore
 - if we use the web or "mvc" module, SpringBoot automatically configures the dispatcher servlet and takes care of request mapping for us
 - if we use the "orm" module, we no longer have to configure the DataSource or TransactionManager
 
-[SpringBoot Starters]
+[ SpringBoot Starters ]
 - take care of module availability and version compatiability for us; 
 - every project has a spring-boot-starter-parent that contains all of the version information for all of the libraries that will be contained in our project
 
-[Embedded Servlet Containers]
+[ Embedded Servlet Containers ]
 - provides embedded web containers for us to deploy to; default is Tomcat but also supports Jetty and Undertow
 
-[SpringBoot Actuators]
+[ SpringBoot Actuators ]
 - provides utility routes/endpoints that we can consume in our app (autoconfig, mappings, info, health, metrics)
 - can quickly intergrate 3rd party apps (prometheus) using these endpoints
 
@@ -35,16 +35,16 @@ Advantages of SpringBoot
 Configuring JPA
 
 
-Running A SpringBoot Application
----------------------------------------------
+Deploying/Running A SpringBoot Application
+-----------------------------------------------------------
 
-[Inside SpringBoot - Embeded Tomcat Server]
+[ Inside SpringBoot - Embeded Tomcat Server ]
 
 
-[Outsude of SpringBoot - Standalone JAR]
+[ Outsude of SpringBoot - Standalone JAR ]
+- in order to run the application on any system we want we must compile our application and get a "jar" artifact. This is the articfact that we will pass to java to run on any remote system that has java installed
  
- In order to run the application on any system we want we must compile our application and get a "jar" artifact. This is the articfact that we will pass to java to run on any remote system that has java installed
- 
+ // Process
  Execute maven "install" goal
    this compiles out project and spits our a fully packaged jar file for us to execute
    
@@ -52,6 +52,23 @@ Running A SpringBoot Application
     java -jar <name_of_project>.jar
     
 This will cause our app to run just like it did when we ran it inside of Spring Boot
+
+
+[ Using JAR Layers - layers.idx - Docker ] 
+- build an optimized container image from the contents (layers) of the jar file
+- helps slim down the overall size of a Springboot based images; instead of copying "fat" jar
+
+// JAR Layers
+Dependencies - all dependencies whose version does NOT contain SNAPSHOT
+Spring-Boot-Loader - springboot loader classes
+Snapshot-Dependencies - all dependencies whose version DOES contain SNAPSHOT
+Application - application classes, resources
+
+// Process 
+java -Djarmode=layertools jar <jar> list
+java -Djarmode=layertools -jar <jar> extract -- destination layers // performs an extraction to directory called "layers"
+    
+    
 
 
 

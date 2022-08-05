@@ -114,6 +114,42 @@ CNI Config Locaiton (On Node)
 find /etc/cni/net.d/ ## find CNI info here
 
 
+Upgrading Cluster Components
+----------------------------------------
+After upgrading kubeadm, kubelet, and trying to execute the upgrade command, if there is no kube.conf on the server then that means it hasn't been initialized
+Head over to the master node and get the join token command -> kubeadm token create --print-join-command
+Go back to the node and perform the join; the ca.crt and kubelet.conf will be generated at that time
+
+Back-up Etcd (Snapshot)
+----------------------------------
+Inspect the etcd pod to get cert details (Node)
+    k describe pod/etcd -n kube-system
+    
+Perform the snapshot (Node)
+    ETCDCTL_API=3 etcdctl --endpoints $ENDPOINT snapshot save <FILENAME>
+    
+Verify the snapshot (Node)
+    ETCDCTL_API=3 etcdctl --write-out=table snapshot status <FILENAME>
+
+
+Restore Etcd From Snapshot
+---------------------------------------
+Stop Etcd (Node)
+    if service, stop it; if static-pod, move it out from /etc/kubernetes/manifest
+
+Delete /var/lib/etcd (Node)
+    rm -rf /var/lib/etcd
+
+Restore from snapshot (Node)
+    ETCDCTL_API=3 etcdctl --data-dir /var/lib/etcd snapshot restore <FILENAME>
+
+Start Etcd (Node)
+    if service, stop it; if static-pod, move it back into /etc/kubernetes/manifest)
+    
+Verify etcd is up and running (kubectl/client)
+    k describe pod/etcd -n kube-system
+
+
 Common Commands
 ----------------------------
 
