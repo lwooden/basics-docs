@@ -1,7 +1,5 @@
 Azure Basics
 
-
-
 Cloud SDK and CLI
 ---------------------------------    
 azure-cli
@@ -304,8 +302,8 @@ Role Based Access (RBAC)
 - a successful login by the app (via the api) returns a "token" that the app can then use to pass to a service to perform an action 
 
 
-Data Processing/Integration Solutions
--------------------------------------------------
+Big Data
+------------
 
 [ Azure Data Factory ]
 - serverless ETL and data integration service that can help me create/schedule data-driven workflows (pipelines) that can ingest data from a variety of data stores
@@ -318,6 +316,9 @@ Connect And Collect
 		CI/CD and Publish
 			Monitor
 			
+Integrated Runtimes (Infra used to run pipelines) -> Linked Services (Connections to data sources) -> Data Sets (Data you are working with)
+			
+20,570 (6 Nifi EC2's) 
 
 [ Azure Data Lake ]
 - provides a repository where you can upload and store huge amounts of unstructured data with an eye toward high-performance big data analytics
@@ -525,6 +526,49 @@ App Service Plan (defines a set of compute resources for a web app to run)
 Container Platforms
 ---------------------------
 
+[ Azure Container Registires ]
+-  managed registry service based on the open-source Docker Registry 2.0
+- supports Helm Chart storage
+- control access to a container registry using Azure AD, service principals, or a provided admin account.
+- use Azure RBAC to assign users or systems fine-grained permissions to a registry
+
+// Service Tiers - SKUs // 
+Basic
+	for those just getting started w/ Registries
+	low storage usage
+	
+Standard
+	same as Basic
+	increased storage and image throughput
+	
+Premium
+	supports geo-replication
+	supports private link with private endpoints
+	
+// Best Practices //
+- place registries in the same region as your workloads
+- place registries in their own resource group
+
+
+// ACR Tasks //
+- enables automated builds triggered by source code updates, updates to a container's base image, or timers
+
+Quick task
+	build/push a single container image to a container registry on-demand without local Docker installation
+	
+Trigger On Source Code Update
+	triggers a container image build or multi-step task when code is committed, or a pull request is made or updated
+	
+Trigger on Base Image Update
+	set up an ACR task to track a dependency on a base image when it builds an application image
+	when the updated base image is pushed to your registry, or a base image is updated in a public repo such as in Docker Hub, ACR Tasks can automatically build any application images based on it
+	with automatic detection and rebuilding, ACR Tasks saves you the time and effort normally required to manually track and update each and every application image referencing your updated base image.
+	
+	
+	
+
+
+
 [ Azure Container Instance (ACI) ]
 - similar to Google Cloud Run
 - fastest and simplest way to run a container in Azure
@@ -550,6 +594,10 @@ Container App Environment (secure boundary around a group of container apps)
 	
 
 [ Azure Kubernetes Service (AKS) ]
+
+Azure Defender For Containers
+
+
 
 
 
@@ -881,7 +929,7 @@ Automation Account
 Monitoring 
 ---------------
 
-[  Azure Monitor ]
+[ Azure Monitor ]
 - multi-facted solution comprised of several separate and distinct services
 - diagnostic settings can be configured for multiple types of resources/services that define what data you want to send and where you want to send it
 - to send logs to Log Analytics -> Log Analytics Agent
@@ -892,6 +940,11 @@ Log Analytics Agent
 Dependency Agent
 
 **Can configure Availability Test on web applications (simple ping and advance multi-step test) -- UNIQUE (GCP does this to)
+
+// Azure Monitor Agent
+- collects monitoring data from the guest operating system of Azure and hybrid virtual machines
+- delivers data to Azure Monitor for use by features, insights, and other services, such as Microsoft Sentinel and Microsoft Defender for Cloud
+- replaces all of Azure Monitor's legacy monitoring agents
 
 [ Metrics ]
 - small, time-based data
@@ -947,11 +1000,22 @@ Retention - how often users return to use the app
 Impact - analyzes how load times and other properties influence conversion rates for various parts of your app
 
 
+Security
+---------------
+
 [ Azure Security Center ]
 - provides recomendations on how to improve security posture (like AWS Config)
 - can tie into workflow automation (via Logic Apps) to do something when certain conditions or alerts are raised
 
 [ Azure Sentinel ]
+- a scalable, cloud-native solution that provides Security information and event management (SIEM)
+- Security orchestration, automation, and response (SOAR)
+- allows me to investigate threats with artificial intelligence
+- comes with many connectors for Microsoft solutions tat are available out of the box and provide real-time integration
+- supports Azure services like Azure AD, Azure Activity, Azure Storage, Azure Key Vault, Azure Kubernetes service, and more
+
+[ Microsoft Defender for Cloud ]
+- a Cloud Security Posture Management (CSPM) and Cloud Workload Protection Platform (CWPP) for Azure, on-premises, and multicloud (Amazon AWS and Google GCP) resources
 
 
 Events 	

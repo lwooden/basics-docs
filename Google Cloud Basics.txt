@@ -578,8 +578,8 @@ Big Data
 -------------
 
 Dataproc
-	managed service for processing large datasets
-	Hadoop, MapReduce, Apache Spark, Pig/Hiv 
+	managed Apache Spark service for processing large datasets
+	Hadoop, MapReduce, Pig/Hiv 
 	takes under 90 secs to provision 
 	can turn off when not in use -- UNIQUE
 	
