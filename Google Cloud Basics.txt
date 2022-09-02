@@ -271,8 +271,7 @@ Internal
 Compute
 -------------
 
-Compute Engine
-	used for virtual machine workloads (i.e. EC2)
+Compute Engine - used for virtual machine workloads (i.e. EC2)
 	
 [ Classes ] 
 General Purpose - E2, N2 N2D, N1
@@ -291,7 +290,7 @@ Accelerator Optimized - A2
 Instance Template -> Instance Group
 
 [ Startup Scripts ]
-- think UserData from AWS
+- think userData from AWS
 - can be set at launch time or retrieved from a Cloud Storage Bucket (via a object url)
 
 [ Metadata Service ]
@@ -421,8 +420,9 @@ Jobs
 [ Google Kubernetes Engince (GKE) ]
 - managed Kubernetes service
 
-GKE Standard: pay per node (i.e EKS)
-	GKE Autopilot: pay per pod (i.e Fargate)
+// Modes
+Standard -> pay per node (i.e EKS)
+Autopilot -> pay per pod (i.e Fargate)
 	
 // Workload Identity Service
 - maps a kubernetes service account -> IAM account
@@ -449,7 +449,7 @@ Standard Mode
 	apps run in Sandbox environment
 	specfic runtime versions used
 	intended to run for free or at a very low cost
-	application can scale to 0 instances when there is no traffic
+	can scale to 0 instances when there is no traffic
 	cost based on instance hours
 
 Flexible Mode
@@ -528,11 +528,12 @@ API Management
 - supports the following backends: App Engine, Cloud Run, Cloud Functions
 
 
-AI/ML
---------
-- pre trained API offered by Google
-- exposed by an API
+Vertex AI/ML
+------------
+- pre trained APIs offered by Google
 - most features return a response with a confidence score
+
+// Vertex AI Offerings
 
 [ Cloud Vision API ]
 
@@ -564,7 +565,7 @@ Celebrity Detection
 
 [ Speach to Text API ]
 
-[ Text to Text API ] 
+[ Text to Speech API ] 
 
 [ Translation API ]
 
@@ -588,13 +589,20 @@ DataFlow
 	executes Apache Bean processes
 	
 Dataprep
-	// TODO
+	visually explores, cleans, and prepares data for analysis and ML
+	operated by Trifecta in partnership with Google
+	automatically detects schemas, datatypes, possible joins, and outliers
+	built-in transformation functions (aggregate, join, union)
+	works with csv, JSON, or relational data from Cloud Storage, BigQuery, or direct upload
 	
 BigQuery
-	fully managed data warehouse for data analytics
-	built-in ML features
+	serverless, multi-regional, SQL columns-store data warehouse
 	can stream at 100k rows per second
+	can handle terabytes of data in seconds and petabytes in minutes
+	built-in AI/ML and Business Intelligence Engine
 	Standard SQL
+	supports streaming of data from Pub/Sub, Dataflow, and Datastream
+	keeps (7) day history of changes to data
 		
 BigLake
 	platform that unifies data-warehouses and data-lakes
@@ -606,7 +614,18 @@ Datalab
 	for visualiing, querying, and interacting with your data using programming languages
 	
 Data Studio
-// TODO
+	// TODO
+
+
+IoT
+------
+
+[ Cloud IoT Core ]
+- functions as the endpoint that all IoT devices stream their data to
+- data is then forwarded on to Cloud Pub/Sub
+- Cloud Functions can then be invoked to process data or perform actions against the IoT device
+
+Devices > Cloud IoT Core > Pub/Sub > Cloud Function
 	
 	
 	

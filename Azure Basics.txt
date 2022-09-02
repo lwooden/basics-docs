@@ -63,6 +63,8 @@ Temporary Access Pass -- NEW
 - you do not have access to them
 - supports "basic" group policies
 - supplies Kerberos/NTLM/LDAP interfaces for legacy apps/systems
+- users created in this services DO NOT sync back to Azure AD
+- replication of objects flows from Azure AD -> AADDS (uni-directional only)
 **It is normally better to just extend your on-prem DC and setup custom DNS in Azure
 
 
@@ -89,15 +91,26 @@ Temporary Access Pass -- NEW
 - User Risk Policy: 
 - Sign In Policy: 
 
+
 [ Conditional Access ] 
-- Premium P1 Licensing
+- Premium P1 Licensing or HIGHER
 - Signal (IP, device used, risk level) + Decision (block or allow access) + Enforcement
 - more fine-grained policies than Identity Protection/MFA
 - can define specific applications, devices, location
 - can set to Report Only when just starting out in order to test drive policies in your organization
 
 
-[ PIM ]
+[ Privileged Identiyy Management - PIM ]
+- Premium P2 Licensing
+- provides just-in-time (JIT) access to an elevated role for a certain duration of time
+
+// Configuration Options
+Eligible
+	the user can access PIM and optionally elevate up to use the role
+
+Active
+	I can set a time window for when the user can elevate an access the role
+
 
 
 [ Access Reviews ]
@@ -129,6 +142,17 @@ App Service > Identity > System Assigned > Change status to "ON"
 - created as a standalone resource
 - can be shared with other resources/services
 **user-assigned managed identities can only be assigned to resources hosted in Azure Cloud!
+
+
+[ Service Principal ]
+- acquired through registering my applicaiton
+- the registration represents my app within my Azure AD Tenant
+
+
+Microsoft Authentication Library - MSAL
+-----------------------------------------------------
+// TODO
+
 
 
 Governance
@@ -180,6 +204,7 @@ Name: Allowed Locations
 Definitions (Policies): 1) allowed locations 2) allowed locations for resource groups 
 
 [ Blueprints ]
+// TODO
 
 
 Storage Solutions
@@ -940,10 +965,20 @@ Dependency Agent
 
 **Can configure Availability Test on web applications (simple ping and advance multi-step test) -- UNIQUE (GCP does this to)
 
-// Azure Monitor Agent
-- collects monitoring data from the guest operating system of Azure and hybrid virtual machines
-- delivers data to Azure Monitor for use by features, insights, and other services, such as Microsoft Sentinel and Microsoft Defender for Cloud
+// Azure Monitor Agent - AMA
+- collects monitoring data from the guest operating system of Azure VMs, Hybrid VMs, and VM Scale Sets
+- delivers data to Log Analytics Workspaces, Azure Monitor for use by features, insights, and other services, such as Microsoft Sentinel and Microsoft Defender for Cloud
+- must use a System Assigned Managed Identity to talk to Log Analytics Workspace
 - replaces all of Azure Monitor's legacy monitoring agents
+- data shipping is managed via "Data Collection Rules"
+
+Azure Monitor > Data Collection Rules
+
+## Data Collection Rules 
+What? Counters || Logs
+Where? Azure Monitor || Log Analytics Workspace
+
+		
 
 [ Metrics ]
 - small, time-based data
@@ -1009,12 +1044,26 @@ Security
 [ Azure Sentinel ]
 - a scalable, cloud-native solution that provides Security information and event management (SIEM)
 - Security orchestration, automation, and response (SOAR)
+- sits on top of an Log Analytics Workspace
 - allows me to investigate threats with artificial intelligence
-- comes with many connectors for Microsoft solutions tat are available out of the box and provide real-time integration
+- comes with many connectors for Microsoft solutions that are available out of the box and provide real-time integration
 - supports Azure services like Azure AD, Azure Activity, Azure Storage, Azure Key Vault, Azure Kubernetes service, and more
+
+// Questions
+- Can Sentinel scale beyond a single subscription? At this time it's one Azure Sentinel Workspace per Tenant, Azure Sentinel works across subscriptions
+
+- Can a Log Analytics Workspace ingest data from multiple subscriptions? Seems as though a Workspace can support multiple subscriptions as long as it is under the same Azure AD Tenant
 
 [ Microsoft Defender for Cloud ]
 - a Cloud Security Posture Management (CSPM) and Cloud Workload Protection Platform (CWPP) for Azure, on-premises, and multicloud (Amazon AWS and Google GCP) resources
+- can monitor multiple subscriptions under one tenant
+- provides a score for my overall enviromnent (think AWS Config)
+- provides access to defender plans for specific services (App Service, Container Apps, etc)
+- these plans cost money per month/server
+
+// Versions
+Free
+	include the Azure security benchmark
 
 
 Events 	
