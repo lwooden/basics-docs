@@ -908,6 +908,11 @@ helm ls
 helm -n <namespace> get values <release-name> // check the values you passed to a previous deployment
 helm uninstall graphql-api // uninstall a release
 
+
+Using HELMFILE to Manage Helm Charts
+--------------------------------------------------------
+helmfile sync // references helmfile.yaml in the working directory
+helmfile delete
             
 
 Commands

@@ -348,6 +348,7 @@ Databricks Machine Learning
 
 
 [ Azure Synapse Analytics ]
+// TODO
 
 
 
@@ -564,10 +565,6 @@ Trigger on Base Image Update
 	when the updated base image is pushed to your registry, or a base image is updated in a public repo such as in Docker Hub, ACR Tasks can automatically build any application images based on it
 	with automatic detection and rebuilding, ACR Tasks saves you the time and effort normally required to manually track and update each and every application image referencing your updated base image.
 	
-	
-	
-
-
 
 [ Azure Container Instance (ACI) ]
 - similar to Google Cloud Run
@@ -594,8 +591,10 @@ Container App Environment (secure boundary around a group of container apps)
 	
 
 [ Azure Kubernetes Service (AKS) ]
+// TODO
 
-Azure Defender For Containers
+[ Azure Defender For Containers ] 
+// TODO
 
 
 

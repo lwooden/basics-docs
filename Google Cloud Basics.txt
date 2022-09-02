@@ -587,6 +587,9 @@ DataFlow
 	unified serverless stream and batch processing service
 	executes Apache Bean processes
 	
+Dataprep
+	// TODO
+	
 BigQuery
 	fully managed data warehouse for data analytics
 	built-in ML features
@@ -601,6 +604,9 @@ BigLake
 	
 Datalab
 	for visualiing, querying, and interacting with your data using programming languages
+	
+Data Studio
+// TODO
 	
 	
 	

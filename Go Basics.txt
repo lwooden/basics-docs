@@ -24,8 +24,17 @@ go build
  
  var myString string // intialize to zero value
  myString  = "Low"
- 
  x := "Hello World" // shorthand way to take the type or result on the right and assign it to the variable on the left
+ 
+ deck := []string{"2 of Hearts", "Jack of Diamonds"} // slice
+ 
+ fmt.Println("Hello World") // print to stdout
+ 
+ 
+ colors := map[string]string {
+		"red":   "#ff0000",
+		"green": "#4bf765",
+	}
   
   
  String Interpolation 
@@ -36,10 +45,33 @@ go build
    output := fmt.Sprintf(Hello my name is %a!, name)
    
    Errorf("Expected deck length of 16, but got %d!", len(d))
+   
+   
+
+
+Value & Reference Types
+-----------------------------------
+
+[ Value Types ]
+int 
+float
+string
+bool structs
+
+**Use pointers to change value types inside a function
+
+[ Reference Types ]
+slices
+maps
+channels
+pointers
+functions
+
+**Don't need to worry about pointers for reference types; the language handles this
 
   
-Pointers & References
-------------------------------
+Pointers & Reference Syntax
+--------------------------------------
 
 When we call a function that takes an argument, that argument is copied to the function
 
@@ -64,7 +96,7 @@ func main() {
   fmt.Println(x) // x is 0
 }
 
-Pointers reference a location in memory where a value is stored rather than the value itself. (They point to something else) By using a pointer (*int) the zero function is able to modify the original variable.
+Pointers reference a location in memory where a value is stored rather than the value itself (they point to something else). By using a pointer (*int) the zero function is able to modify the original variable.
 
 In Go a pointer is represented using the * (asterisk) character followed by the type of the stored value. In the zero function xPtr is a pointer to an int.
 
@@ -75,16 +107,25 @@ Finally we use the & operator to find the address of a variable. &x returns a *i
 Data Structures
 --------------------
 
-[ Structs ] 
-- talk about receivers
-
 [ Arrays ] 
 - discuss the difference between this and slices
 - common methods
 
 [ Slices ] 
 
+
 [ Maps ] 
+- similar to objects (javascript), dicitonaries (python)
+- key/value pairs
+- keys must be of the same type; values must be of the same type
+
+
+
+[ Structs ] 
+- talk about receivers
+
+
+[ Interfaces ]
 
 
 Functions
