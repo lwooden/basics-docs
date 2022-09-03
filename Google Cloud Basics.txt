@@ -1,7 +1,6 @@
 Google Cloud Basics
 
 
-
 Cloud SDK and CLI
 ---------------------------------    
 gcloud (compute engine, iam, etc)
@@ -28,13 +27,23 @@ Regions (us-east1)
 
 Account Structure
 -----------------------
-
 Organization
 	Folder (Departments or Teams)
 		Project (i.e. Azure Subscription)
 			Resources (all resources are bound to a project)
      
 A project includes a set of users, APIs, billing, authentication, and monitoring
+
+
+
+Resource Manager
+-------------------------
+
+[ Cloud Asset Inventory ]
+
+[ Organization Policy Service ]
+
+
 
 
 Billing
@@ -122,17 +131,22 @@ Google-Managed
 	
 
 
-Cloud Identity Domain (i.e. Active Directory)
-	google accounts that are in an organization, but ARE NOT tied to any GSuite applications or features
-	AllAuthentitcated Users  - all service accounts or users on the internet who have authenticated with a Google account
-	AllUsers - anyone who is on the internet, including authenticated and unauthenticated users
+[ Cloud Identity Domain (i.e. Active Directory)]
+- google accounts that are in an organization, but ARE NOT tied to any GSuite applications or features
+
+AllAuthentitcated Users
+	all service accounts or users on the internet who have authenticated with a Google account
+	
+AllUsers
+	anyone who is on the internet, including authenticated and unauthenticated users
 	
 	
-[ Identity Aware Proxy - IAP ]
+[ Cloud Identity Aware Proxy - IAP ]
 - managed solution for authenticating and authorizing users
+- establishes a central authentication layer for apps accessed via HTTP/S (think Keycloak, Auth0)
 - supports Compute Engine, App Engine, and GKE
 
-1. Users are directed to Google to  autenticate in to get AT
+1. Users are directed to Google to authenticate in to get an Access Token
 2. Authorization is driven via IAM
 
 
@@ -147,6 +161,7 @@ VPC
 	
 
 [ VPC ]
+- have a global presence
 - no concept of an "Internet Gateway" (like Azure)
 - instances will have internet access IF they have an external IP assocaited with them
 
@@ -163,6 +178,8 @@ Outbound Access TO whitelisted IP ranges only
 - resources can communicate with each other securely and efficiently using internal IPs from that network
 - you must designate a project as a "host" project and attach one or more other "service" projects to it
 - shared VPC connects projects within the same organization
+
+Service Project -> Host Project <- Service Project
 
 // Constraints
 
@@ -190,6 +207,17 @@ Reserved IP Address Per Subnet
 	2nd address - gateway
 	2nd-to-last address - future use
 	Last address - broadcast
+	
+
+[ External IP Addresses ]
+- reserve static IP addresses and assign them to resources
+- there is no charge if they are assinged and are in-use
+- there is a charge if they are reserved and NOT used
+
+// Types
+Regional - can be assigned to Compute Engine and Network Loadbalancers
+Global - can be assigned to anycast IPs and global loadbalancers
+
 
 [ Routes ] 
 
@@ -259,13 +287,42 @@ Internal
 
 [ Flow Logs ]
 
+
+[ Cloud Router ]
+- provides dynamic for hybrid networks 
+- links VPCs to external networks
+- works with Cloud VPN, and Cloud Interconnect
+- automaticallty learns subnets and announces them to on-premise networks
+
+
 [ Cloud VPN ]
 - must configure a "Peer VPN Gateway" and "Cloud VPN Gateway"
-- HA VPN: two interfaces and two external IPs
-- Classic VPN: single inferace and single external IP
+**Cloud VPN should be set-up in it's own account for ease of management
+
+// Options
+HA VPN - two interfaces and two external IPs
+Classic VPN - single inferace and single external IP
+
+
+[ Cloud Interconnect ]
+- think Direct Connect and ExpressRoute
+- direct connection into Googles backbone
+
+// Options
+Dedicated - direct connection to GCP; 10-Gbps or 100-Gbps circuits
+Partner - connection to a GCP partner
+
 
 [ Cloud DNS ]
 - resembles Route 53
+
+
+[ Cloud Domains ]
+- global registrar for domain names using Google Domains
+- uses built-in DNS
+- supports custom nameserves
+- supports DNSSEC and private Whols records
+- managed as a GCP Project 
 
 
 Compute
@@ -392,9 +449,9 @@ Memorystore
 Data
 ------
 
-Cloud Data Loss Prevention API
-	can de-identify sensitive data in text content
-	uses a de-identification transformation to mask, delete, or otherwise obscure the data
+[ Cloud Data Loss Prevention API ] 
+- can de-identify sensitive data in text content
+- uses a de-identification transformation to mask, delete, or otherwise obscure the data
 	
 	
 
@@ -419,6 +476,7 @@ Jobs
 
 [ Google Kubernetes Engince (GKE) ]
 - managed Kubernetes service
+- clusters can be private, zonal, or regional 
 
 // Modes
 Standard -> pay per node (i.e EKS)
@@ -505,6 +563,7 @@ Asynchronous Messaging
 
 [ Cloud Pub/Sub ]
 - think AWS SNS
+- global service
 - asynchronous messaging service
 - max size of task/message	10MB
 - task/message retention 7 days
@@ -633,12 +692,31 @@ Encryption
 --------------
 
 [ Cloud KMS ]
+- creates, manages, and apply cryptographic keys
+- supports symmentrical and asymmetrical algorithms
+- responsible for encrypting and decrypting and controls acces to keys
+
+[ Cloud HSM ]
+- host encryption keys and performs cryptographic actions
+- FIPS 140-2 Level 3 certified devices
+- bound to a region
+- keys are not exportable, tamper resistant, provides tamper evidence
+
+[ Cloud EKM - External Key Management ] 
+- uses keys from SUPPORTED external key management partners outside of GCP
+- supports services such as BigQuery, Compute Engine, Cloud Run, Cloud Spanner, Cloud Storage, GKE, Pub/Sub, Secret Manager
+- key ring should be created on the partner side
+
+CMEK/CSEK
 
 
-Secrets Management
+Secret Management
 -----------------------------
 
 [ Cloud Secret Manager ]
+- secrets are immutable once saved
+- new versions are created instead
+- versions must be referenced when calling the API
 
 
 	
@@ -647,13 +725,17 @@ Operations Suite (i.e Stackdriver)
 - a suite of tools used for logging, monitoring, and application diagnostics
 
 [ Cloud Monitoring ] 
-- requires setting up a workspace (i.e. Azure Analyics Workspace)
-- supports multi-project setup and multi-cloud
+- requires setting up a Metrics Scope, formally called Workspaces (i.e. Azure Analyics Workspace)
+- should be setup as a "host" project to get insight from all other projects in a single pane of glass
 - leverages an agent that streams data from Compute Engine to the service
 - supports GKE
 - alerting policies
 - provides insight into System Metrics (e.g. CPU, disk, etc)
 - supports User Defined Metrics (e.g. HTTP status codes)
+
+// Agents
+colletd - monitoring
+fluentd - logging
 
 // Uptime Checks -- UNIQUE
 **can perform the following
@@ -677,7 +759,7 @@ Perform basic auth
 [ Cloud Error Reporting ]  -- UNIQUE
 - real time error monitoring and alerting
 - consolidates all errors within a single pane of glass
-- erros are deduplicated and grouped together into an "issue"
+- errors are deduplicated and grouped together into an "issue"
 - how many occurences? when was it last seen?
 - integrated into Cloud Functions, and App Engine (standard)
 
@@ -691,20 +773,39 @@ Perform basic auth
 [ Cloud Trace ]
 - instrument my apps w/ OpenTelemetry, OpenCensus, Google SDK
 
-Trace
-	the total time it takes for a request to make it end-to-end
-	
-Span
-	the time it took for a particualr "segment" of a request path
+Trace - the total time it takes for a request to make it end-to-end
+Span - the time it took for a particualr "segment" of a request path
 
-[ Profiler ] 
+[ Cloud Profiler ] 
+- continously analyzes the performance of your applicaiton
+- maintains profiles for 30 days
+- agent based; requires instrumentation
+- supports Compute Engine, App Engine, and Dataproc 
 	
 	
 	
-Security Command Center -- UNIQUE
-------------------------------------
+Cloud Security Command Center -- UNIQUE
+-------------------------------------------
 - a suite of tools used to help improve/maintain the security posture of a project/organization
 - more so designed to be configured for an organization
+- designed to prevent, detect, and respond to threats
+- provides a "Single Pane of Glass" 
+- identifies security compliance violations and misconfigurations in GCP Assets (think AWS Config)
+
+// Tiers
+Standard
+	Security Health Analytics
+	Web Security Scanner
+	Cloud Armor
+	Cloud Data Loss Prevention (DLP)
+	Anomaly Detection
+	
+Premium
+	Security Health Analytics + Compliance Reporting
+	Web Security Scanner + Managed Scans
+	Event Threat Detection
+	Container Threat Detection
+	Exports to Pub/Sub
 
 [ Web Security Scanner ]
 - will crawl a url of a Compute Engine, App Engine, or GKE web app
@@ -718,10 +819,32 @@ Security Command Center -- UNIQUE
 - performs container scanning on images in Artifact Registry
 
 
+[ Event Threat Detection ]
+- identify threats in real-time by monitoring and analyzing Cloud Logging
+- threats are defined by "rules" which specify targeted logs 
+- support "custom" rules by running queries on logs exported to BigQuery
+
+[ Cloud Armor ]
+- edge level DDos protection and web application firewall (WAF)
+- built on top of Cloud Loadbalancing
+- mitigates OWASP top ten risks (Open Web Application Security Project)
+- whitelist traffic based on source IP or CIDR Ranges
+- preview changes before making policy live
 
 
-Google Cloud Armour
-----------------------------
+
+
+Multi-Cloud + On-Prem
+--------------------------------
+
+[ Anthos ]
+- allows for application development ANYWHERE in conjuction w/ a Google Cloud Control Plane
+- supports GKE, Cloud Run, and Compute Engine
+
+[ Anthos Service Mesh ]
+- enables managed, observable, and secure communication across microservices, on-premises, and on GCP
+- powered by Istio; implements a control plane and monitors all traffic through a proxy
+
 
 
 
