@@ -4,7 +4,7 @@ Google Cloud Basics
 Cloud SDK and CLI
 ---------------------------------    
 gcloud (compute engine, iam, etc)
-    gcloud <component> <entity> <operation> <args> <flags> // sytanx
+  gcloud <component> <entity> <operation> <args> <flags> // sytanx
 	gcloud init
 	gcloud auth login
 	glcoud config list
@@ -23,8 +23,8 @@ kubectl (k8)
 Geographical Concepts
 -----------------------------
 Regions (us-east1)
-   Zones (i.e. AWS Availability Zones; us-east1-b)
-     Edge Locations (i.e AWS Cloud Front, Azure Front Door)
+ 	Zones (i.e. AWS Availability Zones; us-east1-b)
+  	Edge Locations (i.e AWS Cloud Front, Azure Front Door)
      
      
 
