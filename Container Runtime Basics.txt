@@ -1,30 +1,40 @@
-Docker Basics
+Container Runtime Basics
+
+Important Concepts
+--------------------------
+//TODO
 
 
-Networking Modes
-----------------
+Docker
+---------
 
-Bridge - default docker network; provides inter container connectivity for all containers running on the same node
+[ Networking Modes ]
 
-Host - containers interact directly with the host network stack like any other locally hosted application or process 
+Bridge
+	default docker network; provides inter container connectivity for all containers running on the same node
 
-None - no outside connectivity outside of themselves
+Host
+	containers interact directly with the host network stack like any other locally hosted application or process 
 
-
-Networking Scopes
-----------------
-
-Local - network is constrained to the machine where the network exists
-
-Global - network should be created on every node in the cluster but no routing between them
-
-Swarm - network spans all of the hosts in a Docker Swarm (cluster-wide)
+None
+	no outside connectivity outside of themselves
 
 
-Basic Commands
--------------
+[ Networking Scopes ] 
 
-Docker <subcommand> --help
+Local
+	network is constrained to the machine where the network exists
+
+Global
+	network should be created on every node in the cluster but no routing between them
+
+Swarm
+	network spans all of the hosts in a Docker Swarm (cluster-wide)
+
+
+[ Basic Commands ] 
+
+docker <subcommand> --help
 docker commit      Create a new image from a container's changes
 docker exec <id> /bin/sh | bash Run a command in a running container
 docker images -a   List all images/repositories
@@ -41,8 +51,7 @@ docker start|stop <id>  Start/Stop one or more stopped containers
 docker stats       Display a live stream of container(s) resource usage statistics
 docker inspect     displays metadata that docker maintains about for a container
 
-Management Commands
-----------------
+[ Management Commands ] 
 
 docker network ls 
 docker network inspect [bridge|host|local]
@@ -51,8 +60,7 @@ docker network create --driver bridge --attachable --scope local --subnet 192.16
 
 docker volume ls
 
-Swarm/Service Commands
----------------------
+[ Swarm/Service Commands ] 
 
 docker swarm init // enables service abstraction
 
@@ -64,13 +72,10 @@ docker service inspect --pretty <service_name> // prints in human readable
 docker service scale <service_name>=3 // increases replica set to 3
 
 
-Examples
----------
+[ Examples ] 
 
 docker create nginx
-
 docker run hello-world
-
 docker run --name hi hello-world 
 
 docker run -d --name WebA nginx // runs the nginx container in "detached" mode (in the background)
@@ -80,7 +85,6 @@ docker run --name busy -it busybox /bin/sh // interactively starts a busy box co
 docker exec ef875hdhsd /bin/sh // opens up a shell on the container ID
 
 docker logs -f webA // continuously displays logs on container with name "WebA" 
-
 
 docker run -it --name example --link <container_to_link_to>:<link alias> busybox
 
@@ -95,8 +99,25 @@ docker inspect -f "{{.HostConfig.Links}}" busybox // displays the links in place
 docker run -it --network lows-network --name network-explorer alpine:3.8 sh // creates an alpine linux based container, attaches it to my user defined network, and opens a shell prompt
 
 docker commit nginx_base // creates a image of a running container called nginx_base
-   docker images // check image list for new image
-   docker tag <new_image_id> <image_name>
+  
+docker images // check image list for new image
+
+docker tag <new_image_id> <image_name>
+
+
+Podman
+-----------
+// TODO
+
+Containerd
+---------------
+// TODO
+
+
+CRI-O
+--------
+// TODO
+
 
 
 

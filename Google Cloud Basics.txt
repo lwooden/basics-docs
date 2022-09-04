@@ -8,6 +8,9 @@ gcloud (compute engine, iam, etc)
 	gcloud init
 	gcloud auth login
 	glcoud config list
+	gcloud compute ssh instance-1 --zone=us-east1-b
+	gcloud compute firewall-rules create "prod-ssh-prod" --network low-sandbox-prod-vpc --source-ranges 0.0.0.0/0 --allow tcp:22
+	
 	
 gsutil (cloud storage)
 
