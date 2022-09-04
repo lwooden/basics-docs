@@ -1,8 +1,27 @@
 Container Runtime Basics
 
-Important Concepts
---------------------------
-//TODO
+
+CRI - Container Runtime Interface
+--------------------------------------------
+- the foundation upon which container technologies are built
+- an abstraction for any kind of container runtime you might want to use
+- makes it easier for Kubernetes to use different container runtimes
+- instead of the Kubernetes project manually adding support for each runtime, the CRI API describes how Kubernetes interacts with each runtime. So then, it’s down to the runtime to actually manage containers. As long as it obeys the CRI API, it can do whatever it likes.
+
+Docker
+Podman 
+Containerd - maintained by Docker
+CRI-O - maintained by RedHat; built for Kubernetes
+Runc
+[ CRI ] 
+
+**Container technoliges build on-top-of or from the CRI
+
+
+OCI - Open Container Initiative
+-----------------------------------------
+- group of companies who maintain a specification for the container image format, and how containers should be run
+
 
 
 Docker
@@ -107,7 +126,55 @@ docker tag <new_image_id> <image_name>
 
 Podman
 -----------
-// TODO
+
+[ Commands ]
+
+podman info
+
+podman ps --all
+
+podman images
+podman pull <image>
+
+podman run -it <image>
+podman run -d --name test_container <image>
+
+podman exec -it test_container /bin/bash
+
+podman start test_container
+podman stop test_container
+
+podmam rm -a 
+podman rmi <image>
+
+skopeo inspect <image>
+
+
+[ Setup Container to Run as Systemd Service (Rootless Mode) ]
+
+Create config directory in home to store systemd files
+	mkdir ~/.config/systemd/user
+
+Launch the container
+	podman run -d --name test_container -p 80:8080 <image>
+	
+Generate systemd unit files
+	podman generate systemd --name test_container --files --new
+	
+Inspect new systemd unit file
+	less ~/.config/systemd/user/test_container.service
+
+Enable linger to allow for persistent non-root systemd containers to run
+	loginctl enable-linger
+	loginctl show-user cloud_user | grep linger
+	"Linger=yes"
+	
+Reload daemon files (at the user level)
+	systemctl --user daemon-reload
+	
+Enable new container service (at the user level)
+	systemctl --user enable  --now test_container.service
+	
 
 Containerd
 ---------------
@@ -116,7 +183,14 @@ Containerd
 
 CRI-O
 --------
-// TODO
+
+[ Commands ]
+
+**crioctl can be installed from cri-tools package as client facing tool to interact with CRI-O daemon.
+
+crictl info
+crictl images
+crictl pull busybox
 
 
 
