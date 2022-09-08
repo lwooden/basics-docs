@@ -77,7 +77,7 @@ IAM
 --------
 Who (Identity) -> Has What Access (Role) -> For Which Resource
 
-Member
+Member/Principal
 	Role
 		Condition
 			Metadata
@@ -121,7 +121,7 @@ Custom
 - can be attached to resources (i.e. AWS Instance Role)
 - can be impersonated by people (i.e. Assuming a role)
 
-User-Manged
+User-Managed
 	you create the name
 	<service-account-name>@<project-id>.iam.gserviceaccount.com
 	
@@ -170,6 +170,7 @@ VPC
 
 // VPC Service Controls
 - defines a service perimeter around protected resources
+- mitigates the risk of data exfiltration from services like Cloud Storage and BigQuery
 - enforces special rules at the border
 - is independent of IAM or firewall policies (higer level)
 
@@ -342,12 +343,15 @@ Accelerator Optimized - A2
 **You can also create custom machine types that fit your exact specification -- UNIQUE
 
 [ Managed Instance Groups ]
-- think AWS Auto-Scaling Groups; Azure VM Scale Sets
-- instances that are managed as a single entity
+- think AWS Auto-Scaling Groups and Azure VM Scale Sets
+- instances that are managed as a single entity and have identical configurations
 - can be scaled out and scaled in based on a policy (i.e. CPU)
 - deployed across multiple zones
 
 Instance Template -> Instance Group
+
+[ Unmanaged Instance Groups ]
+- useful for grouping together VMs that require individual configuration settings or tuning
 
 [ Startup Scripts ]
 - think userData from AWS
@@ -376,56 +380,77 @@ Instance Template -> Instance Group
 Storage
 -----------
 
-Cloud Storage
-	used for object storage (i.e. S3)
-	buckets are the foundational construct
-	(3) availability options: regional, dual-regional, multi-regional
-	(4) discreet classes: standard, nearline (30 day min), coldline (90 day min), archive (1 yr min)
-	different classes represent cost efficiency and disaster recovery options
-	can encrypt data with CMKs or Google Managed Keys
-	object lifecycle mamagement for tiering
-	retention policy to mandate delettion based on age
-	policy locks bind the policy to the bucket; cannot be deleted until all objects are deleted
-	object holds to prevent deletion of an object in case of an investigation
-	
+[ Cloud Storage ]
+- used for object storage (i.e. S3)
+- buckets are the foundational construct
+-	can encrypt data with CMKs or Google Managed Keys
+- object lifecycle mamagement for tiering
+- retention policy to mandate delettion based on age
+- policy locks bind the policy to the bucket; cannot be deleted until all objects are deleted
+- object holds to prevent deletion of an object in case of an investigation
 
-Cloud Filestore
-	used for file storage (i.e. EFS)
-	fully managed NFS service
-	
-
-Persistent Disk (Block Storage)
-	network storage disks that back compute instances (i.e. EBS)
-	performance is based on the disk capacity attached to an instance and the number of vCPUs that the instance has
-	encrypted by default
-	Standard (HDD) || Balanced (General Purpose) || SSD
-	Zonal Persistent Disk - default option (1 zone; 1 region)
-	Regional Persistent Disk - replicates between 2 zones
-	Local SSD - very high IOPs and low latency (physically attached; highest performance)
-	
-	
-	
-Databases
----------------
-
-[ SQL ]
-
-Cloud SQL
-  highly available 
-  supports MySQL, Postgres, and SQL Server engines
+// Availability Options
+Regional
+	Dual-Regional 
+  	Multi-Regional
   
-Cloud Spanner
-	enterprise grade
-	globally distributed
-	strongly consistent cloud first db service
+// Storage Classes
+Standard - instant access
+Nearline - 30 day minimum
+Coldine - 90 day minimum
+Archive - 1 year minimum
+
+**Different classes represent cost efficiency and disaster recovery options
+
+// Transfer/Syncrhonization Options
+Storage Transfer Service - moving data from 3rd party provider to Google; bucket to bucket; more than 1TB from on-prem
+Transfer Appliance (Online Mode) - for strong internet connectivity 
+Transfer Appliance (Offline Mode) - for poor internet connectity; transfer data to appliance and ship to google
+gsutil - less than 1TB from on-prem
+
+
+[ Cloud Filestore ] 
+- used for file storage (i.e. EFS)
+- fully managed NFS service
 	
 
-[ No SQL ]
+[ Persistent Disk - VM Block Storage ]
+- network storage disks that back compute instances (i.e. EBS)
+- performance is based on the disk capacity attached to an instance and the number of vCPUs that the instance has
+- encrypted by default
 
-Cloud BigTable
-	wide-colum store
-	large scale
-	low-latency
+// Performance Options
+Standard (HDD) 
+Balanced (General Purpose) 
+SSD
+
+// Disaster Recovery Options
+Zonal Persistent Disk - default option (1 zone; 1 region)
+Regional Persistent Disk - replicates between 2 zones
+Local SSD - very high IOPs and low latency (physically attached; highest performance)
+	
+	
+	
+SQL Databases
+----------------------
+
+[ Cloud SQL ] 
+- highly available 
+- supports MySQL, Postgres, and SQL Server engines
+  
+[ Cloud Spanner ] 
+- enterprise grade
+- globally distributed
+- strongly consistent cloud first db service
+	
+
+No-SQL Databases
+---------------------------
+
+[ Cloud BigTable ] 
+- wide-colum store
+- large scale
+- low-latency
 	
 // Row Key Design
 You can collapse multiple column values into the "Row Key" as ONE value
@@ -437,16 +462,19 @@ Vehicle					LAT		LONG
 Metro#86#M117 	40.7.  	-73.9	
 **Result after performing "Field Promotion" on the Company and Route colums to create a better indexable row key
 
-Firestore
-	rich mobile, web, and IOT applications
-	strongly consistent
+
+[ Firestore ] 
+- rich mobile, web, and IOT applications
+- strongly consistent
 	
-Firebase
-	stores and syncs data between users in real time for mobile sign-ins, applications, ads, and chat
 	
-Memorystore
-	fully managed Redis and Memcached databases
-	milisecond data access
+[ Firebase ] 
+- stores and syncs data between users in real time for mobile sign-ins, applications, ads, and chat
+	
+	
+[ Memorystore ] 
+- fully managed Redis and Memcached databases
+- milisecond data access
 	
 	
 Data
@@ -457,8 +485,7 @@ Data
 - uses a de-identification transformation to mask, delete, or otherwise obscure the data
 	
 	
-
- Containers
+Containers
 ---------------
 
 [ Cloud Run ] 
@@ -506,14 +533,16 @@ Severless
 - supports multiple versions of your application via traffic splitting (percentage distribution)
 - integrates with other services like load balancer and cloud sql 
 
-Standard Mode
+// Modes
+
+Standard
 	apps run in Sandbox environment
 	specfic runtime versions used
 	intended to run for free or at a very low cost
 	can scale to 0 instances when there is no traffic
 	cost based on instance hours
 
-Flexible Mode
+Flexible
 	apps run on docker containers
 	any versions of runtimes can be used
 	cost based on VM resources
@@ -532,11 +561,9 @@ Application
 - only ONE trigger can be bound to a function at a time
 - source code is deployed to a cloud storage bucket as a zipfile -> Cloud Build prepares a container image -> Pushes it to Container Registry -> Cloud Functions uses this image to run your code
 
-HTTP Functions
-	triggered by HTTP requests; there is no API gateway required -- UNIQUE
-
-Backround Funcitons
-	triggered by events (Pub/Sub, changes in a bucket)
+// Types
+HTTP Functions - triggered by HTTP requests; there is no API gateway required -- UNIQUE
+Backround Funciton -	triggered by events (Pub/Sub, changes in a bucket)
 
 
 [ Cloud Build ] 
@@ -674,6 +701,7 @@ BigLake
 	
 Datalab
 	for visualiing, querying, and interacting with your data using programming languages
+	backed by Jupyter Notebook
 	
 Data Studio
 	// TODO
@@ -710,7 +738,12 @@ Encryption
 - supports services such as BigQuery, Compute Engine, Cloud Run, Cloud Spanner, Cloud Storage, GKE, Pub/Sub, Secret Manager
 - key ring should be created on the partner side
 
-CMEK/CSEK
+[ CMEK - Customer Managed Encryption Keys ]
+- key is in customers control
+- gives you control over more aspects of the lifecycle and management of your keys
+
+[ CSEK - Customer Supplied Encryption Keys ]
+- 
 
 
 Secret Management
