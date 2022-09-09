@@ -221,10 +221,9 @@ Networking
 - peering can happen across region and subscriptions (must know resource-id)
 - non-transitive
 
-[ Network Security Groups ] 
-- NSGs are linked to subnets
-- focused on filtering traffic, not routing (Security Groups)
-- can apply to the subnet or interface level
+[ Network Security Groups - NSG ] 
+- focused on filtering traffic, not routing
+- can be applied to subnets (preferred) or NICs
 - cannot remove Default Rules
 - can modify based on "Priority" (lower the number, higher the priority)
 - by default ALL INBOUND ACCESS is enabled on a "Basic" SKU Public IP
@@ -240,7 +239,9 @@ Networking
 
 [ Routing ]
 
-User Defined Routing (UDR)
+Routing Tables
+	Default Routes
+	User Defined Routes (UDR)
 
 
 [ Azure Firewall ] 
@@ -506,60 +507,23 @@ Role Based Access (RBAC)
 - a successful login by the app (via the api) returns a "token" that the app can then use to pass to a service to perform an action 
 
 
-Big Data
-------------
-
-[ Azure Data Factory ]
-- serverless ETL and data integration service that can help me create/schedule data-driven workflows (pipelines) that can ingest data from a variety of data stores
-- can use to orchestrate data movement
-- can transform data at scale
-
-// Workflow
-Connect And Collect
-	Transform and Enrich
-		CI/CD and Publish
-			Monitor
-			
-Integrated Runtimes (Infra used to run pipelines) -> Linked Services (Connections to data sources) -> Data Sets (Data you are working with)
-			
-20,570 (6 Nifi EC2's) 
-
-[ Azure Data Lake ]
-- provides a repository where you can upload and store huge amounts of unstructured data with an eye toward high-performance big data analytics
-- primarily designed to work with Hadoop and all frameworks that use the Apache Hadoop Distributed File System (HDFS) as their data access layer
-- Data Lake Storage Gen2 builds on Azure Blob storage capabilities to optimize it specifically for analytics workloads
-- supports RBAC for security
-- can handle ad hoc data in batches or streaming data
-
-
-[ Azure Data Bricks ]
-- Big Data and Machine Learning platform, which empowers developers to accelerate AI and innovation
-- managed Apache Spark platform
-
-// Environments //
-
-Databricks SQL
-	for analysts who want to run SQL queries on their data lake, create multiple visualization types to explore query results from different 
-	perspectives, and build and share dashboards.
-
-Databricks Data Science & Engineering
-	an interactive workspace that enables collaboration between data engineers, data scientists, and machine learning engineers
-	used to read data from multiple data sources and turn it into breakthrough insights using Spark
-
-Databricks Machine Learning
-	ntegrated end-to-end machine learning environment incorporating managed services for experiment tracking, 
-	model training, feature development and management, and feature and model serving.
-
-
-[ Azure Synapse Analytics ]
-// TODO
-
-
-
 SQL Databases
 ---------------------
 
 Structured Data Options (rows and columns)
+
+[ Azure Database for PostgreSQL ]
+
+// Deployment Modes
+Single Server
+Flexible Server
+Hyperscale (Citus)
+
+[ Azure Database for MySQL servers ]
+
+// Deployment Modes
+Single Server
+Flexible Server
 	
 [  Azure SQL Database ]
 - supports "some" SQL features but not all
@@ -603,6 +567,9 @@ vCore
 - very ligtweight
 - optimized for IOT
 - 500mb memory footprint
+
+
+
 
 	
 No-SQL Databases
@@ -697,6 +664,59 @@ Volatile-lru
 	
 Allkeys-lru
 	evicts any keys under memory pressure
+
+
+Big Data
+------------
+
+[ Azure Data Factory ]
+- serverless ETL and data integration service that can help me create/schedule data-driven workflows (pipelines) that can ingest data from a variety of data stores
+- can use to orchestrate data movement
+- can transform data at scale
+
+// Workflow
+Connect And Collect
+	Transform and Enrich
+		CI/CD and Publish
+			Monitor
+			
+Integrated Runtimes (Infra used to run pipelines) -> Linked Services (Connections to data sources) -> Data Sets (Data you are working with)
+			
+20,570 (6 Nifi EC2's) 
+
+[ Azure Data Lake ]
+- provides a repository where you can upload and store huge amounts of unstructured data with an eye toward high-performance big data analytics
+- primarily designed to work with Hadoop and all frameworks that use the Apache Hadoop Distributed File System (HDFS) as their data access layer
+- Data Lake Storage Gen2 builds on Azure Blob storage capabilities to optimize it specifically for analytics workloads
+- supports RBAC for security
+- can handle ad hoc data in batches or streaming data
+
+
+[ Azure Data Bricks ]
+- Big Data and Machine Learning platform, which empowers developers to accelerate AI and innovation
+- managed Apache Spark platform
+
+// Environments //
+
+Databricks SQL
+	for analysts who want to run SQL queries on their data lake, create multiple visualization types to explore query results from different 
+	perspectives, and build and share dashboards.
+
+Databricks Data Science & Engineering
+	an interactive workspace that enables collaboration between data engineers, data scientists, and machine learning engineers
+	used to read data from multiple data sources and turn it into breakthrough insights using Spark
+
+Databricks Machine Learning
+	ntegrated end-to-end machine learning environment incorporating managed services for experiment tracking, 
+	model training, feature development and management, and feature and model serving.
+
+
+[ Azure Synapse Analytics ]
+// TODO
+
+
+
+
 
 
 
