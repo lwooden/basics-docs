@@ -1,7 +1,7 @@
 Azure Basics
 
 Cloud SDK and CLI
----------------------------------    
+--------------------------    
 azure-cli
 	az login
 	az account list
@@ -198,13 +198,195 @@ Assignment
 [ Initiatives ] 
 - an object that ties together multiple policies in order to achieve an overall goal 
 
-// Example //
+// Example
 Location (Scope): Low Dev Subscription
 Name: Allowed Locations
 Definitions (Policies): 1) allowed locations 2) allowed locations for resource groups 
 
 [ Blueprints ]
 // TODO
+
+Networking
+--------------
+
+[ Availability Zones ] 
+- 3 availability zones per region
+	
+[ Virtual Networks ] 
+- lose 5 addresses with each subnet
+- for Gateway subnets it's best to provision a /27 (32 addresses) so you can run Express Route and S2S VPN
+- Express Route is not encrypted 
+- default paths are 1) intra-vnet traffic 2) internet connectivity
+- peering now allows for routing to be automatically configured from both Vnets using the wizard
+- peering can happen across region and subscriptions (must know resource-id)
+- non-transitive
+
+[ Network Security Groups ] 
+- NSGs are linked to subnets
+- focused on filtering traffic, not routing (Security Groups)
+- can apply to the subnet or interface level
+- cannot remove Default Rules
+- can modify based on "Priority" (lower the number, higher the priority)
+- by default ALL INBOUND ACCESS is enabled on a "Basic" SKU Public IP
+- by default ALL INBOUND ACCESS is blocked on "Standard" SKU Public IP
+-  SERVICE TAGS abstract references to Azure services since recording IP addresses for those services is complex
+
+[ Application Security Groups ] 
+- think AWS Security Groups
+- logical container for network interfaces
+- NICs are associated with ASGs
+- "Web-ASG" would apply to the NIC of all VMs in the "Web Fleet"
+- ASGs are scoped to Vnets; all NICs must be in the same Vnet
+
+[ Routing ]
+
+User Defined Routing (UDR)
+
+
+[ Azure Firewall ] 
+- must be deployed to a dedicated subnet called "AzureFirewallSubnet" /26 is the minimum
+- must be deployed in the same resource group that the VNET is in
+- fronted by a loadbalancer and backed by a VM scale set
+- logs can be exported a Log Analytics Workspace (Diagnostic Settings)
+- one Firewall per VNET
+- VNETs can share a Firewall
+- works by creating a user-defined route to set the Firewall as the default route instead of the VNET router
+- can configure outbound HTTP/s traffic by FQDN
+- can perform SNAT and DNAT through the Firewall
+- provides threat intelligence out-of-the-box
+- integration w/ Azure Monitor
+- can associate up to 250 public IPs assigned
+- custom routes (user defined routes) must be in place to route traffic from VMs to the Firewall Service
+
+// SKUs
+Standard
+	Premium 
+
+// Rules
+Network Rule Collection
+	focused on outbound traffic
+	basic source/destination rule-sets (similar to NSGs)
+
+Application Rule Collection
+	focused on outbound traffic
+	layer 7 filtering (FQDN)
+	allow http/https traffic from ANY to www.google.com with a rule named "google-allow"
+
+NAT Rule Collection
+	focused on in-bound traffic
+
+
+[ Azure Bastion ]
+- must be deployed to a dedicated subnet called "AzureBastionSubnet" (/26 is the minimum)
+- RDP/SSH sesions are wrapped in a SSH tunnel via the Bastion Service
+- supported by a loadbalancer and VM scale set on the backend
+- I can determine how many concurrent sessions I want to support
+
+// SKUs
+Basic
+	Linux - SSH
+	Windows - RDP
+	
+Standard
+	IP based connections
+	Custom Ports/Protocols
+	File Transfer
+	
+	
+[ Just-In-Time Access - JIT ]
+- can go to a resource and request access for only my IP when I need it
+
+Security Center -> Just-In-Time VM Access
+
+
+[ Transitive Connectivity ]
+- VPN Gateways can be used to establish connectivity between V-Nets and on-prem networks
+- VPN Gateway resources are deployed into a special subnet called "Gateway Subnet"
+- connections are terminated over the internet (public IP address)
+- Allow Forwarded Traffic
+- Allow Gateway Transit must be enabled in the hub vnet to pass traffic transitively to other spoke vnets
+- Use Remote Gateway must be enabled in the spoke vnet to tell it to use the gateway that is configured in the hub vnet
+
+
+[ Service Endpoints ]
+- configured at the subnet level of a Vnet
+- provides a new "private" route for resources in the vnet to reach Mircosoft services
+- provides the private address as a source IP address when accessing services
+- DOES NOT establish private IP address for the services being accessed (like Private Link)
+- not all services support service endpoints so check before implementing
+
+
+[ Private Link ] 
+- private IP addresses within a subnet that point to a particular service
+- no longer need to expose the microsoft service publicly (e.g. your storage account)
+- other connected VNets or on-prem networks can access services in your VNet using private addressing
+
+
+[ WAN Connectivity ] 
+
+Point-to-Site
+	download a VPN Client
+	single connection from a single device
+
+Site-to-Site
+	traditional IPSec conncetion between (2) border devices
+	VPN Gateways are provisioned on the Azure side
+	different SKUs for features/performance
+	
+ExpressRoute
+	does not connect to a region
+	connects to the Microsoft backbone
+	you can get to any regions
+
+// Types
+Private Peering
+	access to private VNETs and private services
+
+Microsoft Peering
+	access to public facing services (Storage Account)
+	
+
+
+Compute (Virtual Machines)
+------------------------------------
+
+[ Instance Families ] 
+
+B, Dsv3, Dv3, Dasv4, Dav4, DSv2 - General Purpose -> AWS T/M Family
+Esv3, Ev3, Easv4, Eav4, Ebdsv5, Ebsv5 - Memory Optimized -> AWS R/Z Family
+F, Fs, Fsv2, FX - Compute Optimized -> AWS C Family
+HB, HBv2, HBv3, HC, H - High Performance Compute -> AWS P Family
+L - Storage Optimized -> AWS L/D Family
+
+
+[ Images ]
+- decide how much I want to "bake-in" to the image and how much bootstrapping I want to handle outside of the instance post provisioning
+- handled via sysprep.exe (Windows) and sudo waagent -deporivision+user (Linux)
+- highlight a VM > Capture
+
+
+[ VM Scale Sets ]
+- think AWS Auto-Scaling Groups, Google Managed Instance Groups
+
+
+[ Availability Sets ] 
+
+
+[ Managed Disks ] 
+-  as capacity goes up, so does performance (I/O, throughput)
+
+// Types
+Standard HDD
+
+Standard SSD
+
+Premium SSD
+	can increase the performance tier w/o making the disk bigger
+	can also lower it again
+
+Ultra Disk
+	Capacity
+	IOPS/Throughput can modified indepently of capacity -- UNIQUE
 
 
 Storage Solutions
@@ -217,15 +399,13 @@ Storage Solutions
 - all storage account services come with public endponts by default
 - use Storage Explorer to browse Storage Accounts
 
-// Concept //
-
+// Concept
 Storage Account (bucket)
 	Container (folder)
 		Files (objects)
 
 
-// Storage Account Options //
-
+// Storage Account Options
 Location
 	US East
 	
@@ -250,8 +430,7 @@ Access Tier
 	Archive (delayed access -- 1+ hours)
 	
  	
-// Storage Account Services //
-
+// Storage Account Services
 Azure Blobs
 	object oriented storage (similar to S3)
 	snapshot support; point-in-time instance of an object
@@ -377,8 +556,8 @@ Databricks Machine Learning
 
 
 
-Databases
---------------
+SQL Databases
+---------------------
 
 Structured Data Options (rows and columns)
 	
@@ -392,8 +571,7 @@ Service Tiers
 	Business Critical (Always-On Availability Group)
 	Hyperscale (Sharding)
 	
-// Pricing //
-
+// Pricing
 DTU
 	Data Transaction Unit (represents CPU, memory, IOPS)
 	pricing per database
@@ -408,7 +586,6 @@ vCore
 	includes backups, patching, HA
 
 	
-
 
 [ Azure SQL Elastic Pool ] 
 - allows you to put multiple databases in a single logical SQL Server and all of the databases share the resources of the server
@@ -428,6 +605,8 @@ vCore
 - 500mb memory footprint
 
 	
+No-SQL Databases
+--------------------------
 
 Semi Structured Options (JSON, XML)
 
@@ -456,7 +635,6 @@ Row Key - must be included with every entitiy
 - different consistency models (strong, eventual)
 
 // Supported APIs
-
 SQL
 MongoDB
 Cassandra 
@@ -464,7 +642,6 @@ Table (key/value)
 Gremlin (graph)
 
 // Constructs	
-
 Cosmos Account (where the API is defined)
   Database (where throughput is defined)
     Container (where the data lives (partition key is defined here)
@@ -660,146 +837,7 @@ Activity functions - the basic unit of work in a durable function orchestration 
 Entity functions - define operations for reading and updating small pieces of state
 Client functions - 
 
-Networking
---------------
 
-[ Availability Zones ] 
-- 3 availability zones per region
-	
-
-[ Virtual Networks ] 
-- lose 5 addresses with each subnet
-- for Gateway subnets it's best to provision a /27 (16 addresses) so you can run Express Route and S2S VPN
-- Express Route is not encrypted 
-- default paths are 1) intra-vnet traffic 2) internet connectivity
-- peering now allows for routing to be automatically configured from both Vnets using the wizard
-- peering can happen across region and subscriptions (must know resource-id)
-- non-transitive
-
-[ Network Security Groups ] 
-- NSGs are linked to subnets
-- focused on filtering traffic, not routing (Security Groups)
-- can apply to the subnet or interface level
-- cannot remove Default Rules
-- can modify based on "Priority" (lower the number, higher the priority)
-- by default ALL INBOUND ACCESS is enabled on a "Basic" SKU Public IP
-- by default ALL INBOUND ACCESS is blocked on "Standard" SKU Public IP
--  SERVICE TAGS abstract references to Azure services since recording IP addresses for those services is complex
-
-[ Application Security Groups ] 
-- think AWS Security Groups
-- logical container for network interfaces
-- NICs are associated with ASGs
-- "Web-ASG" would apply to the NIC of all VMs in the "Web Fleet"
-- ASGs are scoped to Vnets; all NICs must be in the same Vnet
-
-[ Routes ]
-
-
-[ Azure Firewall ] 
-- works by creating a user-defined route to set the Firewall as the default route instead of the VNET router
-- can configure outbound HTTP/s traffic by FQDN
-- can before SNAT and DNAT through the Firewall
-- threat intelligence
-- integration w/ Azure Monitor
-- can have multiple public IPs assigned
-
-- must be deployed to a dedicated subnet called "AzureFirewallSubnet" /26 is the minimum
-- custom routes (user defined routes) must be in place to route traffic from VMs to the Firewall Service
-
-Network Rule Collection
-	focused on outbound traffic
-	basic source/destination rulesets (similar to NSGs)
-
-Application Rule Collection
-	focused on outbound traffic
-	layer 7 filtering (FQDN)
-	allow http/https traffic from ANY to www.google.com with a rule named "google-allow"
-
-NAT Rule Collection
-	focused on in-bound traffic
-
-
-[ Azure Bastion ]
-- must be deployed to a dedicated subnet called "AzureBastionSubnet" /27 is the minimum
-- RDP/SSH sesions are wrapped in a SSH tunnel via the Bastion Service
-
-[ Transitive Connectivity ]
-- VPN Gateways can be used to establish connectivity between V-Nets and on-prem networks
-- VPN Gateway resources are deployed into a special subnet called "Gateway Subnet"
-- connections are terminated over the internet (public IP address)
-- Allow Forwarded Traffic
-- Allow Gateway Transit must be enabled in the hub vnet to pass traffic transitively to other spoke vnets
-- Use Remote Gateway must be enabled in the spoke vnet to tell it to use the gateway that is configured in the hub vnet
-
-
-[ Service Endpoints ]
-- configured at the subnet level of a Vnet
-- provides a new "private" route for resources in the vnet to reach Mircosoft services
-- provides the private address as a source IP address when accessing services
-- DOES NOT establish private IP address for the services being accessed (like Private Link)
-- not all services support service endpoints so check before implementing
-
-
-[ Private Link ] 
-- private IP addresses within a subnet that point to a particular service
-- no longer need to expose the microsoft service publicly (e.g. your storage account)
-- other connected VNets or on-prem networks can access services in your VNet using private addressing
-
-
-[ WAN Connectivity ] 
-
-Point-to-Site
-
-Site-to-Site
-
-ExpressRoute
-
-
-
-Compute (Virtual Machines)
-------------------------------------
-
-[ Instance Families ] 
-
-B, Dsv3, Dv3, Dasv4, Dav4, DSv2 - General Purpose -> AWS T/M Family
-Esv3, Ev3, Easv4, Eav4, Ebdsv5, Ebsv5 - Memory Optimized -> AWS R/Z Family
-F, Fs, Fsv2, FX - Compute Optimized -> AWS C Family
-HB, HBv2, HBv3, HC, H - High Performance Compute -> AWS P Family
-L - Storage Optimized -> AWS L/D Family
-
-
-[ Images ]
-- decide how much I want to "bake-in" to the image and how much bootstrapping I want to handle outside of the instance post provisioning
-- handled via sysprep.exe (Windows) and sudo waagent -deporivision+user (Linux)
-- highlight a VM > Capture
-
-
-[ VM Scale Sets ]
-- think AWS Auto-Scaling Groups
-
-
-[ Availability Sets ] 
-
-
-[ Managed Disks ] 
--  as capacity goes up, so does performance (I/O, throughput)
-
-// Types //
-
-Standard HDD
-
-Standard SSD
-
-Premium SSD
-	can increase the performance tier w/o making the disk bigger
-	can also lower it again
-
-Ultra Disk
-	Capacity
-	IOPS/Throughput can modified indepently of capacity -- UNIQUE
-	
-	
 
 Azure Update Management
 ------------------------------------
