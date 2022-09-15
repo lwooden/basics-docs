@@ -3,7 +3,10 @@ C# - a programming language
 .NET is a framework for building applications on Windows; there are different langauges that 
 can use the .NET framework (F#); classified as legacy 
 
-.NETCore
+
+.NET Framework
+  .NET Core (3.x)
+    .NET (6.x, 7.x)
 
 
 C# -> IL Code -> Native Code
@@ -40,14 +43,17 @@ CTRL + d - duplicate line
 CTRL + x - delete line
 
 
-Running A DotNet App
+Running A Dotnet App
 ------------------------------
 
 # Run a project
-dotnet <project.dll> // usaully located at <PROJECT_ROOT>/bin/Debug/
+dotnet <project.dll> // usually located at <PROJECT_ROOT>/bin/Debug/
 
 # Run a prebuilt assembly
 dotnet run <project.dll>
+
+# Check installed sdks
+dotnet sdk check
 
 
 Function (Method) Types
@@ -65,7 +71,7 @@ because there is only "one" instance of a console in a program
 
 
 Classes
---------
+----------
  
 - in statically typed languages, EVERYTHING is a class
 - access modifiers define the security parameters around a particular property/method
@@ -224,7 +230,7 @@ LINQ - a syntax used to write SQL queries in c#
 
 
 Output Type
------------
+---------------
 static - there is only (1) instance allowed in memory; like "main" method
 void - does not return anything; no output
 string
@@ -236,8 +242,8 @@ CSS - specifies the layout
 Javascript - controls the behavior
 
 
-Inhertiance
------------
+Inheritance
+--------------
 
 public class PersonController : ApiController 
 
@@ -247,7 +253,7 @@ everything from the ApiController class (that is not private)
 
 www.myfirstapp.com/person
 
-[RoutePrefix("person)] // attribute
+[RoutePrefix("person")] // attribute
 public class PersonController : ApiController // class
  {
 
