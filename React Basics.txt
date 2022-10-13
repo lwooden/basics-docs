@@ -8,7 +8,7 @@ Class Based
 - has access to component lifecycle methods
 
 
-Stateless Functional
+Functional (stateless)
 - lightweight
 - easy to test
 - cannot manage local state
@@ -44,7 +44,7 @@ render() {
   export default App
   
   
- Stateless Functional 
+ Functional
  ---------------------------
  
  const App = (props) => {
@@ -74,6 +74,47 @@ useEffect - implements lifecycle methods in stateless functional components
 useReducer - allows me to manage complex state and provide access to state to the components that need them
 
 useContext - allows me to share values without manually passing props down from the parent
-    
+
+
+
+Handling Props
+---------------------
+Prop Drilling - practice of adding properties to a component with the sole purpose of allowing that component to pass those properties on to other components
+
+
+Transforming List using Array.Map
+----------------------------------------------
+
+
+const dynamicMenu = [{
+    id: 1,
+    title: 'Dynamic Home',
+    href: '/home',
+    icon: 'home'
+  },
+  {
+    id: 2,
+    title: 'Dynamic Services',
+    href: '/services',
+    icon: 'services'
+  }]
+  
+  <Menu menuList={dynamicMenu} />
+
+
+function Menu({ menuList }) {
+  return (
+  <nav>
+    <ul className='menu'>
+    {menuList.map(({id, href, icon, title}) => 
+      <MenuItem key={id} href={href} icon={icon} children={title}></MenuItem>
+
+    )}
+
+
+React Context
+--------------------
+- Wraps a number of components with a value that all descendant components can access without going through properties at all.    
+- A context in React consists of two parts. It needs a provider, that contains the values that you want to pass to any descendant component, and it needs a consumer, that you use in each descendant component that wants access to the provided value
       
  	

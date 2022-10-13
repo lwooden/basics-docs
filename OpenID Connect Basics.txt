@@ -7,7 +7,7 @@ OpenID Connect is a standard that defines how a client application communicates 
 
 Identity Provider (IdP) - an entity that manages user attributes and credentials
 
-OpenID Connect is builds an identity layer ON TOP of the OAuth 2.0 specification
+OpenID Connect builds an identity layer ON TOP of the OAuth 2.0 specification
 
 OAuth 2.0 is authorization framework for access delegation
 
@@ -29,22 +29,22 @@ OAuth 2.0
 
 // The Four Grant Types
 
-[Client credentials]
+[Client Credentials]
 
-[Resource owner password]
+[Resource Owner Password]
 
-[Authorization code]
+[ Authorization Code ]
 
-1. Client app initiates an auth request by redirecting the user to the auth server (OpenID Provider)
-2. User submits credentials
+1. Client app initiates an auth flow by redirecting the user to the authorization server (OpenID Provider)
+2. User submits credentials via the browser
 3. Browser sends POST request (with credentials) to the auth server 
 4. Auth server redirects back to client app with an AUTHORIZATION CODE (via the browser)
-5. Client app exchanges AUTHORIZATION CODE for an ACCESS TOKEN by communicating directly with the auth server
-6. Auth server responds back with an ACCESS TOKEN
+5. Client app exchanges AUTHORIZATION CODE for an ACCESS TOKEN by communicating directly with the authorization server
+6. Authorization server responds back with an ACCESS TOKEN
 
 // Sample authorization request to the auth server
 GET https://localhost:8085/oauth/authorize?
-       response_type=code&  # inidcates that an auth code is expected as a response to this request
+       response_type=code&  # inidcates that an authorization code is expected as a response to this request
        client_id=12345678 # identifies the client to the auth server for config match
        redirect_uri=https://web.applicaiton.com/login
        
@@ -71,7 +71,7 @@ GET https://localhost:8085/oauth/authorize?
             "expires_in":3599
      }
 
-[Implicit]
+[ Implicit ]
 - same as the authorization code flow, but the auth server responds to the authorization request immediately with an ACCESS TOKEN
 
 // Sample authorization request to the auth server (implicit grant type)
@@ -83,12 +83,12 @@ GET https://localhost:8085/oauth/authorize?
 // Sample authorization response from the auth server (implicit grant type)      
       https://web.application.domain/login#access_token=jauej28slah2&   expires_in=3599&   token_type=bearer # URI fragment
 
-[Refresh token] 
+[ Refresh Token ] 
 
 
 // The Four Components of an OAuth 2.0 Grant Type
 Authorization request 
-Autorization response
+Authorization response
 Access Token request
 Access Token response
 
@@ -100,7 +100,7 @@ pop
 
 Client App <-> User Agent (Browser) <->  Authorization Server (OpenID Provider)
 
-[Typical OAuth 2.0 Authorization Code Grant Type Flow]
+[ Typical OAuth 2.0 Authorization Code Grant Type Flow ]
 1. User visits coolphotos.com 
 2. coolphotos.com initiates authorization grant request by redirecting the user to the autorization server (OpenID Provider) - Facebook
 3. User authenticates via the browser
@@ -136,10 +136,10 @@ Token Response
 
 // The Four Authentication Flows
 
-[Implicit]
+[ Implicit ]
 - most popular among Single Page Applications
 
-1. User clicks "Login" in client app initiates an implcit flow by redirecting the user to the auth server (OpenID Provider)
+1. User clicks "Login" in client app and initiates an implcit flow by redirecting the user to the auth server (OpenID Provider)
 2. User submits credentials
 3. Browser sends POST request (with credentials) to the auth server 
 4. Auth server redirects user back to the client app with requested TOKENS in a URI fragment (via the browser)
@@ -169,7 +169,7 @@ SAML 2.0 Web SSO
 - still the most widely used standard for SSO
 - most new greenfield applications today use OpenID Conenct instead
 - started to fade as XML became less ideal in the early 2010s
-- identify industry started looking for JSON based standard
+- identity industry started looking for JSON based standard
 - OpenID Connect filled this gap
 
 
@@ -201,19 +201,19 @@ Central Authentication Service (CAS)
 
 OpenID Connect Common Use Cases 
 -------------------------------------------------
-[Login to Client Apps]
+[ Login to Client Apps ]
 - most popular
 - support for client-side, server-side, mobile, smart TV)
 
-[Sharing Attributes]
+[ Sharing Attributes ]
 - client apps can request the attributes they need from an OpenID provider by using OAuth2.0 scopes 
 - client apps can use this information (say a users email address or first name) to build a personalized experience 
 
-[Signup]
+[ Signup ]
 - client apps can use OpenID Providers like Google and Apple to initiate a login flow with OpenID to sign up users
 - at the end of the login flow the client app gets user attributes (email, name, phone number) from the OpenID Provider and will use those attributes to create a local account for the user in it's own user store
 
-[Federating Access To APIs]
+[ Federating Access To APIs ]
 - OAuth 2.0 is the industry standard for securing access to APIs
 - to access an API protected with OAuth 2.0 you need an access token from an issuer or OAuth 2.0 authroization server)
 

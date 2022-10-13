@@ -1,5 +1,8 @@
 Interesting Remarks
 
+What works at a small scale, does not necessarily work at a large scale. -- React Quickly
+#Engineering
+
 Cloud is where we are computing. Cloud-native is how we are computing!
 #Cloud 
 

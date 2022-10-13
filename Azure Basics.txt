@@ -666,8 +666,14 @@ Allkeys-lru
 	evicts any keys under memory pressure
 
 
-Big Data
-------------
+Data Services (Big Data)
+---------------------------------
+
+[ Azure Data Explorer - ADX ]
+// TODO
+
+[ Kusto Query Language - KQL ]
+// TODO
 
 [ Azure Data Factory ]
 - serverless ETL and data integration service that can help me create/schedule data-driven workflows (pipelines) that can ingest data from a variety of data stores
