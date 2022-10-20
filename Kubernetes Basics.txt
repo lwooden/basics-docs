@@ -897,6 +897,7 @@ Services
             
 Using HELM for Manifest File Management
 --------------------------------------------------------
+- Helm is a package/release manager aimed to help make deploying container based applications to Kubernetes simpler
 
 helm repo add <name> <url>
 helm repo update
@@ -911,6 +912,8 @@ helm uninstall graphql-api // uninstall a release
 
 Using HELMFILE to Manage Helm Charts
 --------------------------------------------------------
+- Helmfile is a higher level abstraction built on top of Helm. It makes managing Helm charts within your project simpler as well as offering synchornization options between your project and a cluster
+
 helmfile sync // references helmfile.yaml in the working directory
 helmfile delete
             

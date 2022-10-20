@@ -1238,6 +1238,14 @@ KeyVault (container - HSM w/ API)
 
 
 
+Multi-Cloud + On-Prem
+------------------------------
+- Azure Arc
+
+// TODO
+
+
+
 Computer Options (Bottom to Top)
 ---------------------------------------------
 
