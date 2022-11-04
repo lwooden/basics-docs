@@ -366,6 +366,11 @@ L - Storage Optimized -> AWS L/D Family
 - highlight a VM > Capture
 
 
+[ Proprietary Operating System ]
+- Mariner OS (think AWS Linux 2)
+- AKS Node OS support
+
+
 [ VM Scale Sets ]
 - think AWS Auto-Scaling Groups, Google Managed Instance Groups
 
@@ -396,9 +401,11 @@ Storage Solutions
 [ Storage Account ]
 - foundation layer for all things storage
 - associated with a resource group
-- encrypted-at-rest by default (using microsoft managed key) -- UNIQUE
+- encrypted-at-rest by default (using microsoft managed key) -- GCP does this as well
 - all storage account services come with public endponts by default
 - use Storage Explorer to browse Storage Accounts
+- RBAC support
+- ABAC support (Attribute Based) -- think tagging storage accounts/containers
 
 // Concept
 Storage Account (bucket)
@@ -812,6 +819,7 @@ Trigger on Base Image Update
 - pull containers from ANY registry (public/private)
 - can deploy within a pre-defined Vnet
 - logs for containers are sent to a Log Analytics Workspace
+- custom port exposure -- PREVIEW
 
 // Constructs
 Container App Environment (secure boundary around a group of container apps)
@@ -1096,6 +1104,7 @@ Session - how may sessions included certain pages
 Events - how often certain pages and features are used
 Retention - how often users return to use the app
 Impact - analyzes how load times and other properties influence conversion rates for various parts of your app
+**Open Telemetry support -- IN PREVIEW
 
 
 Security
