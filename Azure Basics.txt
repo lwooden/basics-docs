@@ -684,8 +684,8 @@ Data Services (Big Data)
 
 [ Azure Data Factory ]
 - serverless ETL and data integration service that can help me create/schedule data-driven workflows (pipelines) that can ingest data from a variety of data stores
-- can use to orchestrate data movement
-- can transform data at scale
+- used to orchestrate data movement
+- can transform data at scale (mapping)
 
 // Workflow
 Connect And Collect
@@ -725,9 +725,14 @@ Databricks Machine Learning
 
 
 [ Azure Synapse Analytics ]
-// TODO
+- comprehensive workspace that manages the data integration life-cycle from end-to-end (single pane of glass)
+- uses familiar services on the backend like Azure Data Lake, Data Factory, etc
+- 
 
-
+[ Azure Purview ]
+- provides insight into my data estate
+- data can exist nearly everywhere (on-prem, other clouds, etc)
+- answers questions about classification, lineage
 
 
 
@@ -871,6 +876,23 @@ Activity functions - the basic unit of work in a durable function orchestration 
 Entity functions - define operations for reading and updating small pieces of state
 Client functions - 
 
+
+[ Logic Apps ]
+- a platform for citizen developers that allows them to put together functionality through a simple drag and drop UI (designer)
+- Power Automate is built on top of Logic Apps
+- associated with a resource group and have a hosting plan (think Azure App Service)
+- can be triggered via events or run via a schedule 
+- supports hooking into custom snippets of javascript if connectors don't suffice 
+
+// Plans //
+Standard - 
+Consumption -	pay only for the work that is done (most popular)
+
+// Connector Types //
+Built-in 
+	Enterprise
+		Custom
+	
 
 
 Azure Update Management
