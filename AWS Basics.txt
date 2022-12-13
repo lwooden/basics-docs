@@ -1,0 +1,278 @@
+AWS Basics
+
+
+Geographical Concepts
+-----------------------------
+Regions (us-east, us-west)
+ 	Availability Zones (us-east1a, us-east-1b)
+ 	
+ 	
+Account Structure
+-----------------------
+Organization
+	Account (Department, Team, Environment)
+	
+	
+IAM
+--------
+
+
+Networking
+---------------
+
+VPC
+	Subnets
+	 	Routes
+	 	
+	 	
+[ VPC ]
+
+[ Subnets ]
+
+[ Routes ]
+
+[ Public IP Address - EIPs ]
+
+[ VPC Peering ]
+
+[ Direct Connect ]
+
+[ Transit Gateway ]
+
+[ VPN ]
+
+[ Route 53 ] 
+
+
+Compute (EC2)
+----------------------
+
+[ Instance Families ] 
+
+T,M -  General Purpose 
+R,Z - Memory Optimized
+C - Compute Optimized 
+P - High Performance Compute
+L,D- Storage Optimized
+
+[ Amazon Machine Images - AMIs ]
+
+[ Launch Templates ]
+
+[ Auto-Scaling Groups ]
+
+
+[ EBS Volumes ]
+
+
+
+Storage Solutions
+-----------------------
+
+
+[ S3 ]
+
+5 GB - single file limit
+100 MB  - Multipart threshold
+
+// Storage Classes
+Standard - hot storage
+Infrequent Access (IA) - low per GB storage price; per GB retrieval fee
+One Zone-IA - same as IA, but within a single AZ; 25% cheaper than IA
+Glacier - for data accessed 1-3 times per year
+Glacier Deep Archive - 
+	
+**Intelligent Tiering: cycles objects between Standard and IA based on access patterns
+
+[ EFS ]
+- supports connections across all availability zones
+
+
+[ EBS ]
+- Multi-attach multiple EC2s in the same availability zone
+
+
+SQL Databases
+---------------------
+
+
+
+No-SQL Databases
+---------------------------
+
+
+Data Services
+------------------
+
+Application Platforms
+----------------------------
+
+[ AWS Beanstalk ] 
+
+[ AWS App Runner ] 
+
+
+
+Container Platforms
+---------------------------
+
+[ ECS ]
+
+[ EKS ]
+
+
+Functions
+--------------
+
+[ Lambda ]
+- can have different versions of a Lambda that can be referenced by an alias
+- by default lambdas are executed within an AWS managed VPC; they are not invoked within my VPC
+- can have a VPC configuration in order to interface with resources within the VPC (or on prem)
+
+// Limits
+Execution = 1,000 concurent executions per region (default)
+Memory =  128 MB - 10 GB RAM
+Timeout = 3 secs - 15 minutes
+Size = 50 MB (250 MB unziped)
+Environment Variables = 4 KB
+
+// Synchronous Invocations
+- anytime a user or service invokes a lambda (e.g. via the console, aws-cli, api-gateway request)
+
+// Asynchronous Invocations
+- anytime a lamba is invoked by an event (e.g. an S3 PUT event, SNS, Cloudwatch)
+
+// Application Load Balancer -> Lambda
+- a Lambda can be associated with a target group and registered with an ALB
+- the HTTP request is transformed into a JSON object
+- functions should be idempotent
+
+// Event Source Mapping
+- pertains to Kinesis, DynamoDb Streams, SQS
+- Lambda needs to POLL these services for BATCHES in order to process
+- this happens synchronously
+
+// Destinations
+- send the result of an async call somewhere (success or failure)
+- SQS,SNS,Lambda,Eventbridge
+- can be used in combination with Dead Letter Queues for reprocessing
+
+// Resource Based Policies
+- give other accounts and AWS services (ALB, S3) permission to use Lambda resources
+- located in the "Configuration" section
+
+// Environment Variables
+- Lambda makes env variables available to your source code
+- Lambda also injects its own default env variables
+- secrets can be encrypted with KMS (Lambda Service Key)
+- total size of all environment variables cannot exceed 4 KB.
+
+// Monitoring
+- integrates w/ Cloudwatch Logs + Metrics by default
+- can enable tracing in  Configuration > Monitoring > Active Tracing
+- runs the X-Ray Daemon for me
+- make sure Lambda has appropriate AWS managed policies
+- injects XRAY related environment variables at runtime 
+
+// Performance
+- increase RAM to get more CPU
+- can write small files (up to 512 MB) to /tmp; this area is cleared between invocations
+- perform initializations outside the function handler (like DB connections) so they will only be used once across all invocations 
+
+// External Dependencies
+- dependencies must be installed within the project on a Linux instance and then the project must be zipped up and pushed to Lambda (via the CLI)
+- the project will then contain the 3rd party dependencies (node_modules folder) needed to run your project
+
+// CloudFormation
+- Lambda's can be defined in-line (plain-text version of the script) in a CF template; external depenencies will not be included this way
+- Lambda's can also be referecenced via an S3 location
+
+// Layers
+- support runtimes that are not supported by default (C++, Rust)
+- externalize dependencies so we can re-use them
+- app dependencies may not change much at all
+- source code will change often
+- this is a way to de-couple the two
+
+App Package 1 + 2 = base source code
+Layer 1 - Large Library Files (10MB)
+Layer 2 - Large Library Files (30MB)
+*both app packages can refer to Layer 1 and Layer 2 during their execution
+
+// Lambda Container Images
+- deploy lambda function as container images UP TO 10GB from ECR
+- enables us to package large dependencies within the container instead of in layers
+- base container must implement the Lambda Runtine API
+
+FROM amazon/aws-lambda-nodejs:12
+
+[Versions + Alias]
+- by default we are referencing $LATEST; it is mutable and can be changed
+- when I'm ready to publish my code I can create a VERSION
+- versions are immutable; they cannot be changed 
+- versions have their own ARN
+- ALIAS point to versions
+
+[CodeDeploy]
+- helps shift traffic to new alias over time based on a strategy
+
+Linear
+  Linear10PercentEvery3Minutes
+  Linear10PercentEvery10Minutes
+
+Canary
+  Canary10Percent5Minutes
+  Canary10Percent30Minutes
+  
+All-At-Once
+  Shift all traffic immediately
+
+
+[ Step Functions ]
+
+
+Content Delivery Network (CDN)
+--------------------------------------------
+
+[ Cloudfront ] 
+
+
+Load-Balancing
+---------------------
+
+[ Classic ] 
+- TCP (L4) + HTTP/S (L7)
+- cross-zone load balancing disabled by default
+
+[ Application ] 
+- HTTP/S (L7 ONLY)
+- URL based routing
+- hostname based routing
+- query string and header based routing
+- can route to Lambda functions and private IPs (on-prem)
+- cross-zone load balancing enabled by default
+
+
+[Network]
+- TCP/UDP
+- less latency (~100ms)
+- supports EIP assignment
+- can route to EC2
+- can route to Target Groups
+- can route to ALB
+- cross-zone load balancing disabled by default
+
+
+[ Gateway ]
+- think Azure Traffic Manager
+- operates at Layer 3 (IP)
+- supports fleets of 3rd party network appliances
+- firewalls, intrusion detection, etc
+- can route to EC2
+- can route to Private IP
+
+[ Connection Draining - Deregestration Delay ]
+- 3600 seconds by default (5 minutes)
+- can be set to 0 for short lived request
+
+

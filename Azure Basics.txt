@@ -1145,9 +1145,8 @@ Security
 - supports Azure services like Azure AD, Azure Activity, Azure Storage, Azure Key Vault, Azure Kubernetes service, and more
 
 // Questions
-- Can Sentinel scale beyond a single subscription? At this time it's one Azure Sentinel Workspace per Tenant, Azure Sentinel works across subscriptions
-
-- Can a Log Analytics Workspace ingest data from multiple subscriptions? Seems as though a Workspace can support multiple subscriptions as long as it is under the same Azure AD Tenant
+- Can Sentinel scale beyond a single subscription? At this time it's one Azure Sentinel Workspace per Tenant, Azure Sentinel works across subscriptions?
+- Can a Log Analytics Workspace ingest data from multiple subscriptions? Seems as though a Workspace can support multiple subscriptions as long as it is under the same Azure AD Tenant?
 
 [ Microsoft Defender for Cloud ]
 - a Cloud Security Posture Management (CSPM) and Cloud Workload Protection Platform (CWPP) for Azure, on-premises, and multicloud (Amazon AWS and Google GCP) resources
