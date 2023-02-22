@@ -35,7 +35,7 @@ Organization
 		Project (i.e. Azure Subscription)
 			Resources (all resources are bound to a project)
      
-A project includes a set of users, APIs, billing, authentication, and monitoring
+**A project includes a set of users, APIs, billing, authentication, and monitoring
 
 
 
@@ -59,7 +59,7 @@ Payments Profile -> Billing Acount -> Project 1 + Project 2 ...
 Self-Service
 	online billing linked to a debit/credit card
 Invoiced
-	handled via wiretransfers and mail (checks)
+	handled via wire transfers and mail (checks)
 
 
 Service APIs
@@ -166,7 +166,7 @@ VPC
 [ VPC ]
 - have a global presence
 - no concept of an "Internet Gateway" (like Azure)
-- instances will have internet access IF they have an external IP assocaited with them
+- instances will have internet access IF they have an external IP associated with them
 
 // VPC Service Controls
 - defines a service perimeter around protected resources
@@ -283,7 +283,6 @@ Network
 	L4
 	not a proxy
 	
-	
 Internal
 	L4
 	accessible within the VPC
@@ -318,13 +317,13 @@ Partner - connection to a GCP partner
 
 
 [ Cloud DNS ]
-- resembles Route 53
+- think AWS Route 53
 
 
 [ Cloud Domains ]
 - global registrar for domain names using Google Domains
 - uses built-in DNS
-- supports custom nameserves
+- supports custom nameservers
 - supports DNSSEC and private Whols records
 - managed as a GCP Project 
 
@@ -332,7 +331,7 @@ Partner - connection to a GCP partner
 Compute
 -------------
 
-Compute Engine - used for virtual machine workloads (i.e. EC2)
+Compute Engine - used for virtual machine workloads (i.e. AWS EC2, Azure VMs)
 	
 [ Classes ] 
 General Purpose - E2, N2 N2D, N1
@@ -594,7 +593,7 @@ Asynchronous Messaging
 
 
 [ Cloud Pub/Sub ]
-- think AWS SNS
+- think AWS SNS, AWS SQS, Azure Queues/Service Bus
 - global service
 - asynchronous messaging service
 - max size of task/message	10MB
@@ -669,43 +668,49 @@ Celebrity Detection
 Big Data
 -------------
 
-Dataproc
-	managed Apache Spark service for processing large datasets
-	Hadoop, MapReduce, Pig/Hiv 
-	takes under 90 secs to provision 
-	can turn off when not in use -- UNIQUE
+[ Cloud Compose ]
+- think AWS Glue, Azure Logics Apps, Azure Data Factory
+- fully managed Apache Airflow service
+- focus on authoring, scheduling, and monitoring your python based workflows
+
+
+[ Dataproc ]
+- managed Apache Spark service for processing large datasets
+- Hadoop, MapReduce, Pig/Hiv 
+- takes under 90 secs to provision 	
+- can turn off when not in use -- UNIQUE
 	
-DataFlow
-	unified serverless stream and batch processing service
-	executes Apache Bean processes
+[ DataFlow ] 
+- unified serverless stream and batch processing service
+- executes Apache Bean processes
 	
-Dataprep
-	visually explores, cleans, and prepares data for analysis and ML
-	operated by Trifecta in partnership with Google
-	automatically detects schemas, datatypes, possible joins, and outliers
-	built-in transformation functions (aggregate, join, union)
-	works with csv, JSON, or relational data from Cloud Storage, BigQuery, or direct upload
+[ Dataprep ]
+- visually explores, cleans, and prepares data for analysis and ML
+- operated by Trifecta in partnership with Google
+- automatically detects schemas, datatypes, possible joins, and outliers
+- built-in transformation functions (aggregate, join, union)
+- works with csv, JSON, or relational data from Cloud Storage, BigQuery, or direct upload
 	
-BigQuery
-	serverless, multi-regional, SQL columns-store data warehouse
-	can stream at 100k rows per second
-	can handle terabytes of data in seconds and petabytes in minutes
-	built-in AI/ML and Business Intelligence Engine
-	Standard SQL
-	supports streaming of data from Pub/Sub, Dataflow, and Datastream
-	keeps (7) day history of changes to data
+[ BigQuery ]
+- serverless, multi-regional, SQL columns-store data warehouse
+- can stream at 100k rows per second
+- can handle terabytes of data in seconds and petabytes in minutes
+- built-in AI/ML and Business Intelligence Engine
+- Standard SQL
+- supports streaming of data from Pub/Sub, Dataflow, and Datastream
+- keeps (7) day history of changes to data
 		
-BigLake
-	platform that unifies data-warehouses and data-lakes
-	can discover/create tables based on data that lives in Amazon S3 or Azure Data Lake --UNIQUE
-	powered by BigQuery
-	can apply table, row, column level security policies on object store tables
+[ BigLake ] 
+- platform that unifies data-warehouses and data-lakes
+- can discover/create tables based on data that lives in Amazon S3 or Azure Data Lake --UNIQUE
+- powered by BigQuery
+- can apply table, row, column level security policies on object store tables
 	
-Datalab
-	for visualiing, querying, and interacting with your data using programming languages
-	backed by Jupyter Notebook
+[ Datalab ]
+- for visualiing, querying, and interacting with your data using programming languages
+- backed by Jupyter Notebook
 	
-Data Studio
+[ Data Studio ]
 	// TODO
 
 
