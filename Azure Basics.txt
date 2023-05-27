@@ -2,10 +2,19 @@ Azure Basics
 
 Cloud SDK and CLI
 --------------------------    
-azure-cli
-	az login
-	az account list
-	az resource list
+[ azure cli ]
+az login
+az account list
+az resource list
+
+[ azure developer cli ] -- NEW
+- azd acts as a template and/or a wrapper around your applicaiton to create a unified developer experience within Azure
+- I can deploy my application code directly to Azure with all of the corresponding infrastructure services needed for it to function
+- 
+azd up
+
+	
+
 	
 
 Azure Active Directory

@@ -1,0 +1,52 @@
+Next.js Basics
+
+What
+-------
+- Next.js is a flexible React framework that enables developers to build performant web applications
+
+Why
+------
+- This technology is important because the "NEW" React documentation seems to be pushing developers to adopt mature frameworks over vanilla React
+- Create-React-App (CRA) is no longer maintained
+- Next.js is the leading server-side rendering (SSR) technology in the market place
+- Next.js automates mundane processes like routing, code splitting, SEO, and suspense rendering AUTOMATICALLY so that developers can focus more on implementing business logic
+- functions as an "extension" of React
+
+When
+-------
+- React was introduced in 2013
+- Next.js was introduced in October 2016
+- Remix came out in 2021
+
+
+Server-side Rendering
+-------------------------------
+- when a web page is completely rendered on the server first and then sent to the browser to be displayed
+- this significatnly lowers 
+- does wonders for SEO
+
+
+
+Conventions
+-----------------
+
+[ Page Routing ]
+- Nextjs adheres to a straightforward folder based routing mechanism which also supports "nested" routes
+
+/app
+  /users
+    page.js # rendered on https://localhost:300/user
+  /posts
+    page.js # rendered on https://localhost:300/posts
+    /[postId]
+      page.js # rendered on https://localhost:300/posts/:postId; this is NESTED route
+
+
+[ Backend Routing ]
+- backend routing follows the same
+
+/app
+  /api
+    /users
+      route.js # endpoint will be listening on http://localhost:3000/api/users
+    
