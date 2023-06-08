@@ -188,13 +188,12 @@ kubectl uncordon <NODE> // makes the node available to accept pod scheduling aga
 
 
 // Namespaces
-kubectl get namespaces // gets all namespaces
-
 kubectl create namespace <namespace>
+kubectl get namespaces // gets all namespaces
 
 
 // Pods
-kubectl get pods [ -n <NAMESPACE> ]
+kubectl get pods  -n <NAMESPACE>
 kubectl get pods -o wide // show ip address and assinged node for each pod
 kubectl get pods --all-namepsaces
 kubectl get pods -A --sort-by=.metadata.name
@@ -204,8 +203,7 @@ kubectl run <NAME> --image <IMAGE> --dry-run=client -o yaml > pod.yml
 
 
 // Service Accounts
-kubectl get sa [ -n <NAMESPACE> ]
-
+kubectl get sa  -n <NAMESPACE> 
 kubectl create sa tom -n <NAMESPACE>
 
 

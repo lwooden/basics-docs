@@ -61,14 +61,16 @@ docker logs -f     Fetch the logs of a container
 docker ps          List running containers
 docker ps -a       List all containers
 docker pull        Pull an image or a repository from a registry
-docker rm <id>   Remove one or more containers
-docker rmi         Remove one or more images
+docker rm <ID>   Remove one or more containers
+docker rmi  <ID>    Remove one or more images
 docker create      Creates a container in the "stopped" state
 docker run         Creates a container in the "running" state
 docker search      Search the Docker Hub for images
-docker start|stop <id>  Start/Stop one or more stopped containers
+docker start|stop <ID>  Start/Stop one or more stopped containers
 docker stats       Display a live stream of container(s) resource usage statistics
 docker inspect     displays metadata that docker maintains about for a container
+docker save <IMAGE> | gzip > IMAGE_NAME.tar.gz Exports an image into .tar.gz format for transport
+docker load < busybox.tar.gz imports a tar,gz based image into the docker process to be used/run
 
 [ Management Commands ] 
 
