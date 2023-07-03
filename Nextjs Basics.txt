@@ -39,7 +39,7 @@ Conventions
   /posts
     page.js # rendered on https://localhost:300/posts
     /[postId]
-      page.js # rendered on https://localhost:300/posts/:postId; this is NESTED route
+      page.js # rendered on https://localhost:300/posts/:postId; this is a NESTED route
 
 
 [ Backend Routing ]
@@ -49,4 +49,9 @@ Conventions
   /api
     /users
       route.js # endpoint will be listening on http://localhost:3000/api/users
+      
+      
+      
+  [ Layout ]
+  - layout.jsx functions as a global configuration object which dictates what happens on every page of our application 
     

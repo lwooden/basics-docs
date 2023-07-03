@@ -171,7 +171,7 @@ kubectl explain <resource> // list information about fields associated with the 
 // Get All
 kubectl get all [ -n <NAMESPACE>
 kubectl get namespaces
-kubectl get [ pods | sa | cm | secrets | roles | rolebinding ] --all-namespaces
+kubectl get [ pods | svc | sa | cm | secrets | roles | rolebinding | clusterrole | clusterrolebindings | ingress ] --all-namespaces
 
 
 // Exporting Manifests from Existing Resources
@@ -905,6 +905,7 @@ helm install --set namespace=test --set image.tag=e3e3140ad30ac965c5aef04e811fb6
 helm install --upgrade --set namespace=test --set image.tag=e3e3140ad30ac965c5aef04e811fb629651d9fbb graphql-api alaffia-charts/graphql-api
 helm ls 
 helm -n <namespace> get values <release-name> // check the values you passed to a previous deployment
+helm template ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --version ${CHART_VERSION} --namespace ingress-nginx nginx-ingress.${APP_VERSION}.yaml // pull down a helm chart and transform it into a ready to deploy kubernetes manfest file
 helm uninstall graphql-api // uninstall a release
 
 
