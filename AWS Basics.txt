@@ -89,6 +89,9 @@ L,D- Storage Optimized
 [ Launch Templates ]
 
 [ Auto-Scaling Groups ]
+- set SNS to notify me when scaling events happen 
+- Use launch templates to define image requirements
+- Let auto scaling configuration handle the rest 
 
 
 [ EBS Volumes ]
@@ -153,11 +156,8 @@ S3 Replicaition
 - great for content management
 
 // Concept
-
 Mountpoint
 	Access Points
-
-
 
 [ FSx ]
 - managed Windows server that runs SMB (Server Message Block)
@@ -169,18 +169,49 @@ Mountpoint
 SQL Databases
 ---------------------
 
+[ Amazon Aurora ]
+- AWS propriety relational database 
+- Supports MySQL, PostgreSQL engines
+- supports up to 15 read replicas for Aurora
+- support up to 5 read replicas for MySQL and Postgres engines
+- stores 2 copies of your data in 3 AZs minimum (6 copies of your data)
+- Aurora automated backups turned on by default 
+- Auto scales data storage in 10GB increments; can scale up to 128TBs
+
+[ Aurora Serverless ] 
+- used for infrequently and unpredictable workloads 
+- scales, stops and starts automatically based on load
+
 
 
 No-SQL Databases
 ---------------------------
 
+[ DynamoDB]
 
-AWS Proprietary Databases
---------------------------------------
+[ DocumentDB ]
+- Amazons MongoDB implementation 
 
-[ Aurora ]
+[ Amazon Keyspaces ]
+- Amazons serverless Apache Cassandra implementation
+- Distributed NoSQL Database
 
-[ Aurora Serverless ]
+
+
+Time Series Databases
+---------------------------
+
+[ Amazon Timestream ]
+- database for housing time series data (think Prometheus)
+
+Graph Databases
+---------------------------
+
+[ Amazon Neptune ]
+- Amazons graph database offering (think Neo4J)
+
+
+
 
 
 
@@ -196,12 +227,60 @@ Big Data (Data Services)
 [ Redshift] 
 
 
-Application Platforms
-----------------------------
+AI/ML
+--------------
+
+[ Rekognition ]
+- Content moderation - make sure images uploaded don’t break policies 
+- Object/Person recognition 
+
+[ Sagemaker ]
+- service for training models on AWS
+
+Ground truth - setup labeling jobs for training data
+Notebook - managed Jupyter notebook environment
+Training - train and tune models created from groundtruth and notebooks
+Inference - deploy your models at scale 
+
+// Deploy Mode
+Offline - 
+Online - low latency responses; returns a json string; good if you need immediate responses 
+
+
+Application Platforms (Web & Mobile)
+--------------------------------------------------
 
 [ AWS Beanstalk ] 
 
 [ AWS App Runner ] 
+
+[ AWS Amplify ]
+- tools for frontend web, and mobile development 
+- Amplify hosting - provides support for frontend frameworks (React, Vue, Angular, etc)
+- Separates staging and production environments 
+- Supports SSR (Next JS)
+- Amplify Studio - provides easy auth
+- Visuals developer console on the console 
+- Easy to use components (backends, connections, etc)
+
+[ AWS Device Farm ]
+- app testing service 
+- helps simplify interactions with Android, and IOS, and web apps hosted by AWS
+- Automated Testing - upload scripts or use built in test 
+- Remote Access - swipe, gesture, and interact with devices in real-time via web browsers 
+
+[ AWS Pinpoint ]
+- engage with customers through different messaging channels (think Mailchimp)
+- Target use cases is marketing, transaction, bulk messaging 
+
+// Concept
+Projects
+  Channels 
+     Segments 
+        Campaigns 
+          Journeys 
+            Messaging Templates 
+              Machine Learning
 
 
 
@@ -305,14 +384,14 @@ Layer 2 - Large Library Files (30MB)
 
 FROM amazon/aws-lambda-nodejs:12
 
-[Versions + Alias]
+[ Versions + Alias ]
 - by default we are referencing $LATEST; it is mutable and can be changed
 - when I'm ready to publish my code I can create a VERSION
 - versions are immutable; they cannot be changed 
 - versions have their own ARN
 - ALIAS point to versions
 
-[CodeDeploy]
+[ CodeDeploy ]
 - helps shift traffic to new alias over time based on a strategy
 
 Linear

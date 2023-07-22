@@ -903,9 +903,10 @@ helm search repo vweb --versions
 helm show values kiamol/vweb --version 1.0.0
 helm install --set namespace=test --set image.tag=e3e3140ad30ac965c5aef04e811fb629651d9fbb graphql-api alaffia-charts/graphql-api
 helm install --upgrade --set namespace=test --set image.tag=e3e3140ad30ac965c5aef04e811fb629651d9fbb graphql-api alaffia-charts/graphql-api
-helm ls 
+helm ls [--all-namespaces] // list charts that have been deployed/released
 helm -n <namespace> get values <release-name> // check the values you passed to a previous deployment
 helm template ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --version ${CHART_VERSION} --namespace ingress-nginx nginx-ingress.${APP_VERSION}.yaml // pull down a helm chart and transform it into a ready to deploy kubernetes manfest file
+helll pull <REPO> --version <string> // pulls down a chart in tar.gz format
 helm uninstall graphql-api // uninstall a release
 
 
