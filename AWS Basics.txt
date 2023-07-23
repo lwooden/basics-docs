@@ -183,7 +183,6 @@ SQL Databases
 - scales, stops and starts automatically based on load
 
 
-
 No-SQL Databases
 ---------------------------
 
@@ -195,7 +194,6 @@ No-SQL Databases
 [ Amazon Keyspaces ]
 - Amazons serverless Apache Cassandra implementation
 - Distributed NoSQL Database
-
 
 
 Time Series Databases
@@ -212,19 +210,99 @@ Graph Databases
 
 
 
+Big Data Services
+------------------------
 
-
-
-Big Data (Data Services)
----------------------------------
-
-[ AWS Glue ] 
-
-[ AWS Athena ]
+[ Redshift ] 
+- fully managed relational petabyte scale data-warehouse
+- can hold up to 16 PB of data
+- not intended for use as a backend for a web application
+- not a highly available service (one AZ deployment)
 
 [ EMR ]
+- managed platform for processing vast amounts of data using popular open source tools such as Spark, and Hive
+- ETL tool
+- fleet of EC2s run in your VPC
 
-[ Redshift] 
+[ Kinesis ] 
+- allows me to ingest, process, and analyze real-time streaming data
+- think of Kinesis as a highway whose responsiblity it is to help move traffic fast
+
+[ Kinesis Data Steams ]
+- real time streaming for ingesting data 
+- as fast as we can get
+- I am responsible for creating the consumer and scaling the stream
+- I am responsible for writing the code to build the applicaiton/service
+
+// Concept
+Producer -> Shards -> Consumers (S3, Dynamodb, Redshift, EMR, etc)
+
+[ Kinesis Data Firehose ]
+- transfer tool to get data into S3, redshift, elasticsearch, splunk
+- near real time
+- automatically sclaes
+
+// Concept
+Input (data) -> Firehose -> Destination (S3, Elasticsearch, Redshift) 
+*support for 3rd party endpoints
+
+[ Kineses Data Analytics ]
+- run SQL queries against data that is streaming through Firehose and Data Streams
+
+
+[ AWS Athena ]
+- allows me to directly query data in S3 buckets (data lake) without loading into a traditional database
+
+[ AWS Glue ] 
+- serverless data integration service that handles ETL jobs
+- can effectively replace EMR
+
+// Concept
+AWS S3 (Storage) -> Glue Crawlers (Discovery) -> Glue Catalog (Structure) -> Amazon Athena (Query) -> Quicksight (Visualize)
+
+[ Data Pipeline ]
+- managed ETL service for automating movement and transformation of data
+- define data driven workflows made up of steps
+- steps are dependent on previous task completing successfully
+- automatically retires failed activities
+- can define parameters for data transformations
+- highly available
+- integrates seamlessly with AWS services (S3, DynamoDB, Redshift, etc) 
+- can set schedules for specific task
+
+// Concepts
+Pipeline Definition
+	Managed Compute
+		Task Runners 
+			Data Nodes
+			
+// Use Cases
+ importing/exporting DynamoDb data
+ copying csv files between S3 buckets in a programmatic fashion
+ exporting RDS data to S3
+ copying data to Redshift
+
+[ Amazon Managed Streaming for Apache Kafka (MSK) ]
+- fully managed service for data streaming applications via Apache Kafka
+- provides control plane operatiosn (create, update, delete clusters as needed)
+- leverage Kafka data-plane operations for producing and consuming streaming data
+- encrypts data at rest and in transit BY DEFAULT
+
+// Concepts
+Broker Nodes - specify amount of nodes per AZ  at cluster creation
+Zookeeper Nodes - created by AWS
+Producers, Consumers, Topics - data plan operations allow for the creation of topics and the ability to produce/consume data
+
+
+[ Opensearch ] 
+- quickly ingest and search data in clusters
+- easily scalible
+- backed by IAM auth, VPC security groups,  
+- supports native SQL queries for BI applications
+- seamlessly integration with other AWS Services 
+
+[ Quicksight ] 
+- visualizaiton tool (think Tableau)
 
 
 AI/ML
