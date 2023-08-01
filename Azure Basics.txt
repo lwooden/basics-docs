@@ -341,12 +341,13 @@ Point-to-Site
 Site-to-Site
 	traditional IPSec conncetion between (2) border devices
 	VPN Gateways are provisioned on the Azure side
+	Local Gateways are configured in Azure to represent on-premise (customer) devices
 	different SKUs for features/performance
 	
 ExpressRoute
 	does not connect to a region
 	connects to the Microsoft backbone
-	you can get to any regions
+	you can get to any region
 
 // Types
 Private Peering
@@ -995,6 +996,16 @@ Out Rules
 
 Standard V2 SKU
 	static public IP
+	
+[ Azure Application Gateway for Containers ] -- PREVIEW
+- an abstraction to the Gateway Kubernetes object (think Ingress)
+- provisions two pods in the AKS cluster: Controller + Bootstrap in the azure-alb-system namespace
+- the controller pod talks to the Azure Applicatoin Gateway for Container
+- this allows changes to be made on the data plane in subseconds; much faster than ARM provisioning
+
+// Components
+Fontend IP - public IP used to listen for incoming traffic 
+	Association - used to map a front-end IP to a subnet in a particular VNET to send traffic to (data path); technically this is a subnet where an AKS cluster would be
 
 [ Azure Traffic Manager ] 
 - providing high availability across regions
