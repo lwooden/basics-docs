@@ -89,16 +89,24 @@ eksctl delete cluster --region=us-east-1 --name=lowk8
 Azure AKS 1-Node Cluster Setup (DEV)
 ----------------------------------------------
 deploy resource group, vnet, subnets, etc using pulumi
-az aks create --resource-group pulumi-dev-rg --name lowk8-aks --node-count 1 --enable-addons monitoring --generate-ssh-keys
-az aks get-credentials --resource-group pulumi-dev-rg --name lowk8-aks // updates kube-config w/ credentials
-az aks delete --name lowk8-aks --resource-group pulumi-dev-rg
+az aks create --resource-group lowsandbox-dev-rg --name lowk8-aks --node-count 1 --enable-addons monitoring --generate-ssh-keys
+
+az aks create -n lowk8-aks -g lowsandbox-dev-rg --network-plugin azure --enable-managed-identity -a ingress-appgw --appgw-name aks-ingress-gateway --appgw-subnet-cidr "10.225.0.0/16" --node-count 1 --generate-ssh-keys
+
+az aks get-credentials --resource-group lowsandbox-dev-rg --name lowk8-aks // updates kube-config w/ credentials
+az aks delete --name lowk8-aks --resource-group lowsandbox-dev-rg
 
 
 Google GKS 1-Node Cluster Setup (DEV)
 ----------------------------------------------
 deploy vpc, subnets, etc using pulumi
-gcloud services enable container // enable GKS api 
+gcloud services enable container // enable GKE api 
 gcloud container clusters create lowk8-gke --cluster-version=1.24 --num-nodes=1 --network="low-sandbox-dev-vpc" --subnetwork="dev-private" --zone=us-east1-b --addons=HttpLoadBalancing,HorizontalPodAutoscaling
+
+gcloud container clusters create-auto CLUSTER_NAME \ # creates auto-pilot cluster
+    --region REGION \
+    --project=PROJECT_ID
+    
 gcloud container clusters get-credentials lowk8-gke --region=us-east1-b
 gcloud container clusters delete lowk8-gke --region=us-east1-b
 

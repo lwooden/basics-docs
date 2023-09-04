@@ -1,0 +1,69 @@
+Angular Basics
+
+
+HTML Templates
+----------------------
+// app.component.html
+
+<h3>
+    {{ username }}'s To Do List  
+  <h6>{{ itemCount }} Items</h6>
+</h3>
+
+- Think of this page as the JSX content or HTML Template. This is the file that contains the HTML as well as javascript portions of the page 
+- Data bindings are represented in {{ }} and you can think of them as "Props" in React
+- Data bindings are primitives in Angular and they tell the applicaiton to get the value of the username and itemCount properties and insert them into the HTML template
+
+
+Components
+-----------------
+// app.component.ts
+
+import { Component } from '@angular/core';
+import { TodoList } from '../../models/TodoList';
+import { TodoItem } from '../../models/TodoItem';
+
+ // this is an example of a decorator, which provides metadata about a class.
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+
+
+export class AppComponent {
+
+  // sample TodoList data
+  private list = new TodoList('Bob', [
+    new TodoItem('Go for run', true),
+    new TodoItem('Get flowers'),
+    new TodoItem('Collect tickets'),
+  ]);
+
+  get username(): string {
+    return this.list.user;
+  }
+
+
+  get itemCount(): number {
+    return this.list.items.filter((item) => !item.complete).length;
+  }
+}
+
+- Angular components are responsible for managing a template and providing it with the data and logic it needs
+- Components act as a bridge between the data model classes and the template so that we can create an instance of the TodoList class, populate it with some sample TodoItem objects, and, in doing so, provide the template with the username and itemCount properties it needs.
+
+
+Data Models
+----------------
+// models/TodoItem.ts
+
+export class TodoItem {
+  constructor(public task: string, public complete: boolean = false) {}
+}
+
+- The export keyword relates to JavaScript modules. When using modules, each TypeScript or JavaScript file is considered to be a self-contained unit of functionality, and the export keyword is used to identify data or types that you want to use elsewhere in the application.
+
+- The class keyword declares a class, and the constructor keyword denotes a class constructor. Unlike C# and Java, JavaScript doesn’t use the name of the class to denote the constructor.
+
+
