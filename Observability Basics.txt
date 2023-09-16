@@ -13,13 +13,14 @@ Monitoring - the act of taking data from an observable system and determining he
 Observability is the ADJECTIVE!
 Monitoring is the VERB!
 
+
 3 Pillars of Observability
 --------------------------------
 Logs
-Metrics
-Traces
+  Metrics
+    Traces
 
-Deteck
+Detect
    Investigate
       Remediate
       
@@ -93,10 +94,27 @@ Getting down to request level metrics (latency, service interdependency) -> Trac
 Put sensors in place so you can see what is going on
 
 
-Observability-As-A-Code
+Observability-As-Code
  ----------------------------------
  There are "some" things that I can well define
  - cloudwatch agent configurations (pulumi)
  - cloudwatch dashboard configs (pulumi)
  - SNS topics
+
+
+Metrics
+---------
+System Metrics - CPU usage, memory utilization, network bandwidth usage, disk I/O
+
+Application Metrics - number of active users, transactions per second, error rates, response times
+
+Business Metrics - revenue generated per user, conversion rates
+
+
+Logging Tools
+------------------
+vector -- NEW
+fluentd
+fluentbit
+
 

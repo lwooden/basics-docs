@@ -1,0 +1,43 @@
+Artificial Intelligence Basics
+
+
+History of AI
+-----------------
+- the Logic Theorist is considered the first application of artificial intelligence, predating the term “artificial intelligence”
+- the Logic Theorist was the brainchild of Herbert Simon and Allen Newell, with some contributions by Cliff Shaw. Simon and Newell were attempting to teach a computer to think.
+- the Logic Theorist was able to produce better, more detailed mathematical proofs than contemporary mathematicians Alfred North Whitehead and Bertrand Russell
+- the term “artificial intelligence” would not exist until the RAND Corporation hosted the Dartmouth Summer Research Project on Artificial Intelligence in 1956. Then, prominent researcher John McCarthy (the original author of Lisp) and computer scientist coined the term “artificial intelligence,” unveiling it at this conference.
+
+
+
+Timeline
+------------
+1956 - the term "Artifical Intelligence" was coined by John McCarthy at the Dartmouth Summer Research Project
+1997 - Garry Kasparov was defeated in chess by "Deep Blue"
+2011 - Ken Jennings lost to IBM's "Watson" in Jeopardy
+2014 - Generative Adversarial Networks (GANs) were invented
+2015 - OpenAI was founded by Elon Mush and IIya Sutskever (former employee of Larry Page - Google)
+2017 - "Transformers" were introduced which led to Large Language Models (LLMs) like GPT-3 being born
+2019 - OpenAI released GPT-2
+2020 - OpenAI released GPT-3
+2023 - OpenAI released GPT-4
+
+
+What is Generative AI?
+--------------------------------
+- Generative AIs are a subset of artificial intelligence
+- there are (3) main types of Generative AI
+
+[ Generative Adversarial Networks - GANs ]
+- use two neural networks: one called generator and one called the discriminator. 
+- The generator network generates fake data based off of the training data set. The discriminator tries to identify fake data. 
+- These networks are adversarial in nature as the generator attempts to create data that is indistinguishable from the real data and the discriminator attempts to discern if the data is real or fake
+
+
+[ Variational Autoencoders - VANs ]
+- use two networks are well: one for encoding and one for decoding. In one sense the encoding network simplifies the input by reducing the data into a lower-dimensional representation. The decoding network then maps this lower-dimensional representation back to the original data space. The whole point of this is to be able to generate new data through sampling
+
+[ Transformer-Based Language Models ] 
+- learn the distribution of data
+- examples are ChatGPT, OpenAI Codex
+
