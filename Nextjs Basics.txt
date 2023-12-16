@@ -4,6 +4,7 @@ What
 -------
 - Next.js is a flexible React framework that enables developers to build performant web applications
 
+
 Why
 ------
 - This technology is important because the "NEW" React documentation seems to be pushing developers to adopt mature frameworks over vanilla React
@@ -11,6 +12,7 @@ Why
 - Next.js is the leading server-side rendering (SSR) technology in the market place
 - Next.js automates mundane processes like routing, code splitting, SEO, and suspense rendering AUTOMATICALLY so that developers can focus more on implementing business logic
 - functions as an "extension" of React
+
 
 When
 -------
@@ -24,7 +26,6 @@ Server-side Rendering
 - when a web page is completely rendered on the server first and then sent to the browser to be displayed
 - this significatnly lowers 
 - does wonders for SEO
-
 
 
 Conventions
@@ -51,7 +52,60 @@ Conventions
       route.js # endpoint will be listening on http://localhost:3000/api/users
       
       
+[ Route Groups ]
+- Nextjs added a feature that allows you to bundle together routes in your application in a cleaner way
+- to identify a route group, simply create a folder inside the app folder and wrap it in parenthesis (); this tells Nextjs to treat this a Route Group
+
+app
+  (auth) # this contextual only; auth does not appear in the URL; it is a logical container so you know what pages provide a specific capability
+    sign-in
+      page.tsx
+    sign-out
+      page.tsx
+  (dashboard)
+
       
-  [ Layout ]
-  - layout.jsx functions as a global configuration object which dictates what happens on every page of our application 
+[ Layout ]
+- layout.jsx functions as a global configuration object which dictates what happens on every page of our application 
+  
+  
+
+Deciding Where to Render Components
+------------------------------------------------------
+
+[ When to Use a Client Component ]
+
+"use client" // designates the component as a client component
+
+- if the page requires the user to click buttons, enter information in input fields, triggering events, use react hooks
+- interactivity
+- use hooks (general or custom)
+- use browser only APIs
+- React Class component
+
+
+
+[ When to Use a Server Component]
+- if the page doesn't require any user interaction, displaying only static content, performing server side computations
+- fetch data
+- access backends directly
+- hide sensitive data from the browser (access tokens, API keys, etc
+- keep large dependencies on the server 
+- redunce client-side javascript size
+
+
+
+Rendering Strategies
+----------------------------
+
+[ Static Site Generation - SSG ]
+
+[ Incremental Static Generation - ISG ]
+
+[ Server Side Rendering - SSR ]
+
+
+
+
+
     

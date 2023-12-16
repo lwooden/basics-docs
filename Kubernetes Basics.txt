@@ -101,7 +101,7 @@ Google GKS 1-Node Cluster Setup (DEV)
 ----------------------------------------------
 deploy vpc, subnets, etc using pulumi
 gcloud services enable container // enable GKE api 
-gcloud container clusters create lowk8-gke --cluster-version=1.24 --num-nodes=1 --network="low-sandbox-dev-vpc" --subnetwork="dev-private" --zone=us-east1-b --addons=HttpLoadBalancing,HorizontalPodAutoscaling
+gcloud container clusters create lowk8-gke --cluster-version=1.27 --num-nodes=1 --network="low-sandbox-dev-vpc" --subnetwork="dev-private" --zone=us-east1-b --addons=HttpLoadBalancing,HorizontalPodAutoscaling
 
 gcloud container clusters create-auto CLUSTER_NAME \ # creates auto-pilot cluster
     --region REGION \

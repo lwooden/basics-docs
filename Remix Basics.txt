@@ -1,0 +1,210 @@
+
+
+Architecuture
+-----------------
+- Remix has (3) builds associated with it
+
+1. /server-build - built by converting /server/index.ts into a javacript bundle
+2. /build - this a bundle that contains all of the server-side code/routes
+3. /public - this a bundle that contains all client-side code
+
+[ Entry Points ]
+
+Server -> /app/entry.server.ts
+Client -> /app/entry.client.ts
+
+
+Styling
+---------
+
+
+
+Routing
+----------
+
++ = there is an expected url segment that follows after
+$ = dynamic URL parameter
+. = 
+
+- npx remix routes // shows Remix's understanding of the current route heiarchy within the app based on your folder structure
+
+app
+  routes
+     users+
+       $username_+
+         notes.$noteId.tsx
+         notes.tsx
+     $username.tsx
+     
+ users+ -> $username.tsx = /users/<USERNAME>
+ users+ -> $username_+ -> notes.$noteId.tsx = /users/<USERNAME>/notes/<NOTEID>
+     
+
+
+Rendering Child Components
+----------------------------------------
+
+
+Fetching Data For a Component
+------------------------------------------
+
+- loader() handles all GET requests
+- in other words, it is responsible for getting data from third party APIs or internal endpoints and passing that to your components to use
+
+
+export async function loader({ params }: DataFunctionArgs) {
+	const note = db.note.findFirst({
+		where: {
+			id: {
+				equals: params.noteId,
+			},
+		},
+	})
+
+	invariantResponse(note, 'Note not found', { status: 404 })
+
+	return json({
+		note: { title: note.title, content: note.content },
+	})
+}
+
+
+Handling POST/PATCH Operations
+----------------------------------------------
+- actions() handle all of the other operations (POST, PATCH, DELETE, etc)
+- remix convention is that all mutation operations should be wrapped in a FORM component
+- FORM components can be configured to execute a POST operation which will be handled by a support action function
+
+
+
+export async function action({ params }: DataFunctionArgs) {
+	console.log(`Deleting note ${params.noteId}`)
+	db.note.delete({ where: { id: { equals: params.noteId } } })
+	console.log('Note deleted')
+
+	return redirect(`/users/${params.username}/notes`)
+}
+
+
+<Form method="POST">
+					<Button
+						// 🐨 add a type="submit" prop to this Button
+						variant="destructive"
+					>
+						Delete
+					</Button>
+				</Form>
+				
+				
+- we can only export ONE action function 
+- we can handle multiple actions within the single action function we can define				
+				
+export async function action({ request, params }: DataFunctionArgs) {
+	
+	// 🐨 get the formData from the request
+	// 🐨 get the intent from the formData
+	const formData = await request.formData()
+	const intent = formData.get('intent')
+	
+	// 🐨 if the intent is "delete" then proceed
+	if (intent === 'delete') {
+		db.note.delete({ where: { id: { equals: params.noteId } } })
+		return redirect(`/users/${params.username}/notes`)
+	}
+  	// 🐨 if the intent is not, then throw a 400 Response
+	invariantResponse(intent === 'delete', 'Something  went wrong!', {
+		status: 400,
+	})
+}
+
+
+<Form method="POST">
+					<Button
+						type="submit"
+						variant="destructive"
+						// this metadata clearly defiines that function with the action handler that I want to invoke
+						// 🐨 add a name="intent" and value="delete" to this button
+						name="intent"
+						value="delete "
+					>
+						Delete
+					</Button>
+						<Button
+						type="submit"
+						variant="awesome"
+						// this metadata clearly defiines that function with the action handler that I want to invoke
+						name="intent"
+						value="favorite "
+					>
+						Favorite
+					</Button>
+				</Form>
+				
+				
+Pre-Fetching
+----------------
+- remix has a capability where if we specifiy a prefetch property on a "link" element, it will invoke all of the javascript that is associated with that link basd on it's route
+- this makes the browsing experiecne feel super fast
+
+<Link prefetch="intent" to="notes" className="underline">
+*intent functions such that if the user "hoovers" over the link, Remix will go and fetch that data for that route
+
+
+
+
+Error Handling
+--------------------
+- the ErrorBoundary component can be exported per page/route to define error handling mechanics for that particular component
+- 
+
+// username.tsx
+
+export async function loader({ params }: DataFunctionArgs) {
+	// throw new Error('🐨 Component error')
+	const user = db.user.findFirst({
+		where: {
+			username: {
+				equals: params.username,
+			},
+		},
+	})
+
+	invariantResponse(user, 'User not found', { status: 404 })
+
+	return json({
+		user: { name: user.name, username: user.username },
+	})
+}
+
+export default function Home() {
+	const data = useLoaderData<typeof loader>()
+	return (
+		<div className="container mb-48 mt-36">
+			<h1 className="text-h1">{data.user.name ?? data.user.username}</h1>
+			<Link to="notes" className="underline" prefetch="intent">
+				Notes
+			</Link>
+		</div>
+	)
+}
+
+export function ErrorBoundary() {
+	const error = useRouteError()
+	const params = useParams()
+	console.error(error)
+
+	if (isRouteErrorResponse(error) && error.status === 404) {
+		return (
+			<div className="container mx-auto flex h-full w-full items-center justify-center bg-destructive p-20 text-h2 text-destructive-foreground">
+				<p>User {params.username} does not exist!</p>
+			</div>
+		)
+	}
+
+	return (
+		<div className="container mx-auto flex h-full w-full items-center justify-center bg-destructive p-20 text-h2 text-destructive-foreground">
+			{/* 🐨 display the error message here */}
+			<p>Oh no, something went wrong. Sorry about that.</p>
+		</div>
+	)
+}
