@@ -1,0 +1,47 @@
+Data Modeling Basics
+
+Tooling
+---------
+- Prisma is the ORM of choice when dealing with Javascript 
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// example Prisma schema
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  username String @unique
+  name String?
+  createdAt DateTime @default(now()) 
+  updatedAt  DateTime   @updatedAt
+}
+
+
+Prisma Commands
+--------------------------
+npx prisma init --url file:./data.db
+
+npx prisma db push
+
+npx prisma studio
+
+
+Understanding Relationships
+--------------------------------------
+
+[ One-to-One ]
+
+
+
+[ One-to-Many ]
+
+
+[ Many-to-Many ]
