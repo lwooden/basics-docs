@@ -178,6 +178,7 @@ kubectl explain <resource> // list information about fields associated with the 
 
 // Get All
 kubectl get all [ -n <NAMESPACE>
+kubectl get all --all-namespaces
 kubectl get namespaces
 kubectl get [ pods | svc | sa | cm | secrets | roles | rolebinding | clusterrole | clusterrolebindings | ingress ] --all-namespaces
 
@@ -260,6 +261,7 @@ kubectl get sts
 
 // Roles
 kubectl get roles [ -n <NAMESPACE> ]
+kubectl get clusterroles
 
 kubectl create role testrole --verbs list,create ----resource=secrets,configmap [ -n <NAMESPACE> ]
 
@@ -399,8 +401,8 @@ spec:
 Persistent Volumes - allows you to treat storage as an abstract resource to be consumed by pods (EBS, EFS, NFS, etc)
 
 Storage Class -> cluster resource
-PV -> cluster resource
-PVC -> namespace specific resource (consumed by pods)
+  PV -> cluster resource
+    PVC -> namespace specific resource (consumed by pods)
 
 // Create the persistent volume
 apiVersion: v1
@@ -417,6 +419,10 @@ spec:
   hostPath:
       path: /var/output
       
+      
+Persistent Volume Claim - allows you to carve out storage that is provided by the associated Persistant Volume
+**pvcs are scoped to a namespace**
+
       
  // Create the claim for the persistent volume     
 apiVersion: v1
@@ -913,7 +919,8 @@ helm install --set namespace=test --set image.tag=e3e3140ad30ac965c5aef04e811fb6
 helm install --upgrade --set namespace=test --set image.tag=e3e3140ad30ac965c5aef04e811fb629651d9fbb graphql-api alaffia-charts/graphql-api
 helm ls [--all-namespaces] // list charts that have been deployed/released
 helm -n <namespace> get values <release-name> // check the values you passed to a previous deployment
-helm template ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --version ${CHART_VERSION} --namespace ingress-nginx nginx-ingress.${APP_VERSION}.yaml // pull down a helm chart and transform it into a ready to deploy kubernetes manfest file
+helm template ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --version ${CHART_VERSION} 
+--namespace ingress-nginx > nginx-ingress.${APP_VERSION}.yaml // pull down a helm chart and transform it into a ready to deploy kubernetes manfest file
 helll pull <REPO> --version <string> // pulls down a chart in tar.gz format
 helm uninstall graphql-api // uninstall a release
 

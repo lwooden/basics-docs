@@ -5,7 +5,7 @@ Architecuture
 - Remix has (3) builds associated with it
 
 1. /server-build - built by converting /server/index.ts into a javacript bundle
-2. /build - this a bundle that contains all of the server-side code/routes
+2. /build - this is a bundle that contains all of the server-side code/routes
 3. /public - this a bundle that contains all client-side code
 
 [ Entry Points ]
@@ -71,7 +71,7 @@ export async function loader({ params }: DataFunctionArgs) {
 
 Handling POST/PATCH Operations
 ----------------------------------------------
-- actions() handle all of the other operations (POST, PATCH, DELETE, etc)
+- actions() handle all other operations (POST, PATCH, DELETE, etc)
 - remix convention is that all mutation operations should be wrapped in a FORM component
 - FORM components can be configured to execute a POST operation which will be handled by a support action function
 

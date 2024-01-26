@@ -106,6 +106,18 @@ Rendering Strategies
 
 
 
+Server Actions
+-------------------
+- functions that run on the server that can be called from the client
+- can be utilized without creating API endpoints
+- similar to Remix's "Loader" functionality where backend endpoints can be called from the component directly
+- can call databases directly without creating an API endpoint
+- can perform server side logic (i.e. sending emails, creating files)
+- can call external APIs directly from server actions without an API endpoint
+
+
+
+
 
 
     
