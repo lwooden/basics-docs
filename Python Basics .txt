@@ -34,6 +34,17 @@ pipenv install django // install within this project only
 pip3 freeze // check packages that are installed locally in this environment
 
 
+Virtual Environment Setup (Poetry)
+-------------
+install poetry using the classic installer
+mkdir example-project
+cd example-project
+poetry init -n // initialize new project
+poetry config virtualenvs.in-project true // create virtual env in the root of project directory
+poetry add pandas // installs pandas and creates virtual env
+poetry show // list dependencies in a project
+
+
 Classes
 --------
 class Circle:
