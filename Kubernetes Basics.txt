@@ -156,6 +156,33 @@ Start Etcd (Node)
     
 Verify etcd is up and running (kubectl/client)
     k describe pod/etcd -n kube-system
+    
+    
+Using Helm for Manifest File Management
+--------------------------------------------------------
+- Helm is a package/release manager aimed to help make deploying container based applications to Kubernetes simpler
+
+helm repo add <name> <url>
+helm repo update
+helm search repo vweb --versions
+helm show values kiamol/vweb --version 1.0.0
+helm install --set namespace=test --set image.tag=e3e3140ad30ac965c5aef04e811fb629651d9fbb graphql-api alaffia-charts/graphql-api
+helm install --upgrade --set namespace=test --set image.tag=e3e3140ad30ac965c5aef04e811fb629651d9fbb graphql-api alaffia-charts/graphql-api
+helm ls [--all-namespaces] // list charts that have been deployed/released
+helm -n <namespace> get values <release-name> // check the values you passed to a previous deployment
+helm pull <REPO> --version <string> // pulls down a chart in tar.gz format
+helm uninstall graphql-api // uninstall a release
+
+// pull down a helm chart and transform it into a ready to deploy kubernetes manifest file
+helm template ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --version ${CHART_VERSION} --namespace ingress-nginx > nginx-ingress.${APP_VERSION}.yaml 
+
+
+Using Helmfile to Manage Helm Charts
+--------------------------------------------------------
+- Helmfile is a higher level abstraction built on top of Helm. It makes managing Helm charts within your project simpler as well as offering synchornization options between your project and a cluster
+
+helmfile sync // references helmfile.yaml in the working directory
+helmfile delete
 
 
 Common Commands
@@ -177,7 +204,7 @@ kubectl explain <resource> // list information about fields associated with the 
 
 
 // Get All
-kubectl get all [ -n <NAMESPACE>
+kubectl get all -n <NAMESPACE>
 kubectl get all --all-namespaces
 kubectl get namespaces
 kubectl get [ pods | svc | sa | cm | secrets | roles | rolebinding | clusterrole | clusterrolebindings | ingress ] --all-namespaces
@@ -311,12 +338,7 @@ kubectl top node
 // Copying Files
 kubectl cp hello-kiamol-2-7f6dd54b9b-j6zvl:/tmp/low.txt /Users/low/low.txt // move a file from pod to your local computer
 
-
-
 **NOTE**: By default Kubernetes does not PULL images if they are already in the local cache. I may need to add "imagePullPolicy: Always" in the manifest to force this to happen in the event I have a container update that has the same tag name. This will ensure I get the latest image with the latest code
-
-
-
 
 
 kubectl get all [ -n | --namespace ] <namespace>
@@ -420,11 +442,11 @@ spec:
       path: /var/output
       
       
-Persistent Volume Claim - allows you to carve out storage that is provided by the associated Persistant Volume
+Persistent Volume Claim - allows you to carve out storage that is provided by the associated Persistent Volume
 **pvcs are scoped to a namespace**
 
       
- // Create the claim for the persistent volume     
+ // Create the claim for the persistent volume  claim    
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -906,31 +928,7 @@ Services
   Deployments
             Pods
             
-            
-Using Helm or Manifest File Management
---------------------------------------------------------
-- Helm is a package/release manager aimed to help make deploying container based applications to Kubernetes simpler
-
-helm repo add <name> <url>
-helm repo update
-helm search repo vweb --versions
-helm show values kiamol/vweb --version 1.0.0
-helm install --set namespace=test --set image.tag=e3e3140ad30ac965c5aef04e811fb629651d9fbb graphql-api alaffia-charts/graphql-api
-helm install --upgrade --set namespace=test --set image.tag=e3e3140ad30ac965c5aef04e811fb629651d9fbb graphql-api alaffia-charts/graphql-api
-helm ls [--all-namespaces] // list charts that have been deployed/released
-helm -n <namespace> get values <release-name> // check the values you passed to a previous deployment
-helm template ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --version ${CHART_VERSION} 
---namespace ingress-nginx > nginx-ingress.${APP_VERSION}.yaml // pull down a helm chart and transform it into a ready to deploy kubernetes manfest file
-helll pull <REPO> --version <string> // pulls down a chart in tar.gz format
-helm uninstall graphql-api // uninstall a release
-
-
-Using Helmfile to Manage Helm Charts
---------------------------------------------------------
-- Helmfile is a higher level abstraction built on top of Helm. It makes managing Helm charts within your project simpler as well as offering synchornization options between your project and a cluster
-
-helmfile sync // references helmfile.yaml in the working directory
-helmfile delete
+          
             
 
 Commands
