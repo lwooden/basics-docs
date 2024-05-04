@@ -13,6 +13,19 @@ az resource list
 - 
 azd up
 
+
+Azure Resource Graph
+——————————
+- a robust querying layer that extends the Azure Resource Manager platform
+- can query resources with complex filtering, grouping, and sorting by resource properties across multiple subscriptions
+- when an Azure resource is updated, Azure Resource Manager notifies Azure Resource Graph about the change. Azure Resource Graph then updates its database. Azure Resource Graph also does a regular full scan. This scan ensures that Azure Resource Graph data is current if there are missed notifications or when a resource is updated outside of Azure Resource Manager
+- based on the KQL (Kusto Query Language)
+
+// Examples
+resources | summarize count()
+resources | where type == "microsoft.network/virtualnetworks"
+
+
 	
 
 	

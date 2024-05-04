@@ -24,7 +24,7 @@ When
 Server-side Rendering
 -------------------------------
 - when a web page is completely rendered on the server first and then sent to the browser to be displayed
-- this significatnly lowers 
+- this significantly lowers 
 - does wonders for SEO
 
 
@@ -91,7 +91,7 @@ Deciding Where to Render Components
 - access backends directly
 - hide sensitive data from the browser (access tokens, API keys, etc
 - keep large dependencies on the server 
-- redunce client-side javascript size
+- reduce client-side javascript size
 
 
 
@@ -114,6 +114,7 @@ Server Actions
 - can call databases directly without creating an API endpoint
 - can perform server side logic (i.e. sending emails, creating files)
 - can call external APIs directly from server actions without an API endpoint
+- can do anything that I would do on the server WITHOUT having to create an API endpoint
 
 
 
