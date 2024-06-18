@@ -583,7 +583,7 @@ vCore
 
 [ Azure SQL Elastic Pool ] 
 - allows you to put multiple databases in a single logical SQL Server and all of the databases share the resources of the server
-- resource allocation for each database is managed dynamicaly by the service
+- resource allocation for each database is managed dynamically by the service
 	
 [  Azure SQL Managed Instances ]
 - PaaS offering within your VNET
@@ -594,7 +594,7 @@ vCore
 - can only create (1) database
 
 [  Azure SQL Edge ]
-- very ligtweight
+- very lightweight
 - optimized for IOT
 - 500mb memory footprint
 
@@ -610,13 +610,13 @@ Semi Structured Options (JSON, XML)
 [  Azure Tables  ]
 - backed by an Azure Storage Account
 - stores data that may change structure as "entities" in tabular format (semi-structured)
-- focuses on storing alot of data at a low price point 
+- focuses on storing a lot of data at a low price point 
 - pricing is determined per GB of storage
 - 20k operations per second
 - latency guarantees
 
 Partition Key - functions like Cosmos DB
-Row Key - must be included with every entitiy
+Row Key - must be included with every entity
 
 **these properties must be referenced in any query in order for data to be returned
 
@@ -650,13 +650,13 @@ Physical Partitions - Internally, one or more logical partitions are mapped to a
 
 // Keys
 
-Parition Key - It's the best practice to have a partition key with many distinct values, such as hundreds or thousands (high cardinality) 
+Partition Key - It's the best practice to have a partition key with many distinct values, such as hundreds or thousands (high cardinality) 
 Unique Key
 
-*Partiion keys are immutable! Containers must be deleted if you want to change them
+*Partition keys are immutable! Containers must be deleted if you want to change them
 
 US customer data -> Server 1
-Canda customer data -> Server 2
+Canada customer data -> Server 2
 
 // Consistency Levels (High > Low)
 
@@ -672,10 +672,10 @@ Cosmos appends an "item id" with each document in order to identify each unique 
 
 Point Read - requesting (1) item
 In-Partition - requesting data located in a single partition (WHERE CUSTOMER = US)
-Cross-Partion -  requesting data located in more than one partition (US and Canada)
+Cross-Partition -  requesting data located in more than one partition (US and Canada)
 
 // Replication
-- replicates data seemlessly between regions (read replicas)
+- replicates data seamlessly between regions (read replicas)
 - multi-region writes (read/write replicas)
 
 [ Azure Redis Cache ]
@@ -743,7 +743,7 @@ Databricks Data Science & Engineering
 	used to read data from multiple data sources and turn it into breakthrough insights using Spark
 
 Databricks Machine Learning
-	ntegrated end-to-end machine learning environment incorporating managed services for experiment tracking, 
+	integrated end-to-end machine learning environment incorporating managed services for experiment tracking, 
 	model training, feature development and management, and feature and model serving.
 
 
@@ -776,7 +776,7 @@ Hosting Platforms
 - supports running workloads on both Linux or Windows
 
 // Concept
-App Service Plan (defines a set of compute resources for a web app to run ont6)
+App Service Plan (defines a set of compute resources for a web app to run on)
 	App
 	
 **Plans define OS, region, number of VMs, size, pricing tier (Free,Shared, Basic, Standard, Premium, etc)
@@ -793,7 +793,7 @@ App Service Plan (defines a set of compute resources for a web app to run ont6)
 Container Platforms
 ---------------------------
 
-[ Azure Container Registires ]
+[ Azure Container Registries ]
 - managed registry service based on the open-source Docker Registry 2.0
 - supports Helm Chart storage
 - control access to a container registry using Azure AD, service principals, or a provided admin account.
@@ -845,7 +845,7 @@ Trigger on Base Image Update
 - enables me to run microservices and containerized applications in a serverless Kubernetes-centric way
 - access to HTTPs ingress for my app
 - autoscaling with the ability to SCALE TO 0
-- split traffic across multiple verisons
+- split traffic across multiple versions
 - access to Kubernetes microservice enhancer like Daper
 - pull containers from ANY registry (public/private)
 - can deploy within a pre-defined Vnet
@@ -926,7 +926,7 @@ Azure Update Management
 - functions like AWS SSM Patch Manager
 
 Log Analytics Agent reports package status -> Automation Account
-Hybrid Runbook Worker check for maintainence window and deployment
+Hybrid Runbook Worker check for maintenance window and deployment
 If there are updates that need to be applied, it executes the necessary commands (can configure pre/post actions)
 
 Automation Account > Update Management
@@ -954,7 +954,7 @@ Microsoft Azure Backup Server (MABS)
 - supports file/folder, application aware, system-state backups
 - customize backup frequency
 
-Azure Virtual Machine Backup Extenstion
+Azure Virtual Machine Backup Extension
 - windows/linux
 - uses virtual machine extension to backup a virtual machine
 - restores virtual machine, disks, and files
@@ -987,7 +987,7 @@ Load Balancing
 - port forwarding
 - SNAT for outside access via the Load Balancer
 - can associate multiple public IPs
-- can assocaite VMs or scale sets to backend pool
+- can associate VMs or scale sets to backend pool
 
 Basic SKU
 	TCP
@@ -999,7 +999,7 @@ Standard SKU
 
 Health Probes
 Load balancing Rules
-Inbout NAT Rules
+Inbound NAT Rules
 Out Rules
 
 
@@ -1013,11 +1013,11 @@ Standard V2 SKU
 [ Azure Application Gateway for Containers ] -- PREVIEW
 - an abstraction to the Gateway Kubernetes object (think Ingress)
 - provisions two pods in the AKS cluster: Controller + Bootstrap in the azure-alb-system namespace
-- the controller pod talks to the Azure Applicatoin Gateway for Container
+- the controller pod talks to the Azure Application Gateway for Container
 - this allows changes to be made on the data plane in subseconds; much faster than ARM provisioning
 
 // Components
-Fontend IP - public IP used to listen for incoming traffic 
+Frontend IP - public IP used to listen for incoming traffic 
 	Association - used to map a front-end IP to a subnet in a particular VNET to send traffic to (data path); technically this is a subnet where an AKS cluster would be
 
 [ Azure Traffic Manager ] 
@@ -1068,14 +1068,14 @@ Automation
 **Great 3rd party tooling includes Pulumi and Bicep
 
 [ Runbooks ] 
-- similiar to CloudFormation/Lambda
+- similar to CloudFormation/Lambda
 - supports Powershell or Python scripting
 - simplify orchestration of complex multi-step tasks
 - you must install/enable the modules under the "Shared Resources" section for the resources that you want to interact with (e.g. Az.Compute for VMs)
 
 // Concept
 Automation Account
-  Run As Account (created in your Azure tenant for priviledges)
+  Run As Account (created in your Azure tenant for privileges)
       Automation Runbooks
          Automation Worker
 
@@ -1084,7 +1084,7 @@ Monitoring
 ---------------
 
 [ Azure Monitor ]
-- multi-facted solution comprised of several separate and distinct services
+- multi-faceted solution comprised of several separate and distinct services
 - diagnostic settings can be configured for multiple types of resources/services that define what data you want to send and where you want to send it
 - to send logs to Log Analytics -> Log Analytics Agent
 - to send logs to Azure Monitor -> Azure Diagnostics Agent
@@ -1113,8 +1113,8 @@ Where? Azure Monitor || Log Analytics Workspace
 [ Metrics ]
 - small, time-based data
 - collected a regular intervals
-- sent to Azure Monitor for high level dashboarding and reporting
-- sent to Log Analytics for advance querying capibility
+- sent to Azure Monitor for high level dash-boarding and reporting
+- sent to Log Analytics for advance querying capability
 - sent to Event Hub
 
 [ Logs ]
@@ -1142,7 +1142,7 @@ target resource to monitor (VM)
 [ Log Analytics Workspace ] 
 - workspaces are deployed geographically
 
-Workpace
+Workspace
   Data Sources
       Analytics
       
@@ -1169,7 +1169,7 @@ Security
 ---------------
 
 [ Azure Security Center ]
-- provides recomendations on how to improve security posture (like AWS Config)
+- provides recommendations on how to improve security posture (like AWS Config)
 - can tie into workflow automation (via Logic Apps) to do something when certain conditions or alerts are raised
 
 [ Azure Sentinel ]
@@ -1185,9 +1185,9 @@ Security
 - Can a Log Analytics Workspace ingest data from multiple subscriptions? Seems as though a Workspace can support multiple subscriptions as long as it is under the same Azure AD Tenant?
 
 [ Microsoft Defender for Cloud ]
-- a Cloud Security Posture Management (CSPM) and Cloud Workload Protection Platform (CWPP) for Azure, on-premises, and multicloud (Amazon AWS and Google GCP) resources
+- a Cloud Security Posture Management (CSPM) and Cloud Workload Protection Platform (CWPP) for Azure, on-premises, and multi-cloud (Amazon AWS and Google GCP) resources
 - can monitor multiple subscriptions under one tenant
-- provides a score for my overall enviromnent (think AWS Config)
+- provides a score for my overall environment (think AWS Config)
 - provides access to defender plans for specific services (App Service, Container Apps, etc)
 - these plans cost money per month/server
 
@@ -1227,12 +1227,12 @@ Asynchronous Messaging
 [ Azure Queues ] 
 - basic FIFO
 - supports messages up to 64 KB in size
-- commonly used to create a backlog of work to process asynchronousl
+- commonly used to create a backlog of work to process asynchronous
 	
 [ Azure Service Bus ] 
 - supports queues, publish/subscribe (topics and subscriptions), and other advance patterns
 - suited for more complex use cases
-- mainly for microservice implementation (support dead-letter queues, etc)
+- mainly for micro-service implementation (support dead-letter queues, etc)
 - supports messages up to 256 KB in size
 - supports advance filtering for subscribers
 
@@ -1299,7 +1299,7 @@ KeyVault (container - HSM w/ API)
 - complements Azure Key Vault
 - provides a service to centrally manage application settings and feature flags
 - regional service scope
-- can perfrom bulk import of settings into the service
+- can perform bulk import of settings into the service
 - can export key-values from the service
 
 
@@ -1308,26 +1308,21 @@ Multi-Cloud + On-Prem
 ------------------------------
 - Azure Arc
 
-// TODO
+[ AWS Connector - Preview ]
+- makes API calls from the Azure Control Plane
+- requires 2 IAM roles
+- gives option to add an organization account or a single account
 
+// Solutions
 
-
-Computer Options (Bottom to Top)
----------------------------------------------
-
-SaaS
-
-Application Services
-	Functions (writing code)
-	Logic Apps (no-code)
-	App Service
+Inventory 
+	allows you to see resources from other clouds in a single view
+	set a period sync interval (e.g. 1 hour)
 	
-Container Services
-	AKS
-	ACI
-	
-IaaS
-	Azure VMs
-      
+Arc Onboarding
+	extends Azure Arc so I can use Azure management services on EC2 instances
+	must add a tag with the value “Arc” to be included
+
+
 
 

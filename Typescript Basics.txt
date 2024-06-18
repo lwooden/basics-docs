@@ -60,11 +60,27 @@ class Student {
 }
 
 
+
+
+Type Aliases
+—————————
+-  a name for any type
+- a type cannot be re-opened to add new properties like an interface which is always extendable — IMPORTANT
+
+type IProduct = { 
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+}
+
+
+
 Interface Declaration
 -----------------------
-
-Interfaces define a "contract" that our objects will follow. This happens solely at compile time. Once the code is compiled the concept of interfaces is gone.
-
+- another way to name an object type
+- define a "contract" that our objects will follow. 
+- this happens solely at compile time; once the code is compiled the concept of interfaces is gone.
 
 interface IProduct {
     id: number;
@@ -80,6 +96,31 @@ var product:IProduct = {
     description: "The latest COD game",
     price: 59.99
 }
+
+
+Generic Objects
+———————
+
+interface Row<T> {
+  label: string;
+  value: T;
+  disabled: boolean;
+}
+
+
+Generic Functions
+————————
+
+
+const createRow = <T,>(label: string, value: T, disabled = false) => ({
+  // do stuff
+});
+
+
+
+
+
+
 
 
 

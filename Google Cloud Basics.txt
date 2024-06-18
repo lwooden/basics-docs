@@ -265,7 +265,7 @@ Custom Routes
 
 HTTPS
 	only L7 option
-	distrubutes traffic based on content or geo location
+	distributes traffic based on content or geo location
 	url or content based (forwarding rules)
 
 SSL Proxy
@@ -295,7 +295,7 @@ Internal
 - provides dynamic for hybrid networks 
 - links VPCs to external networks
 - works with Cloud VPN, and Cloud Interconnect
-- automaticallty learns subnets and announces them to on-premise networks
+- automatically learns subnets and announces them to on-premise networks
 
 
 [ Cloud VPN ]
@@ -304,12 +304,16 @@ Internal
 
 // Options
 HA VPN - two interfaces and two external IPs
-Classic VPN - single inferace and single external IP
+Classic VPN - single interface and single external IP
 
 
 [ Cloud Interconnect ]
 - think Direct Connect and ExpressRoute
 - direct connection into Googles backbone
+
+[ Cross-Cloud Interconnect ]
+- establishes dedicated connectivity between Google and another cloud service provider
+- 10 / 100 Gbps
 
 // Options
 Dedicated - direct connection to GCP; 10-Gbps or 100-Gbps circuits
@@ -446,9 +450,9 @@ SQL Databases
 No-SQL Databases
 ---------------------------
 
-[ Cloud BigTable ] 
-- wide-colum store
-- large scale
+[ BigTable ] 
+- wide-column store
+- large scale (massive workloads, high throughput)
 - low-latency
 	
 // Row Key Design
@@ -463,6 +467,7 @@ Metro#86#M117 	40.7.  	-73.9
 
 
 [ Firestore ] 
+- document database (think MongoDB, AWS DynamoDB)
 - rich mobile, web, and IOT applications
 - strongly consistent
 	
@@ -476,16 +481,21 @@ Metro#86#M117 	40.7.  	-73.9
 - milisecond data access
 	
 	
-Data
-------
+Data Security
+------------------
 
 [ Cloud Data Loss Prevention API ] 
 - can de-identify sensitive data in text content
 - uses a de-identification transformation to mask, delete, or otherwise obscure the data
+
+[ Dataplex ]
+- a data fabric that unifies distributed data and automates data management and governance for that data
+- organize and catalog data from across the entire organization (Cloud Storage, BiqQuery, etc) without moving that data
+- 
 	
 	
-Containers
----------------
+Container Platforms
+--------------------------
 
 [ Cloud Run ] 
 - think Azure Container Apps/ACI
@@ -598,6 +608,8 @@ Asynchronous Messaging
 - asynchronous messaging service
 - max size of task/message	10MB
 - task/message retention 7 days
+- can be used for streaming data solutions
+- can handle any type of data (images, JSON, etc)
 
 
 
@@ -662,17 +674,14 @@ Celebrity Detection
 [ Natural Language API ]
 
 
-
-
-
 Big Data
 -------------
 
 [ Cloud Compose ]
-- think AWS Glue, Azure Logics Apps, Azure Data Factory
+- think Azure Logics Apps, Azure Data Factory
 - fully managed Apache Airflow service
+- visually manage your pipelines
 - focus on authoring, scheduling, and monitoring your python based workflows
-
 
 [ Dataproc ]
 - managed Apache Spark service for processing large datasets
@@ -681,15 +690,27 @@ Big Data
 - can turn off when not in use -- UNIQUE
 	
 [ DataFlow ] 
+- managed Apache Bean process executor engine
 - unified serverless stream and batch processing service
-- executes Apache Bean processes
 	
 [ Dataprep ]
+- think AWS Glue
 - visually explores, cleans, and prepares data for analysis and ML
 - operated by Trifecta in partnership with Google
 - automatically detects schemas, datatypes, possible joins, and outliers
 - built-in transformation functions (aggregate, join, union)
 - works with csv, JSON, or relational data from Cloud Storage, BigQuery, or direct upload
+
+[ Cloud Data Fusion ]
+- think AWS SageMaker instances and Notebooks
+- fully managed, cloud-native, enterprise data integration service for quickly building and managing data pipelines
+- the web interface lets you build scalable data integration solutions
+- it lets you connect to various data sources, transform the data, and then transfer it to various destination systems, without having to manage the infrastructure.
+
+[ Batch ]
+- lets you schedule, queue, and execute batch processing workloads on Google Cloud resources
+- specify parameters for the resources required for your workload, then Batch obtains resources and queues the job for execution
+- a job might be a single shell script or a complex, multipart computation
 	
 [ BigQuery ]
 - serverless, multi-regional, SQL columns-store data warehouse
@@ -707,11 +728,16 @@ Big Data
 - can apply table, row, column level security policies on object store tables
 	
 [ Datalab ]
-- for visualiing, querying, and interacting with your data using programming languages
+- for visualizing, querying, and interacting with your data using programming languages
 - backed by Jupyter Notebook
 	
-[ Data Studio ]
-	// TODO
+[ Looker ]
+- think PowerBi
+- business intelligence and reports
+
+
+[ Looker Studio ]
+
 
 
 IoT
@@ -822,13 +848,13 @@ Audit Logs
 - real time error monitoring and alerting
 - consolidates all errors within a single pane of glass
 - errors are deduplicated and grouped together into an "issue"
-- how many occurences? when was it last seen?
+- how many occurrences? when was it last seen?
 - integrated into Cloud Functions, and App Engine (standard)
 
 **Makes it incredibly easy to locate, discover, and address errors in apps
 	
 [ Cloud Debugger ]
-- debugs a running application without interupting the live service
+- debugs a running application without interrupting the live service
 - the service takes a snapshot of the live service 
 - allows you to insert breakpoints in the snapshot of the app and look for errors
 	
@@ -836,13 +862,14 @@ Audit Logs
 - instrument my apps w/ OpenTelemetry, OpenCensus, Google SDK
 
 Trace - the total time it takes for a request to make it end-to-end
-Span - the time it took for a particualr "segment" of a request path
+Span - the time it took for a particular "segment" of a request path
 
 [ Cloud Profiler ] 
-- continously analyzes the performance of your applicaiton
+- continuously analyzes the performance of your application
+- focuses on metrics like CPU time, Heap, Contention, Threads, etc
 - maintains profiles for 30 days
 - agent based; requires instrumentation
-- supports Compute Engine, App Engine, and Dataproc 
+- supports Compute Engine, App Engine, GKE, Dataflow, Dataproc 
 	
 	
 	

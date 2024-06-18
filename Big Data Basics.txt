@@ -4,7 +4,7 @@ Big Data Basics
 ------------------
 Volume - large volumes of data
 Variety - various forms; structured, semi-structured, unstructured
-Velocity - real time, batch, streams of data
+Velocity - batch, streaming, real time
 Variability - inconsistent, sometimes inaccurate, varying data
 
 Big Data is a result of technology advances and innovations made in the past few decades
