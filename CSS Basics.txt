@@ -1,0 +1,97 @@
+
+
+Basic Element Types
+----------------------------
+
+[ Block Elements ]
+- always appear on a new line
+- automatically fill the width of their container
+
+// Common Block Elements
+div form footer
+h1 li ol section main
+nav p table
+ul
+
+
+[ Inline Elements ]
+- flow along with the text of the page from left -> right
+- will wrap if they reach the edge of their container
+
+// Common Inline Elements
+a button br img
+input script span 
+textarea 
+
+
+Identifiers
+------------
+. == class
+# == id
+
+
+Defining Variables
+-------------------------
+// define variables in a root object to be referenced elsewhere throughout the CSS file
+:root {
+--brand-color: #0072b0;
+--column-width: 1080px;
+}
+
+.page-header {
+max-width: var(--column-width); //reference
+margin: 0 auto;
+}
+
+.container {
+backgound-color: var(--brand-color); // reference
+margin: 0 auto;
+}
+
+
+
+Box Model
+---------------
+
+Content
+  Padding
+    Border
+      Margin
+
+
+High Page Structure
+--------------------------
+
+[ Defining Containers ]
+
+<body>
+<div class=outer-container>
+
+<div class=inner-container-1>
+
+children...
+
+</div>
+
+<div class=inner-container-2>
+children....
+
+
+</div>
+
+</div>
+
+</body>
+
+
+
+Mastering Layout
+------------------------
+
+
+[ Flexbox ]
+
+
+[ Grid ]
+
+

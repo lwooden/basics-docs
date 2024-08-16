@@ -1,5 +1,6 @@
 Google Cloud Basics
 
+Azz92z23P2hvtRyy - 50% Cert Voucher
 
 Cloud SDK and CLI
 ---------------------------------    
@@ -90,15 +91,16 @@ Member/Principal
 - collection of permissions that indicate what a member can do on a resource
 - permissions are not granted to users directly, but to roles
 - permissions correspond 1-1 with REST API methods
+- multiple roles can be granted to one user
 
 [ Types of Roles ]
 
-Primative
+Basic
 	historical roles that existed in GCP
 	include Owner, Editor, Viewer
 	avoid these as they are too broad
 	
-Predefined
+Predefined (Preferred)
 	finer grained access-control 
 	created and maintained by Google
 	
@@ -144,12 +146,17 @@ AllUsers
 	anyone who is on the internet, including authenticated and unauthenticated users
 	
 	
+[ Cloud Identity Platform ]
+- enterprise-level access and identity management platform (think AWS Cognito, Azure Entra ID)
+- supports OpenID Connect and SAML
+- supports integration with IAP (below)
+
 [ Cloud Identity Aware Proxy - IAP ]
 - managed solution for authenticating and authorizing users
 - establishes a central authentication layer for apps accessed via HTTP/S (think Keycloak, Auth0)
 - supports Compute Engine, App Engine, and GKE
 
-1. Users are directed to Google to authenticate in to get an Access Token
+1. Users are directed to Google to authenticate to get an Access Token
 2. Authorization is driven via IAM
 
 
@@ -440,6 +447,13 @@ SQL Databases
 [ Cloud SQL ] 
 - highly available 
 - supports MySQL, Postgres, and SQL Server engines
+- supports Cloud SQL Auth Proxy to enable connections from client applications w/o need for public IP addressing
+  
+ [ Alloy DB ]
+ - proprietary Postgres implementation (think AWS Aurora) 
+ - high performance, distributed relational database service
+ - 4x faster than standard Postgres for transactional workloads
+ - compute and storage are separated for efficient scaling
   
 [ Cloud Spanner ] 
 - enterprise grade
@@ -451,9 +465,11 @@ No-SQL Databases
 ---------------------------
 
 [ BigTable ] 
-- wide-column store
-- large scale (massive workloads, high throughput)
+- high performance wide-column NoSQL datastore
+- large scale (massive workloads, high throughput, PB scale)
+- can scale to billions of rows and thousands of columns
 - low-latency
+- config changes are immediate; no downtime for reconfiguration
 	
 // Row Key Design
 You can collapse multiple column values into the "Row Key" as ONE value
@@ -467,6 +483,7 @@ Metro#86#M117 	40.7.  	-73.9
 
 
 [ Firestore ] 
+- NoSQL datastore
 - document database (think MongoDB, AWS DynamoDB)
 - rich mobile, web, and IOT applications
 - strongly consistent
@@ -522,8 +539,8 @@ Jobs
 Standard -> pay per node (i.e EKS)
 Autopilot -> pay per pod (i.e Fargate)
 	
-// Workload Identity Service
-- maps a kubernetes service account -> IAM account
+// GKE Workload Identity
+- maps a Kubernetes service account -> IAM account
 - roles can then be assigned to the IAM account so that pods can access other Google Services
 	
 	
@@ -574,7 +591,7 @@ Application
 
 // Types
 HTTP Functions - triggered by HTTP requests; there is no API gateway required -- UNIQUE
-Backround Funciton -	triggered by events (Pub/Sub, changes in a bucket)
+Background Function -	triggered by events (Pub/Sub, changes in a bucket)
 
 
 [ Cloud Build ] 
@@ -588,7 +605,8 @@ Backround Funciton -	triggered by events (Pub/Sub, changes in a bucket)
 
 
 [ Cloud Code ]
-
+- plugin that I can install on my favorite IDE (e.g. VSCode)
+- integrates w/ Cloud Secrets for secrets management
 
 
 Asynchronous Messaging
@@ -665,7 +683,7 @@ Celebrity Detection
 [ AutoML API ]
 - fine tune your own custom models based off Googles models
 
-[ Speach to Text API ]
+[ Speech to Text API ]
 
 [ Text to Speech API ] 
 
