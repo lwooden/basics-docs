@@ -162,6 +162,7 @@ Using Helm for Manifest File Management
 --------------------------------------------------------
 - Helm is a package/release manager aimed to help make deploying container based applications to Kubernetes simpler
 
+helm create example-chart // scaffolds a new helm project
 helm repo add <name> <url>
 helm repo update
 helm search repo vweb --versions
@@ -175,6 +176,10 @@ helm uninstall graphql-api // uninstall a release
 
 // pull down a helm chart and transform it into a ready to deploy kubernetes manifest file
 helm template ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --version ${CHART_VERSION} --namespace ingress-nginx > nginx-ingress.${APP_VERSION}.yaml 
+
+helm dep up // downloads all dependent sub-charts referenced in Chart.yml into the current project
+
+
 
 
 Using Helmfile to Manage Helm Charts
