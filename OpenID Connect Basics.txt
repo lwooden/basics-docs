@@ -29,11 +29,11 @@ OAuth 2.0
 
 // The Four Grant Types
 
-[Client Credentials]
+[ Client Credentials ]
 
-[Resource Owner Password]
+[ Resource Owner Password ]
 
-[ Authorization Code ]
+[ Authorization Code Flow]
 
 1. Client app initiates an auth flow by redirecting the user to the authorization server (OpenID Provider)
 2. User submits credentials via the browser
@@ -44,7 +44,7 @@ OAuth 2.0
 
 // Sample authorization request to the auth server
 GET https://localhost:8085/oauth/authorize?
-       response_type=code&  # inidcates that an authorization code is expected as a response to this request
+       response_type=code&  # indicates that an authorization code is expected as a response to this request
        client_id=12345678 # identifies the client to the auth server for config match
        redirect_uri=https://web.applicaiton.com/login
        
@@ -52,7 +52,7 @@ GET https://localhost:8085/oauth/authorize?
      https://web.application.com/login?code=hus83nn-8ujq6-7snuelq
        
    
-// Sample token request after receving authorization code
+// Sample token request after receiving authorization code
     https://localhost:8085/oauth/token
     Payload
      {
@@ -71,7 +71,7 @@ GET https://localhost:8085/oauth/authorize?
             "expires_in":3599
      }
 
-[ Implicit ]
+[ Implicit Flow ]
 - same as the authorization code flow, but the auth server responds to the authorization request immediately with an ACCESS TOKEN
 
 // Sample authorization request to the auth server (implicit grant type)
@@ -136,7 +136,7 @@ Token Response
 
 // The Four Authentication Flows
 
-[ Implicit ]
+[ Implicit Flow ]
 - most popular among Single Page Applications
 
 1. User clicks "Login" in client app and initiates an implcit flow by redirecting the user to the auth server (OpenID Provider)

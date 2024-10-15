@@ -12,7 +12,7 @@ History of AI
 
 Timeline
 ------------
-1956 - the term "Artifical Intelligence" was coined by John McCarthy at the Dartmouth Summer Research Project
+1956 - the term "Artificial Intelligence" was coined by John McCarthy at the Dartmouth Summer Research Project
 1997 - Garry Kasparov was defeated in chess by "Deep Blue"
 2011 - Ken Jennings lost to IBM's "Watson" in Jeopardy
 2014 - Generative Adversarial Networks (GANs) were invented
@@ -25,7 +25,7 @@ Timeline
 
 What is Generative AI?
 --------------------------------
-- Generative AIs are a subset of artificial intelligence
+- Generative AI is a subset of artificial intelligence
 - there are (3) main types of Generative AI
 
 [ Generative Adversarial Networks - GANs ]
@@ -33,11 +33,60 @@ What is Generative AI?
 - The generator network generates fake data based off of the training data set. The discriminator tries to identify fake data. 
 - These networks are adversarial in nature as the generator attempts to create data that is indistinguishable from the real data and the discriminator attempts to discern if the data is real or fake
 
-
 [ Variational Autoencoders - VANs ]
 - use two networks are well: one for encoding and one for decoding. In one sense the encoding network simplifies the input by reducing the data into a lower-dimensional representation. The decoding network then maps this lower-dimensional representation back to the original data space. The whole point of this is to be able to generate new data through sampling
 
 [ Transformer-Based Language Models ] 
 - learn the distribution of data
 - examples are ChatGPT, OpenAI Codex
+
+
+
+What is RAG?
+-------------------
+- Retrieval Augmented Generation
+- a method used to train LLMs on privately hosted or externally hosted data
+- best used for creating customer service chat bots, knowledge management use cases, and search engines
+- parametric vs non-parametric memory
+
+
+[ The 3 Stages of RAG ]
+
+Indexing
+  Retrieval
+     Generation
+
+Indexing Pipeline
+  Data Loading
+  Text Splitting or Chunking
+  Convert Text to Embeddings
+  Storing Embeddings in Vector Databases
+  
+Retrieval Pipeline
+  
+Generation Pipeline
+
+Evaluation & Monitoring
+
+
+
+Embeddings - vector representations of words or sentences
+
+Vectors - 
+
+
+
+
+Content Generation
+
+Agentic Workflow
+
+Tools
+
+
+Serving an LLM Locally
+-------------------------------
+- install Ollama
+- Ollama simplifies the process of downloading, installing, interacting, and serving of a wide range of LLM's locally
+
 

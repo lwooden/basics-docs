@@ -116,5 +116,123 @@ React Context
 --------------------
 - Wraps a number of components with a value that all descendant components can access without going through properties at all.    
 - A context in React consists of two parts. It needs a provider, that contains the values that you want to pass to any descendant component, and it needs a consumer, that you use in each descendant component that wants access to the provided value
+
+
+
+Fetching Data
+--------------------
+- data fetching logic is stored in a separate module and brought in to the component that needs to use it
+- think actions file for NextJs
+
+function App() {
+	return (
+		<div className="app-wrapper">
+			<div className="app">
+				<div className="details">
+				<ErrorBoundary>
+					<Suspense fallback={<ShipFallback />}>
+						<ShipDetails />
+					</Suspense>
+						</ErrorBoundary>
+				</div>
+			</div>
+		</div>
+	)
+}
+
+// initialize variable to hold results from promise below
+let ship: Ship
+
+// define a variable to hold the state of the promise getShip
+// assign the results of the getShip function to the variable ship
+const shipPromise = getShip(shipName).then((result) => {
+	ship = result
+})
+
+function ShipDetails() {
+	// if the ship hasn't loaded yet, throw the shipPromise
+	// React knows what to do with the promise based on its state (rejected, fulfilled, or still pending)
+	if (!ship) throw shipPromise
+	
+	const ship = use(shipPromise) // use React's "use" hook instead which does all of the promise state checking for me
+
+// the results of the ship object will be available to the ShipDetails component if the promise resolves successfully
+	return (
+		<div className="ship-info">
+			<div className="ship-info__img-wrapper">
+				<img
+					src={getImageUrlForShip(ship.name, { size: 200 })}
+					alt={ship.name}
+				/>
+			</div>
+			<section>
+				<h2>
+					{ship.name}
+					<sup>
+						{ship.topSpeed} <small>lyh</small>
+					</sup>
+				</h2>
+			</section>
+			<section>
+				{ship.weapons.length ? (
+					<ul>
+						{ship.weapons.map((weapon) => (
+							<li key={weapon.name}>
+								<label>{weapon.name}</label>:{' '}
+								<span>
+									{weapon.damage} <small>({weapon.type})</small>
+								</span>
+							</li>
+						))}
+					</ul>
+				) : (
+					<p>NOTE: This ship is not equipped with any weapons.</p>
+				)}
+			</section>
+			<small className="ship-info__fetch-time">{ship.fetchedAt}</small>
+		</div>
+	)
+}
+
+
+
+Suspense
+--------------
+- handling UI state while data is being fetched
+- its best to show the user something (pending state) while asynchronous processes are taking place
+- this typical involves rendering a skeleton of some sort to hold the place of the real object until the data fetching is completed (promises resolved)
+- wrapping a component in a suspense component basically means "render this skeleton component until I resolve all data fetching related promises)
+- it is also good to wrap suspense components with an Error Boundary so that any errors from rejected promises bubble up to the error boundary and are presented to the users accordingly
+
+// ShipFallback is a skeleton component that displays while the real data is being fetched 
+function ShipFallback() {
+	return (
+		<div className="ship-info">
+			<div className="ship-info__img-wrapper">
+				<img src="/img/fallback-ship.png" alt={shipName} />
+			</div>
+			<section>
+				<h2>
+					{shipName}
+					<sup>
+						XX <small>lyh</small>
+					</sup>
+				</h2>
+			</section>
+			<section>
+				<ul>
+					{Array.from({ length: 3 }).map((_, i) => (
+						<li key={i}>
+							<label>loading</label>:{' '}
+							<span>
+								XX <small>(loading)</small>
+							</span>
+						</li>
+					))}
+				</ul>
+			</section>
+		</div>
+	)
+}
       
  	
