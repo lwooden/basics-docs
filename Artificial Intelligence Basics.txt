@@ -16,7 +16,7 @@ Timeline
 1997 - Garry Kasparov was defeated in chess by "Deep Blue"
 2011 - Ken Jennings lost to IBM's "Watson" in Jeopardy
 2014 - Generative Adversarial Networks (GANs) were invented
-2015 - OpenAI was founded by Elon Mush and IIya Sutskever (former employee of Larry Page - Google)
+2015 - OpenAI was founded by Elon Musk and IIya Sutskever (former employee of Larry Page - Google)
 2017 - "Transformers" were introduced which led to Large Language Models (LLMs) like GPT-3 being born
 2019 - OpenAI released GPT-2
 2020 - OpenAI released GPT-3
@@ -41,6 +41,41 @@ What is Generative AI?
 - examples are ChatGPT, OpenAI Codex
 
 
+Core Large Language Model Architecture
+-------------------------------------------------------
+- LLMs are models that simply strive to generate text by leveraging probabilities and predefined rules
+
+Recurring Neural Networks (RNNs) - a subset of neural language models that helped expand LLMs capability of handling long-range dependencies in sequences of text; only able to process words one at a time; this limits how well it can understand relationships between large text based datasets
+
+Long Short-Term Memory (LSTM) Networks - advancement of RNNs that helped address some of the limitations of RNNs when it comes to remembering context across long sequences
+
+Transformers - quantum leap in advancing LLMs; able to process entire corpuses in parallel using self-attention mechanisms to better understand words and how they relate to one another
+
+Transformers have found numerous applications in various aspects of NLP, improving upon the performance of previous models: 
+  Language translation
+  Text summarization
+  Sentiment analysis
+  Question answering
+  
+  [ Transformer Architecture ]
+  
+  1) Input Embedding - take raw input and convert each token (character, word, or symbol) into a high-dimensional vector; this representation provides key context around the semantic and syntactic essence of each token; words are translated into numerical arrays (vectors) which serve as digital representations of words or entire sentences. Within these arrays, the meaning and nuanced context of the text are encapsulated, creating a multi-dimensional space where the richness of language is encoded in numerical form (perfect for machine processing)
+  
+  // Dense Vectors (Lower Dimensional)
+  the = [0.1, 0.2, 0.3]
+  cat = [0.4, 0.5, 0.6]
+  sat = [0.7, 0.8, 0.9]
+  
+  2) Positional Encoding - after converting raw input into high-dimensional vectors, we must enrich the vectors with positional information (where words are located in a given sequence); this is done by assigning a distinct tag or code to each word; the goal is to discern the sequential structure of words
+  
+  [ [ 0.1, 0.2, 0.3],  [0.4, 0.5, 0.6], [0.7, 0.8, 0.9] ]
+  
+  3) Encoder - 
+  
+  4) Decoder - 
+    
+
+
 
 What is RAG?
 -------------------
@@ -50,7 +85,7 @@ What is RAG?
 - parametric vs non-parametric memory
 
 
-[ The 3 Stages of RAG ]
+[ The Three Stages of RAG ]
 
 Indexing
   Retrieval
@@ -88,5 +123,18 @@ Serving an LLM Locally
 -------------------------------
 - install Ollama
 - Ollama simplifies the process of downloading, installing, interacting, and serving of a wide range of LLM's locally
+
+
+Reputable Small Models 
+--------------------------------
+llama 3.2 (1B Parameters) - 2.0 GB
+
+
+Open Source Vector Databases
+------------------------------------------
+- Marqo
+- LanceDb
+- Facebook (FAISS)
+- 
 
 

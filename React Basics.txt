@@ -203,6 +203,7 @@ Suspense
 - this typical involves rendering a skeleton of some sort to hold the place of the real object until the data fetching is completed (promises resolved)
 - wrapping a component in a suspense component basically means "render this skeleton component until I resolve all data fetching related promises)
 - it is also good to wrap suspense components with an Error Boundary so that any errors from rejected promises bubble up to the error boundary and are presented to the users accordingly
+- as long as I am using a "promise" I can suspend on it 
 
 // ShipFallback is a skeleton component that displays while the real data is being fetched 
 function ShipFallback() {
@@ -235,4 +236,63 @@ function ShipFallback() {
 	)
 }
       
- 	
+Optimistic UI
+----------------
+- the art of showing the user that an action that they have performed has succeeded although the backend operations have not yet been completed
+- example: i liked a tweet on twitter on a slow network along with thousands of other users; the heart turns red
+- example: i clicked "Submit" on a form and the button switches to "Submitting..." while the asynchronous operations are happening behind the 
+scenes
+- this often involves passing an "optimistic" or fake version of the real thing that is being created behind the scenes during a "transition" 
+- in this context we can use data that the user provides (name or image via a form) while we create the actual fully loaded object behind the scenes and display that after the fact
+ - useOptimistic hook allows me to update state during a transition (e.g.  form submission)
+ 
+ function CreateForm({
+	setOptimisticShip,
+	setShipName,
+}: {
+	setOptimisticShip: (ship: Ship | null) => void
+	setShipName: (name: string) => void
+}) {
+
+	const [message, setMessage] = useOptimistic('Create')
+	return (
+		<div>
+			<p>Create a new ship</p>
+			<ErrorBoundary FallbackComponent={FormErrorFallback}>
+				<form
+					action={async (formData) => {
+						setMessage('Creating...')
+						setOptimisticShip(await createOptimisticShip(formData))
+
+						await createShip(formData, 2000)
+						
+						setMessage('Created! Loading...')
+
+						setShipName(formData.get('name') as string)
+					}}
+				>
+					<div>
+						<label htmlFor="shipName">Ship Name</label>
+						<input id="shipName" type="text" name="name" required />
+					</div>
+					<div>
+						<label htmlFor="topSpeed">Top Speed</label>
+						<input id="topSpeed" type="number" name="topSpeed" required />
+					</div>
+					<div>
+						<label htmlFor="image">Image</label>
+						<input
+							id="image"
+							type="file"
+							name="image"
+							accept="image/*"
+							required
+						/>
+					</div>
+					<CreateButton children={message} />
+				</form>
+			</ErrorBoundary>
+		</div>
+	)
+}
+
