@@ -44,8 +44,8 @@ render() {
   export default App
   
   
- Functional
- ---------------------------
+ Functional Component (The Standard)
+ ----------------------------------------------------
  
  const App = (props) => {
  	return (
@@ -60,21 +60,40 @@ App.defaultProps = {
 }
 
 ReactDOM.render(<App count={5} />, document.getElementById('root'));
+
+
+Common Patterns
+------------------------
+Ternary Operator - typically used for conditional rendering
+
+// Example
+ function App() {
+      let isLoggedIn = true;
+      return (
+        <div>
+          {isLoggedIn ? <h1>Welcome back!</h1> : <h1>Please log in.</h1>}
+        </div>
+      );
+    }
+    
+    export default App;
+
+Nullish Coalescence - returns its right-hand side of the operand when its left-hand side operand is null or undefined
+
+// Example
+const nullValue = null;
+const valA = nullValue ?? "default for A";
+
     
     
  
 React Hooks
 -----------------
 
-
 useState - allows me to use simple state in a stateless functional components
-
 useEffect - implements lifecycle methods in stateless functional components 
-
 useReducer - allows me to manage complex state and provide access to state to the components that need them
-
 useContext - allows me to share values without manually passing props down from the parent
-
 
 
 Handling Props

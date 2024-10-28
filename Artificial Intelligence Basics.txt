@@ -73,8 +73,34 @@ Transformers have found numerous applications in various aspects of NLP, improvi
   3) Encoder - 
   
   4) Decoder - 
-    
-
+  
+  
+  Inference Types
+  --------------------
+  Zero-Shot - send a request to a LLM without providing any context or examples; this is a good way to test the adaptability of a model to apply its learning to a task it has not been trained on
+  
+  One-Shot - send a request to a LLM while providing ONE example as context to the LLM to consider and generate output based on
+  
+  Few-Shot - send a request to a LLM while providing MULTIPLE examples as context to the LLM to consider and generate output based on
+  
+  
+  Tuning Model Parameters
+  -----------------------------------
+  When working with foundational models, it is important to know that I can tailor the type of response that be returned based on the parameters that are configured
+  
+  [ Controlling Randomness and Creativity ]
+  
+  Temperature - controls the randomness in the prediction distribution; lower temp means more predictable responses; higher temp means greater degree of creativity and diversity in responses
+  
+  Top N - a strategy where the model selects from the smallest set of words whose cumulative probability exceeds the the threshold P; adds diversity to the models output while still remaining coherent
+  
+  Top K - sampling strategy that limits the model to the top K most likely tokens during generation, balancing creativity and reliability
+  
+  [ Controlling Length ]
+  
+  Max Tokens - max upper limit on the number of tokens the model can generate in a single prompt
+  
+  Stop Tokens - tokens used to determine when the model will stop generating text
 
 
 What is RAG?
