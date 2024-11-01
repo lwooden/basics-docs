@@ -49,6 +49,20 @@ margin: 0 auto;
 }
 
 
+Common Tailwind CSS References
+-----------------------------------------------
+min-h-[px]
+min-w-[px]
+px
+py 
+mt 
+flex
+flex-col
+justify-between
+gap- 
+items-center
+
+
 
 Box Model
 ---------------

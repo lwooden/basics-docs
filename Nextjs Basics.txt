@@ -67,11 +67,26 @@ app
       
 [ Layout ]
 - layout.jsx functions as a global configuration object which dictates what happens on every page of our application 
+
+
+Rendering Strategies
+----------------------------
+Static Site Generation (SSG) - compiled at build time; during the build process, the content is converted into HTML, CSS,  and JS files; these files do not require any server interaction during runtime; these files can be hosted on a CDN and served to a client as-is;  SSG handles dynamic data at build time, but requires a rebuild if anything changes; NextJs defaults to SSG out of the box
+
+Incremental Static Generation (ISR) - allows static pages to be updated AFTER build time without needing to rebuild the entire site
+
+Server Side Rendering (SSR) - dynamic rendering that enables the fresh generation of content upon each request
+
+
   
   
 
 Deciding Where to Render Components
 ------------------------------------------------------
+- all components are rendered on the server first; this is default behavior
+- server components are exclusively run on the server
+- client components are primarily run on the client, but they are pre-rendered on the server first
+- try not to include server components inside of client components 
 
 [ When to Use a Client Component ]
 
