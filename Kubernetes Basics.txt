@@ -91,6 +91,8 @@ IRSA - IAM Roles for Service Accounts (Available on High-Side)
 - require OIDC Provider setup
 - would need to be setup per cluster
 
+eksctl utils associate-iam-oidc-provider --region=us-east-1 --cluster=lowk8
+
 Pod Identity (Not Available on High-Side)
 - does not require OIDC Provider setup
 - require pod identity add-on to be running in the cluster

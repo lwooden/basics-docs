@@ -142,6 +142,7 @@ Fetching Data
 --------------------
 - data fetching logic is stored in a separate module and brought in to the component that needs to use it
 - think actions file for NextJs
+- if any component that is wrapped in <Suspense> is throwing promises ("waiting on data to be retrieved") that component is said to be "SUSPENDING"
 
 function App() {
 	return (
