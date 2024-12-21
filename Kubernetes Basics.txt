@@ -85,13 +85,14 @@ eksctl create cluster --name=lowk8 --nodes=1 --node-type=m5.large --zones=us-eas
 aws eks update-kubeconfig --name <CLUSTER_NAME> // updates kube-config w/ credentials
 eksctl delete cluster --region=us-east-1 --name=lowk8
 
+
 // Accessing AWS Services Via Pods
 
 IRSA - IAM Roles for Service Accounts (Available on High-Side)
 - require OIDC Provider setup
 - would need to be setup per cluster
 
-eksctl utils associate-iam-oidc-provider --region=us-east-1 --cluster=lowk8
+eksctl utils associate-iam-oidc-provider --region=us-east-1 --cluster=lowk8 --approve
 
 Pod Identity (Not Available on High-Side)
 - does not require OIDC Provider setup
@@ -517,6 +518,59 @@ spec:
   nodeSelector:
       purpose: reports-services // assigns node based on label
   nodeName: worker-1 // assings nodes based on explicit node name
+  
+  
+Taints, Tolerations, and Node Selectors
+----------------------------------------------------
+- a mechanism for flagging a node to say it isn’t suitable for general work
+- have a key-value pair just like a label
+- also have an effect, which tells the scheduler how to treat the node
+- use taints to identify nodes that are different from the rest
+
+kubectl taint nodes --all diskType=hdd:NoSchedule
+
+spec:                     
+ containers:
+   - name: sleep
+     image: kiamol/ch03-sleep      
+ tolerations:                  # Lists taints this Pod is happy with
+     - key: "diskType"      # The key, value, and effect all need 
+       operator: "Equal"       # to match the taint on the node.
+       value: "hdd"
+       effect: "NoSchedule"
+
+
+- to guarantee that Pods only run on certain nodes, use a NodeSelector
+
+spec:
+ containers:
+   - name: sleep
+     image: kiamol/ch03-sleep      
+ nodeSelector:                           # The Pod will run only on nodes
+   kubernetes.io/arch: zxSpectrum        # that match this CPU type.
+
+
+Affinity and Anti-Affinity
+------------------------------
+- provides a rich way of expressing preferences or requirements to the scheduler
+- can claim an affinity to certain nodes to ensure Pods land on those nodes
+- uses a node selector but with a match expression rather than a simple equality check. Match expressions support multiple clauses, so you can build much more complex requirements
+
+affinity:                           # Affinity expresses a requirement
+ nodeAffinity:                     # or a preference for nodes.
+   requiredDuringSchedulingIgnoredDuringExecution:
+     nodeSelectorTerms:
+       - matchExpressions:               # Match expressions work on
+         - key: kubernetes.io/arch       # labels, and you can supply
+           operator: In                  # a list of values that 
+           values:                       # should match or not match.
+             - amd64
+       - matchExpressions:               # Multiple match expressions
+         - key: beta.kubernetes.io/arch  # work as a logical OR.
+           operator: In
+           values:
+             - amd64
+
   
   
 

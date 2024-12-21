@@ -415,7 +415,7 @@ Premium SSD
 
 Ultra Disk
 	Capacity
-	IOPS/Throughput can modified indepently of capacity -- UNIQUE
+	IOPS/Throughput can modified independently of capacity -- UNIQUE
 
 
 Storage Solutions
@@ -424,8 +424,8 @@ Storage Solutions
 [ Storage Account ]
 - foundation layer for all things storage
 - associated with a resource group
-- encrypted-at-rest by default (using microsoft managed key) -- GCP does this as well
-- all storage account services come with public endponts by default
+- encrypted-at-rest by default (using Microsoft managed key) -- GCP does this as well
+- all storage account services come with public endpoints by default
 - use Storage Explorer to browse Storage Accounts
 - RBAC support
 - ABAC support (Attribute Based) -- think tagging storage accounts/containers
@@ -468,7 +468,7 @@ Azure Blobs
 	version support; maintains multiple copies of an object
 
 Azure Files 
-	traditional file sharing services; desinged for SMB/NFS connectivity; default quota is 5TB
+	traditional file sharing services; designed for SMB/NFS connectivity; default quota is 5TB
 	internal access: REST, SMB 2.1 and SMB 3.0
 	public internet: REST, SMB 3.0
 	snapshot support; point-in-time instance of a file
@@ -756,6 +756,9 @@ Databricks Machine Learning
 - provides insight into my data estate
 - data can exist nearly everywhere (on-prem, other clouds, etc)
 - answers questions about classification, lineage
+
+[ Microsoft Fabric ] 
+// TODO
 
 
 

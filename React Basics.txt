@@ -62,9 +62,12 @@ App.defaultProps = {
 ReactDOM.render(<App count={5} />, document.getElementById('root'));
 
 
-Common Patterns
-------------------------
-Ternary Operator - typically used for conditional rendering
+Common Conditional Rendering Patterns
+------------------------------------------------------
+
+[ Ternary Operator ]
+- if true, rendering what is on the left side
+- if falsey, render what is on the right
 
 // Example
  function App() {
@@ -77,8 +80,16 @@ Ternary Operator - typically used for conditional rendering
     }
     
     export default App;
+    
+    
+[ Logical && Operator ]
+- if the left side is true, render what is on the right
+- if the left side is false, do not evaluate what is on the right
 
-Nullish Coalescence - returns its right-hand side of the operand when its left-hand side operand is null or undefined
+{ isLoading && <ActivityIndicator /> }
+
+[ Nullish Coalescence ] 
+- returns its right-hand side of the operand when its left-hand side operand is null or undefined
 
 // Example
 const nullValue = null;
