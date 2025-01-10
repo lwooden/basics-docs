@@ -100,10 +100,40 @@ const valA = nullValue ?? "default for A";
  
 React Hooks
 -----------------
+- a hook is a simple function with some rules on where we can run them
+- hooks return values
+- should be defined at the top of the functional component
+- if the action that I am performing needs to be aware of the some aspect of the lifecycle of the component that I invoking it in, it should be a hook
+- if the action does not need to know about the context of the react component, then it can be a simple function
 
 useState - allows me to use simple state in a stateless functional components
+- when using the set operator for a piece of state, the state value is not immediately updated or available
+- it will only be accessible at the next render
+- trying to access the value before the next render will cause issues
+
+
 useEffect - implements lifecycle methods in stateless functional components 
+
+// defines a effect that runs when the component is mounted and when the dependency value (isFinished) is updated
+  useEffect(() => {
+    console.log("isFinished: ", isFinished)
+    // check if there is a new best score
+    if (isFinished && score > bestScore) {
+      setBestScore(score)
+    }
+  }, [isFinished])
+  
+  // defines an effect with an empty dependency array that will run ONCE ONLY when the component initially mounts
+  useEffect(() => {
+    console.log("Component is mounted!"
+  }, [ ] )
+  
+useRef -  allows me to reference a value that’s not needed for rendering; this is valuable if I don't need the UI to change based on a value; state is used for values that need to update the UI when changed
+ 
 useReducer - allows me to manage complex state and provide access to state to the components that need them
+
+
+
 useContext - allows me to share values without manually passing props down from the parent
 
 

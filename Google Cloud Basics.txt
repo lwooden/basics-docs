@@ -5,7 +5,7 @@ Azz92z23P2hvtRyy - 50% Cert Voucher
 Cloud SDK and CLI
 ---------------------------------    
 gcloud (compute engine, iam, etc)
-  gcloud <component> <entity> <operation> <args> <flags> // sytanx
+  gcloud <component> <entity> <operation> <args> <flags> // syntax
 	gcloud init
 	gcloud auth login
 	glcoud config list
@@ -53,7 +53,7 @@ Resource Manager
 Billing
 ---------
 
-Payments Profile -> Billing Acount -> Project 1 + Project 2 ...
+Payments Profile -> Billing Account -> Project 1 + Project 2 ...
 
 [ Methods ]
 
@@ -179,11 +179,19 @@ VPC
 - defines a service perimeter around protected resources
 - mitigates the risk of data exfiltration from services like Cloud Storage and BigQuery
 - enforces special rules at the border
-- is independent of IAM or firewall policies (higer level)
+- is independent of IAM or firewall policies (higher level)
 
 Inbound Access FROM authorized VPC networks only
 Outbound Access TO whitelisted IP ranges only
 
+[ Private Service Connect ]
+- allows consumers (me) to access managed services (e.g. Cloud SQL, BigQuery) privately from inside my VPC
+- I can use my own internal IP addresses to access services without leaving my VPC
+- traffic is sent to endpoints and backends (think AWS endpoints) and then routed to the target service
+
+[ Private Service Access ]
+- similar to PSC, but requires me to allocate a range of IP address to create a connection
+- 
 [ Shared VPC ]
 - connects resources from multiple projects to a common network
 - resources can communicate with each other securely and efficiently using internal IPs from that network
@@ -211,7 +219,7 @@ You can create networks, subnets, secondary address ranges, firewall rules, and 
 - subnets are associated with a REGION; instances are associated with a ZONE
 - by default instances MUST have a public IP to access Google Cloud APIs (cloud storage, etc)
 - this can be done internally by enabling "Private Google Access" on the subnet
-**subnets can be EXTENDED without stoping resourses or deleting the current subnet -- UNIQUE
+**subnets can be EXTENDED without stoping resources or deleting the current subnet -- UNIQUE
 
 Reserved IP Address Per Subnet
 	1st address - network
@@ -222,7 +230,7 @@ Reserved IP Address Per Subnet
 
 [ External IP Addresses ]
 - reserve static IP addresses and assign them to resources
-- there is no charge if they are assinged and are in-use
+- there is no charge if they are assigned and are in-use
 - there is a charge if they are reserved and NOT used
 
 // Types
@@ -256,7 +264,7 @@ Custom Routes
  Action -- Allow/Deny
  Status -- Enabled/Disabled
  Target -- Network Tags
- Soure -- CIDR Range
+ Source -- CIDR Range
  Port/Protocol -- TCP:80,443
 
 [ VPC Peering ]
@@ -266,7 +274,7 @@ Custom Routes
 - network tags do not traverse VPCs
 
 
-[ Cloud Loadbalancing ]
+[ Cloud Load-balancing ]
 - can be global, regional, external, internal
 - are supported by backend services 
 
@@ -284,7 +292,7 @@ TCP Proxy
 	L4
 	client TCP connections are terminated at the LB 
 	used for non-http traffic 
-	foward traffic as SSL or TCP
+	forward traffic as SSL or TCP
 	
 Network
 	L4
@@ -299,7 +307,7 @@ Internal
 
 
 [ Cloud Router ]
-- provides dynamic for hybrid networks 
+- provides dynamic routes for hybrid networks 
 - links VPCs to external networks
 - works with Cloud VPN, and Cloud Interconnect
 - automatically learns subnets and announces them to on-premise networks
@@ -345,7 +353,7 @@ Compute
 Compute Engine - used for virtual machine workloads (i.e. AWS EC2, Azure VMs)
 	
 [ Classes ] 
-General Purpose - E2, N2 N2D, N1
+General Purpose - E2, N2, N2D, N1
 Memory Optimized - M1, M2
 Compute Optimized - C2
 Accelerator Optimized - A2
@@ -378,8 +386,8 @@ Instance Template -> Instance Group
 
 [ Snapshots ]
 - incremental by default
-- stored in Cloud Storage (regional or mult-region)
-- can be used to create a disk in any region/zone regardless of snapshot source locaiton -- UNIQUE 
+- stored in Cloud Storage (regional or multi-region)
+- can be used to create a disk in any region/zone regardless of snapshot source location -- UNIQUE 
 
 [ Monitoring & Logging ]
 - install the cloud monitoring agent (based on Fluentd)
@@ -394,8 +402,8 @@ Storage
 - used for object storage (i.e. S3)
 - buckets are the foundational construct
 -	can encrypt data with CMKs or Google Managed Keys
-- object lifecycle mamagement for tiering
-- retention policy to mandate delettion based on age
+- object lifecycle management for tiering
+- retention policy to mandate deletion based on age
 - policy locks bind the policy to the bucket; cannot be deleted until all objects are deleted
 - object holds to prevent deletion of an object in case of an investigation
 
@@ -412,10 +420,10 @@ Archive - 1 year minimum
 
 **Different classes represent cost efficiency and disaster recovery options
 
-// Transfer/Syncrhonization Options
+// Transfer/Synchronization Options
 Storage Transfer Service - moving data from 3rd party provider to Google; bucket to bucket; more than 1TB from on-prem
 Transfer Appliance (Online Mode) - for strong internet connectivity 
-Transfer Appliance (Offline Mode) - for poor internet connectity; transfer data to appliance and ship to google
+Transfer Appliance (Offline Mode) - for poor internet connectivity; transfer data to appliance and ship to google
 gsutil - less than 1TB from on-prem
 
 
@@ -448,6 +456,14 @@ SQL Databases
 - highly available 
 - supports MySQL, Postgres, and SQL Server engines
 - supports Cloud SQL Auth Proxy to enable connections from client applications w/o need for public IP addressing
+- database instances are run inside of a Google Managed VPC
+- to connect I must configure Private Service Access (for private IP) or use the public IP
+
+// Cloud SQL Auth Proxy
+- provides secure access to Cloud SQL instances without the need for authorized networks or for configuring SSL
+- installed as a binary based on your OS and kernel architecture
+- it runs locally on my machine and I connect using a database client on localhost w/ database credentials
+
   
  [ Alloy DB ]
  - proprietary Postgres implementation (think AWS Aurora) 
@@ -474,12 +490,12 @@ No-SQL Databases
 // Row Key Design
 You can collapse multiple column values into the "Row Key" as ONE value
 
-Vehicle		LAT	LONG	COMPANY	ROUTE
-M117		40.7. -73.9	Metro			86
+Vehicle		LAT	LONG	COMPANY	  ROUTE
+M117		40.7.   -73.9	       Metro			     86
 
 Vehicle					LAT		LONG
 Metro#86#M117 	40.7.  	-73.9	
-**Result after performing "Field Promotion" on the Company and Route colums to create a better indexable row key
+**Result after performing "Field Promotion" on the Company and Route columns to create a better indexable row key
 
 
 [ Firestore ] 
@@ -493,7 +509,7 @@ Metro#86#M117 	40.7.  	-73.9
 - stores and syncs data between users in real time for mobile sign-ins, applications, ads, and chat
 	
 	
-[ Memorystore ] 
+[ Memory store ] 
 - fully managed Redis and Memcached databases
 - milisecond data access
 	
@@ -508,7 +524,6 @@ Data Security
 [ Dataplex ]
 - a data fabric that unifies distributed data and automates data management and governance for that data
 - organize and catalog data from across the entire organization (Cloud Storage, BiqQuery, etc) without moving that data
-- 
 	
 	
 Container Platforms
@@ -565,7 +580,7 @@ Severless
 
 Standard
 	apps run in Sandbox environment
-	specfic runtime versions used
+	specific runtime versions used
 	intended to run for free or at a very low cost
 	can scale to 0 instances when there is no traffic
 	cost based on instance hours
@@ -584,7 +599,7 @@ Application
 	
 
 
-[ Cloud Functions ] 
+[ Cloud Run Functions ] 
 - think AWS Lambda and Azure Functions
 - only ONE trigger can be bound to a function at a time
 - source code is deployed to a cloud storage bucket as a zipfile -> Cloud Build prepares a container image -> Pushes it to Container Registry -> Cloud Functions uses this image to run your code
@@ -597,7 +612,7 @@ Background Function -	triggered by events (Pub/Sub, changes in a bucket)
 [ Cloud Build ] 
 - think AWS CodeBuild
 - great for building containers
--  include cloudbuild.yml file in the repository
+- include cloudbuild.yml file in the repository
 
 
 [ Cloud Source Repository ]
@@ -624,12 +639,17 @@ Asynchronous Messaging
 - think AWS SNS, AWS SQS, Azure Queues/Service Bus
 - global service
 - asynchronous messaging service
+- focused on messaging between microservices
 - max size of task/message	10MB
 - task/message retention 7 days
 - can be used for streaming data solutions
 - can handle any type of data (images, JSON, etc)
 
-
+[ EventArc ]
+- think AWS Eventbridge, Azure Service Bus
+- fully managed event routing service for GCP events
+- emits events from key services like Cloud Storage, Cloud Run, and SaaS Platforms
+- advanced filtering based on attributes
 
 
 API Management
@@ -643,10 +663,34 @@ API Management
 - v2 of the service uses Envoy as the underlying Proxy Container
 
 [ API Gateway ]
+- for lightweight API management 
 - completely serverless 
 - just provide API configuration spec
 - supports the following backends: App Engine, Cloud Run, Cloud Functions
 
+[ Apigee ]
+- enterprise grade API management
+- offers advance proxy integrations, policies, and transformation pipelines
+- offers advanced authentication methods such as SAML, JWT, SAML
+- built in console UI
+- can support hybrid workloads (cloud or on-prem)
+
+// Concept
+Environment
+  isolated area within an organization where you can create and deploy API proxies
+  environments are created during provisioning, and can later add more environments to your organization.
+  API Proxies must be deployed to an environment before they can be used
+  environments are members of environment groups
+  
+Instance 
+  an instance is a region-specific virtual machine
+  each environment must be attached to at least one Apigee instance
+  
+  
+Environment Group
+  defines the way requests are routed to individual environments
+  define hostnames on environment groups (not on individual environments) to route requests to the environments within a group using those hostname definitions
+  
 
 Vertex AI/ML
 ------------
@@ -821,7 +865,7 @@ Operations Suite (i.e Stackdriver)
 - supports User Defined Metrics (e.g. HTTP status codes)
 
 // Agents
-colletd - monitoring
+collectd - monitoring
 fluentd - logging
 
 // Uptime Checks -- UNIQUE
@@ -916,7 +960,7 @@ Premium
 
 [ Web Security Scanner ]
 - will crawl a url of a Compute Engine, App Engine, or GKE web app
-- checks for common vulnerablilites and exploits
+- checks for common vulnerabilities and exploits
 - create a series of "scans"
 - can set authentication method and frequency of the scan 
 - work in progess; not highly valuable at the moment
@@ -945,7 +989,7 @@ Multi-Cloud + On-Prem
 --------------------------------
 
 [ Anthos ]
-- allows for application development ANYWHERE in conjuction w/ a Google Cloud Control Plane
+- allows for application development ANYWHERE in conjunction w/ a Google Cloud Control Plane
 - supports GKE, Cloud Run, and Compute Engine
 
 [ Anthos Service Mesh ]
