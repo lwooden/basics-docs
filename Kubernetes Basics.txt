@@ -200,14 +200,44 @@ helm template ingress-nginx ingress-nginx --repo https://kubernetes.github.io/in
 helm dep up // downloads all dependent sub-charts referenced in Chart.yml into the current project
 
 
-
-
 Using Helmfile to Manage Helm Charts
 --------------------------------------------------------
 - Helmfile is a higher level abstraction built on top of Helm. It makes managing Helm charts within your project simpler as well as offering synchornization options between your project and a cluster
 
 helmfile sync // references helmfile.yaml in the working directory
 helmfile delete
+
+
+Using Werf to Perform Deployments
+------------------------------------------------
+// Build
+- Define a werf.yaml file in the root of the project
+
+project: samplenodeapi
+configVersion: 1
+---
+image: samplenodeapi
+dockerfile: Dockerfile
+
+
+- Specify the werf.yaml image specification in the Helm chart
+
+spec:
+      containers:
+        {{- if eq .Release.Namespace "default"}}
+        - name: sample-node-service
+        {{ else }}
+        - name: "sample-node-service-{{ .Release.Namespace }}"
+        {{- end }}
+          image: {{ .Values.werf.image.samplenodeapi }}
+          
+werf build --repo public.ecr.aws/mock-node-api/lowsandbox
+werf build --repo public.ecr.aws/mock-node-api/lowsandbox --platform linux/amd64 || linux/arm64
+
+// Deploy
+werf converge --repo public.ecr.aws/mock-node-api/lowsandbox
+
+// Clean-Up
 
 
 Common Commands
@@ -221,6 +251,10 @@ kubectl config use-context arn:aws:eks:us-east-1:548883107094:cluster/alaffia-ek
 kubectl config get-clusters || delete-cluster <CLUSTER_NAME>
 kubectl config get-contexts || delete-context <CLUSTER_NAME>
 kubectl config get-users || delete-user <CLUSTER_NAME>
+
+kubectl config unset contexts.low-aks-cluster
+kubectl config unset users.clusterUser_Low-Playground_low-aks-cluster
+kubectl config unset clusters.low-aks-cluster
 
 
 // Getting Help
@@ -255,6 +289,7 @@ kubectl get namespaces // gets all namespaces
 
 // Pods
 kubectl get pods  -n <NAMESPACE>
+kubectl get pods --all-namespaces
 kubectl get pods -o wide // show ip address and assinged node for each pod
 kubectl get pods --all-namepsaces
 kubectl get pods -A --sort-by=.metadata.name
@@ -302,6 +337,11 @@ kubectl apply -f deployment.yml
 kubectl scale deployment my-deployment --replicas 5 --record // scales replicaset to 5
 kubectl rollout restart deploy graphql-api // does a rolling restart on containers in deployment
 
+// Service Accounts
+
+kubectl get [ serviceaccount | sa ] iam-test
+kubectl describe sa iam-test
+
 
 // Daemon Sets
 kubectl get ds
@@ -320,8 +360,9 @@ kubectl create role testrole --verbs list,create ----resource=secrets,configmap 
 
 // Rolebindings
 kubectl get rolebindings [ -n <NAMESPACE> ]
+kubectl get clustetrolebindings [ -n <NAMESPACE> ]
 
-kubectl create rolebinding testrolebinding--role testrole--serviceaccount <NAMESPACE>:test -n project-hamster // shorthand for creating role-bindings
+kubectl create rolebinding testrolebinding --role testrole --serviceaccount <NAMESPACE>:test -n project-hamster // shorthand for creating role-bindings
 
 kubectl auth can-i create secret --as system:serviceaccount:project-hamster:processor -n project-hamster // command to do authorization checks
 
@@ -364,26 +405,6 @@ kubectl top node
 kubectl cp hello-kiamol-2-7f6dd54b9b-j6zvl:/tmp/low.txt /Users/low/low.txt // move a file from pod to your local computer
 
 **NOTE**: By default Kubernetes does not PULL images if they are already in the local cache. I may need to add "imagePullPolicy: Always" in the manifest to force this to happen in the event I have a container update that has the same tag name. This will ensure I get the latest image with the latest code
-
-
-kubectl get all [ -n | --namespace ] <namespace>
-kubectl get pods --all-namespaces
-
-kubectl get namespace // list all namespaces
-
-kubectl get [ serviceaccount | sa ] iam-test
-
-kubectl describe sa iam-test
-
-kubectl config view // view pretty version of your kube config
-
-kubectl config view --minify // view config for the current-context you are using
-
-kubectl config current-context // get the current cluster you are working with
-
-kubectl config unset contexts.low-aks-cluster
-kubectl config unset users.clusterUser_Low-Playground_low-aks-cluster
-kubectl config unset clusters.low-aks-cluster
 
 aws sts get-caller-identity // get your current user
 
@@ -447,9 +468,34 @@ spec:
 
 Persistent Volumes - allows you to treat storage as an abstract resource to be consumed by pods (EBS, EFS, NFS, etc)
 
+Persistent Volume Claim - allows you to carve out storage that is provided by the associated Persistent Volume
+**PVCs are scoped to a namespace**
+
+
+// Concept
 Storage Class -> cluster resource
   PV -> cluster resource
     PVC -> namespace specific resource (consumed by pods)
+    
+    
+// Create the Storage Class
+apiVersion: storage.k8s.io/v1 
+kind: StorageClass
+metadata:
+  name: gp3
+provisioner: kubernetes.io/aws-ebs # AWS
+parameters:
+  type: gp3
+  fsType: ext4
+  
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast
+provisioner: kubernetes.io/gce-pd # GKE
+parameters:
+  type: pd-ssd
+  replication-type: none
 
 // Create the persistent volume
 apiVersion: v1
@@ -466,10 +512,6 @@ spec:
   hostPath:
       path: /var/output
       
-      
-Persistent Volume Claim - allows you to carve out storage that is provided by the associated Persistent Volume
-**pvcs are scoped to a namespace**
-
       
  // Create the claim for the persistent volume  claim    
 apiVersion: v1
@@ -503,10 +545,9 @@ Scheduling
 ---------------
 - process of assigning pods to a node so kubelet can run them
 - scheduler is a core k8 service running in "kube-system"
-- checks against each nodes resouce requests and available resources before placing a pod
+- checks against each nodes resource requests and available resources before placing a pod
 
-nodeSelector
-
+// nodeSelector
 apiVersion: v1
 kind: Pod
 metadata:

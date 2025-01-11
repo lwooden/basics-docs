@@ -71,7 +71,7 @@ Lambda
 Execution = 1,000 concurent executions per region (default)
 Memory =  128 MB - 10 GB RAM
 Timeout = 3 secs - 15 minutes
-Size = 50 MB (250 MB unziped)
+Size = 50 MB (250 MB unzipped)
 Environment Variables = 4 KB
 
 [Synchronous Invocations]
@@ -124,8 +124,8 @@ Environment Variables = 4 KB
 - the project will then contain the 3rd party dependencies (node_modules folder) needed to run your project
 
 [CloudFormation]
-- Lambda's can be defined in-line (plain-text version of the script) in a CF template; external depenencies will not be included this way
-- Lambda's can also be referecenced via an S3 location
+- Lambda's can be defined in-line (plain-text version of the script) in a CF template; external dependencies will not be included this way
+- Lambda's can also be referenced via an S3 location
 
 [Layers]
 - support runtimes that are not supported by default (C++, Rust)
@@ -142,7 +142,7 @@ Layer 2 - Large Library Files (30MB)
 [Lambda Container Images]
 - deploy lambda function as container images UP TO 10GB from ECR
 - enables us to package large dependencies within the container instead of in layers
-- base container must implement the Lambda Runtine API
+- base container must implement the Lambda Runtime API
 
 FROM amazon/aws-lambda-nodejs:12
 
@@ -205,7 +205,7 @@ getAttached:$(lambdaAlias)
 [Canary Deployments]
 - set a small percentage of traffic to flow to new deployments
 - can configure in Stages > Canary
-- this will create a "cancary" version of your stage to delpoy to
+- this will create a "canary" version of your stage to deploy to
 
 [Integrations Types & Mapping]
 MOCK
@@ -273,7 +273,7 @@ X-RAY
   gives you end-to-end full picture
   
   
-[Authentication + Authorizatoin]
+[Authentication + Authorization]
 RE-WATCH
 
   
@@ -604,11 +604,10 @@ CI/CD
 -------
 
 [Code Commit]
-- soure and version control provided by AWS
+- source and version control provided by AWS
 
 [Code Build]
-
-- by default containers arre launched outside your VPC
+- by default containers are launched outside your VPC
 - can configure to run inside your VPC
 
 buildspec.yml (root)
@@ -629,16 +628,16 @@ appspec.yml
   config/
   source/
 
-In-Place Deployment - updates the current instances in the depolyment in a serial fashion
+In-Place Deployment - updates the current instances in the deployment in a serial fashion
 
-Blue/Green - deploys new instances which will host the latest verison of the code without taking you current instances offline
+Blue/Green - deploys new instances which will host the latest version of the code without taking your current instances offline
 
-[BroadStages]
+[ BroadStages ]
 - BeforeAllowTraffic (before loadbalancer registration)
 - AllowTraffic (registation)
 - AfterAllowTraffic (post registration)
 
-[Lifecycle Event Hooks]
+[ Lifecycle Event Hooks ]
 - App Stop
 - Download Bundle
 - BeforeInstall (before copy)
@@ -703,7 +702,7 @@ TemplateURL: https://s3.amazonaws.com/../template.yml
 
 SAM
 -------
-- Serverless Application Model: extention to Cloudformation used to define Serverless Applications
+- Serverless Application Model: extension to Cloudformation used to define Serverless Applications
 - SAM CLI interface
 - templates are prefaced with the "Transform"; this lets CloudFormation know it is a SAM deployment 
 
