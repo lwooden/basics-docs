@@ -327,7 +327,7 @@ Read Capacity (Strong) => 1 x 4KB per sec
 10 Strongly Consistent Reads per second with item size of 6 KB (rounded up to nearest 4 KB)
 10 * 8/4 = 20 RCUs
 
-[Basic AP]
+[Basic API]
 GETITEM
   read based on primary key
   "projected expression" can be used to get specific attributes back
@@ -424,7 +424,7 @@ Client -> DAX Cluster -> DynamoDB Tables
 
 [Scan]
 - returns all items in a table and THEN applies a filter
-- this a TWO step operation and will increase in time as the table grows
+- this is a TWO step operation and will increase in time as the table grows
 
 
 KMS 
@@ -456,17 +456,17 @@ Long Polling - does not return a response until a message arrives or long poll t
 [Standard]
 - default
 - provide best-effort ordering 
-- possibiility for duplicates
+- possibility for duplicates
 
 [FIFO]
 - order is strictly preserved
 - no duplicates
-- 300 TPS (transactions) limiit
+- 300 TPS (transactions) limit
 
 
 SNS
 ------
-- notififcation service used to push messages to subscribers
+- notification service used to push messages to subscribers
 - pub/sub model
 
 
@@ -481,7 +481,7 @@ SES
 Kinesis
 ----------
 - collect, process, analyze streaming data in real-time
-- can use for applicaiton logs, metrcis, website click streams, IOT telemetry
+- can use for application logs, metrics, website click streams, IOT telemetry
 - partition keys determine what shared data is written to
 
 Stream
@@ -505,7 +505,7 @@ CONSUMERS
   2MB/sec per shard across all consumers - classic fan out (pull)
   2MB/sec per consumer per shared - enhanced fan out (push)
   
---APIs--
+ // APIs
 describe-stream  -> referece the stream to get the shard ID
 get-shard-iterator -> reference the stream and shard ID to get a iterator to read from the shard
 get-records -> reference the iterator to begin reading from the shard (from the beginning, middle, or end)
@@ -549,7 +549,7 @@ MERGE
 Elastic Beanstalk
 -----------------------
 
-[Web Envirobment vs Worker Environment]
+[Web Environment vs Worker Environment]
 
 WEB Environments 
    receive distributed traffic through ALBs
@@ -647,10 +647,8 @@ Blue/Green - deploys new instances which will host the latest version of the cod
 - Validate Service
 
 
-
-
 [Code Pipeline]
-
+- continuous delivery service that enables you to model, visualize, and automate the steps required to release your software.
 
 
 [Code Star]
