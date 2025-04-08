@@ -1,0 +1,17 @@
+Model Context Protocol Basics
+
+[ Overview ]
+
+What is the Model Context Protocol (MCP)? 
+
+MCP is an abstraction framework that functions as an api for an api. In other words, it allows me to define an interface upon which I can connect agents to in order to talk to many different backends (.e.g databases, third party applications such as Slack, or other services)
+
+[ Components ]
+
+There are two components in the Model Context Protocol framework
+
+Client ----> Server ----> Service (slack, database, another API)
+
+Client - functions as the agent making the remote call to the service
+
+Server - defines the functions (contracts) that form the rules of engagement for being able to interface with the service it is abstracting; this "server" is essentially code that contains functions that are called by the client. They are no different from modules that are apart of a project

@@ -416,6 +416,17 @@ Premium SSD
 Ultra Disk
 	Capacity
 	IOPS/Throughput can modified independently of capacity -- UNIQUE
+	
+	
+[ Azure DevTest Labs ]
+- a service for easily creating, using, and managing virtual machines in labs
+- Labs offer preconfigured bases and artifacts for creating VMs
+
+// Concepts
+Lab - a group of resources to be managed together (e.g VMs)
+  Policies - controls in place to manage cost (e.g. automatic shutdown time, limit VMs instance families)
+    Repositories - users can use artifacts and templates from public and private Git repositories to create to create resources
+      Artifacts - specify actions to take to provision a VM, such as running Windows PowerShell scripts, running Bash commands, or installing software
 
 
 Storage Solutions
@@ -839,7 +850,7 @@ Trigger on Base Image Update
 - similar to Google Cloud Run
 - fastest and simplest way to run a container in Azure
 - exposes my container groups directly to the internet with an IP address and a fully qualified domain name (FQDN)
-- can deploy within a pre-defined Vnet
+- can deploy within a pre-defined Vnet; must be deployed to a delegated subnet (no other resources in it)
 - concepts like scale, load balancing, and certificates ARE NOT provided with ACI containers
 - to scale to five container instances, you create five distinct container instances
 
@@ -1309,7 +1320,16 @@ KeyVault (container - HSM w/ API)
 
 Multi-Cloud + On-Prem
 ------------------------------
-- Azure Arc
+[ Azure Arc ]
+
+[ Azure ArcBox ] -- NEW
+-  automated toolbox implementation
+- deploys a resource group that contains a VM that host the following resources:
+- a virtual machine (Windows 2K25)
+- virtualization is enabled that deploys (2) linux VMs and (1) windows system with Azure Arc agents installed
+- all resources communicate with the Azure Arc for management and metrics
+- this toolbox gives me the opportunity to quickly iterate and experiment with Azure Arc services
+
 
 [ AWS Connector - Preview ]
 - makes API calls from the Azure Control Plane
@@ -1325,6 +1345,9 @@ Inventory
 Arc Onboarding
 	extends Azure Arc so I can use Azure management services on EC2 instances
 	must add a tag with the value “Arc” to be included
+	
+	
+
 
 
 
