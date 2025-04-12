@@ -439,6 +439,87 @@ Deployments
 -----------------
 
 
+Resources Requirements
+----------------------------------
+- defines the hard limits of resources that a pod can consume within a node
+- when scheduling Pods, the schedule on takes resource requests into consideration
+- pods that exceed their cpu requests are throttled
+- pods that exceed their memory request are evicted
+- run kubectl top to help define resource requirements
+
+
+// Quality of Service Classes
+Guaranteed - limits are equal to requests (most stable - never evicted)
+  Burstable - limit are set higher than requests
+     Best Effort - no resource request defined (least stable - can be placed anywhere)
+
+spec:
+      containers:
+      - name: timeserver-container
+        image: docker.io/wdenniss/timeserver:3
+        resources:
+          requests:
+            cpu: 200m  # represents 20% of one core
+            memory: 250Mi # represents direct consumption
+          limits:  
+            cpu: 300m 
+            memory: 400Mi
+            
+            
+Priority Classes
+--------------------
+- integer that ranges from 0 - 1,000,000,000
+- the higher the number, the higher the priority
+
+// Example Manifest - priorityclass.yaml
+
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: high-priority # reference this name in container spec (see below)
+value: 1000000              
+preemptionPolicy: Never     
+globalDefault: false        
+description: "Critical services."
+
+// Reference of Priority Class - deploy.yaml
+.......
+# container spec
+spec:
+      priorityClassName: high-priority  # referenced here
+      containers:
+      - name: timeserver-container
+        image: docker.io/wdenniss/timeserver:3
+.......
+
+Horizontal Pod Autoscaler (HPA)
+--------------------------------------------
+- scales the number of replicas automatically based on a criteria
+- must be used in conjunction with resource requests
+- internal metrics include cpu and memory
+- external metrics include request per seconds (RPS), or queue length
+
+// Example Manifest - hpa.yaml
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: timeserver
+spec:
+  minReplicas: 1   # min        
+  maxReplicas: 10    # max            
+  metrics:
+  - resource:
+      name: cpu
+      target:
+        averageUtilization: 20   # threshold trigger
+        type: Utilization
+    type: Resource
+  scaleTargetRef:                
+    apiVersion: apps/v1          
+    kind: Deployment             
+    name: timeserver # name of the deployment to scale
+
 Volumes
 -------------
 - file systems within containers are ephemeral (they exist only for the lifetime of the container)
