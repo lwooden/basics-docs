@@ -285,12 +285,13 @@ kubectl uncordon <NODE> // makes the node available to accept pod scheduling aga
 // Namespaces
 kubectl create namespace <namespace>
 kubectl get namespaces // gets all namespaces
+kubectl get ns
 
 
 // Pods
 kubectl get pods  -n <NAMESPACE>
 kubectl get pods --all-namespaces
-kubectl get pods -o wide // show ip address and assinged node for each pod
+kubectl get pods -o wide // show ip address and assigned node for each pod
 kubectl get pods --all-namepsaces
 kubectl get pods -A --sort-by=.metadata.name
 kubectl get pod -l app=fluentbit-logging -o jsonpath='{.items[0].status.containerStatuses[*].name}' // get container names in a pod
@@ -450,7 +451,7 @@ Resources Requirements
 
 // Quality of Service Classes
 Guaranteed - limits are equal to requests (most stable - never evicted)
-  Burstable - limit are set higher than requests
+  Burstable - limits are set higher than requests
      Best Effort - no resource request defined (least stable - can be placed anywhere)
 
 spec:
@@ -639,30 +640,88 @@ spec:
     image: redis
   nodeSelector:
       purpose: reports-services // assigns node based on label
-  nodeName: worker-1 // assings nodes based on explicit node name
+ nodeName: worker-1 // assings nodes based on explicit node name
+ 
+ 
+ 
+Topology Spread
+------------------------
+- determines how pods are spread out (strategically)
+- maxSkew represents the total amount of pods I am willing to allow to be unbalanced
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timeserver
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      pod: timeserver-pod
+  template:
+    metadata:
+      labels:
+        pod: timeserver-pod
+    spec:
+      topologySpreadConstraints:               ❶
+      - maxSkew: 1                             ❷
+        topologyKey: topology.kubernetes.io/zone    ❸
+        whenUnsatisfiable: ScheduleAnyway      ❹
+        labelSelector:                         ❺
+          matchLabels:                         ❺
+            pod: timeserver-pod                ❺
+      containers:
+      - name: timeserver-container
+        image: docker.io/wdenniss/timeserver:5
+        resources:
+          requests:
+            cpu: 200m
+            memory: 250Mi
   
   
-Taints, Tolerations, and Node Selectors
-----------------------------------------------------
-- a mechanism for flagging a node to say it isn’t suitable for general work
+Taints & Tolerations
+------------------------
+- a mechanism for declaring that pods should not be scheduled on it by default (unless tolerated)
 - have a key-value pair just like a label
-- also have an effect, which tells the scheduler how to treat the node
+- also has an effect, which tells the scheduler how to treat the node
 - use taints to identify nodes that are different from the rest
+- best practice is to mix tolerations with node selectors or affinity to ensure pods go where they are supposed 
 
-kubectl taint nodes --all diskType=hdd:NoSchedule
+kubectl taint nodes --all diskType=hdd:NoSchedule <key=value:effect>
 
-spec:                     
- containers:
-   - name: sleep
-     image: kiamol/ch03-sleep      
- tolerations:                  # Lists taints this Pod is happy with
-     - key: "diskType"      # The key, value, and effect all need 
-       operator: "Equal"       # to match the taint on the node.
-       value: "hdd"
-       effect: "NoSchedule"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      pod: timeserver-pod
+  template:
+    metadata:
+      labels:
+        pod: timeserver-pod
+    spec:
+      tolerations:     ❶
+      - key: diskType      ❶
+        value: "hdd"  ❶
+      affinity:                                             ❷
+        nodeAffinity:                                       ❷
+          requiredDuringSchedulingIgnoredDuringExecution:   ❷
+            nodeSelectorTerms:                              ❷
+            - matchExpressions:                             ❷
+              - key: kubernetes.io/arch                     ❷
+                operator: NotIn                             ❷
+                values:                                     ❷
+                - arm64
+      containers:
+      - name: timeserver-container
+        image: docker.io/wdenniss/timeserver:5
 
 
-- to guarantee that Pods only run on certain nodes, use a NodeSelector
+
+Node Selectors
+--------------------
+- guarantees that Pods only run on certain nodes that have a certain label
+- if node selector has multiple conditions, ALL of them must be met for it to be scheduled
+- node affinity allows for conditions to be choose out of a list
 
 spec:
  containers:
@@ -672,26 +731,35 @@ spec:
    kubernetes.io/arch: zxSpectrum        # that match this CPU type.
 
 
-Affinity and Anti-Affinity
+Node Affinity and Anti-Affinity
 ------------------------------
 - provides a rich way of expressing preferences or requirements to the scheduler
 - can claim an affinity to certain nodes to ensure Pods land on those nodes
 - uses a node selector but with a match expression rather than a simple equality check. Match expressions support multiple clauses, so you can build much more complex requirements
 
-affinity:                           # Affinity expresses a requirement
- nodeAffinity:                     # or a preference for nodes.
-   requiredDuringSchedulingIgnoredDuringExecution:
-     nodeSelectorTerms:
-       - matchExpressions:               # Match expressions work on
-         - key: kubernetes.io/arch       # labels, and you can supply
-           operator: In                  # a list of values that 
-           values:                       # should match or not match.
+......
+# pod spec
+spec:
+  affinity:                           # Affinity expresses a requirement
+    nodeAffinity:                     # or a preference for nodes.
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:               # Match expressions work on
+          - key: kubernetes.io/arch       # labels, and you can supply
+            operator: In                  # a list of values that 
+            values:                       # should match or not match.
+            - amd64
+            - arm64
+        - matchExpressions:               # Multiple match expressions
+          - key: beta.kubernetes.io/arch  # work as a logical OR.
+            operator: In
+            values:
              - amd64
-       - matchExpressions:               # Multiple match expressions
-         - key: beta.kubernetes.io/arch  # work as a logical OR.
-           operator: In
-           values:
-             - amd64
+    containers:
+    # container spec
+     ...... 
+     ...... 
+
 
   
   
