@@ -1,0 +1,121 @@
+DevContainer Basics
+
+
+Main Components of Development Environments
+-----------------------------------------------------------------
+1. Version Control System --> git
+2. Language Runtime Pack --> go, rust, python, node
+3. Container Runtime Pack --> docker, podman
+4. Code Editor/IDE --> vsCode, intellij
+
+
+What is DevContainer?
+-------------------------------
+- Open specification for defining a container that includes all of the tools and dependencies required for inner loop development
+- Supports various IDEs 
+- Can be run on my machine, on-premises, on Kubernetes, across clouds
+
+
+Components
+-----------------
+
+Image - the base image for the container. You can use an existing image, such as the ones provided by Microsoft, or create your own based on a Dockerfile or a Compose file.
+
+Features - a list of extensions or tools that should be installed in the container. For example, you can install a specific version of Java or Go.
+
+Customizations -  each IDE or platform supporting Devcontainers has its own set of customizations that can be defined in the devcontainer.json file. You can use them to configure the Code Editor/IDE component of the development environment
+
+
+// file structure
+
+.devcontainer/
+  devcontainer.json
+  Dockerfile
+
+// devcontainer.json 
+
+{
+	"name": "Go",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye"
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {
+		// This gives me connection refused when I run docker compose up to connect to PostgreSQL
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
+	},
+	// Configure tool-specific properties.
+	"customizations": {
+		"codespaces": {
+			"openFiles": [
+				"README.md"
+			]
+		},
+		// Configure properties specific to VS Code.
+		"vscode": {
+			"settings": {},
+			"extensions": [
+				"streetsidesoftware.code-spell-checker",
+				"ckolkman.vscode-postgres",
+				"redhat.vscode-yaml"
+			]
+		}
+	},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [
+		8081
+	],
+	// Use 'portsAttributes' to set default properties for specific forwarded ports. 
+	// More info: https://containers.dev/implementors/json_reference/#port-attributes
+	"portsAttributes": {
+		"8081": {
+			"label": "Appointments Service",
+			"onAutoForward": "notify"
+		}
+	},
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "go version",
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	//"remoteUser": "root"
+}
+
+
+// Dockerfile
+
+# the purpose of this is to install extra utilities like httpie to make it easier to test the service
+# in the container that do not come by default in the base image
+FROM mcr.microsoft.com/devcontainers/go:1-1.22-bookworm 
+
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -y install httpie && \
+    rm -Rf /var/lib/apt/lists/*  && \
+    rm -Rf /usr/share/doc && rm -Rf /usr/share/man  && \
+    apt-get clean
+    
+    
+
+Source Code
+-----------------
+- source code can be brought into the devcontainer in the following ways:
+
+1. via a bind-mount from my local machine into the container
+2. direct clone from a github repo url into the container
+
+
+DevContainer Templates
+--------------------------------
+- these are the base containers that contain the core functionality for the workspaces
+
+https://github.com/devcontainers/templates/tree/main/src
+https://containers.dev/templates
+
+DevContainer Features
+-------------------------------
+- composable pieces of functionality that can be added to the container in the form of an install (.e.g. AWS CLI, Helm, etc)
+- these are remotely packaged shell scripts that contain install instructions for a particular resource
+- they are referenced in the Devcontainer file, copied down from Github, and installed within the container
+
+https://containers.dev/features
+
