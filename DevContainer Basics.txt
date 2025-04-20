@@ -16,8 +16,8 @@ What is DevContainer?
 - Can be run on my machine, on-premises, on Kubernetes, across clouds
 
 
-Components
------------------
+Main Components
+------------------------
 
 Image - the base image for the container. You can use an existing image, such as the ones provided by Microsoft, or create your own based on a Dockerfile or a Compose file.
 
