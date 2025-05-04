@@ -14,4 +14,107 @@ Client ----> Server ----> Service (slack, database, another API)
 
 Client - functions as the agent making the remote call to the service
 
-Server - defines the functions (contracts) that form the rules of engagement for being able to interface with the service it is abstracting; this "server" is essentially code that contains functions that are called by the client. They are no different from modules that are apart of a project
+Server - defines the functions (contracts) that form the rules of engagement for being able to interface with the service it is abstracting; this "server" is essentially code that contains functions that are called by the client. They are no different from modules that are apart of a project; servers accepts request from clients using SSERs (server sent event requests)
+
+
+[ Examples ]
+
+Local Typescript Based MCP Server Loaded in Cursor (MCP Client)
+
+# src/index.ts
+
+// Create server instance
+const server = new McpServer({
+  name: "weather",
+  version: "1.0.0",
+});
+
+// Register weather tools
+server.tool(
+  "get-forecast", // tool name
+  "Get weather forecast for a location", // tool description
+  // description of parameters are very important for the LLM to know what to extract from the prompt to use as arguments to the tool function call
+  {
+    latitude: z.number().min(-90).max(90).describe("Latitude of the location"),
+    longitude: z
+      .number()
+      .min(-180)
+      .max(180)
+      .describe("Longitude of the location"),
+  },
+  async ({ latitude, longitude }) => {
+    // Get grid point data
+    const pointsUrl = `${NWS_API_BASE}/points/${latitude.toFixed(4)},${longitude.toFixed(4)}`;
+    const pointsData = await makeNWSRequest<PointsResponse>(pointsUrl);
+
+    if (!pointsData) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Failed to retrieve grid point data for coordinates: ${latitude}, ${longitude}. This location may not be supported by the NWS API (only US locations are supported).`,
+          },
+        ],
+      };
+    }
+
+    const forecastUrl = pointsData.properties?.forecast;
+    if (!forecastUrl) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Failed to get forecast URL from grid point data",
+          },
+        ],
+      };
+    }
+
+    // Get forecast data
+    const forecastData = await makeNWSRequest<ForecastResponse>(forecastUrl);
+    if (!forecastData) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Failed to retrieve forecast data",
+          },
+        ],
+      };
+    }
+
+    const periods = forecastData.properties?.periods || [];
+    if (periods.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "No forecast periods available",
+          },
+        ],
+      };
+    }
+
+    // Format forecast periods
+    const formattedForecast = periods.map((period: ForecastPeriod) =>
+      [
+        `${period.name || "Unknown"}:`,
+        `Temperature: ${period.temperature || "Unknown"}°${period.temperatureUnit || "F"}`,
+        `Wind: ${period.windSpeed || "Unknown"} ${period.windDirection || ""}`,
+        `${period.shortForecast || "No forecast available"}`,
+        "---",
+      ].join("\n"),
+    );
+
+    const forecastText = `Forecast for ${latitude}, ${longitude}:\n\n${formattedForecast.join("\n")}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: forecastText,
+        },
+      ],
+    };
+  },
+);

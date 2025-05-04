@@ -89,15 +89,15 @@ eksctl delete cluster --region=us-east-1 --name=lowk8
 // Accessing AWS Services Via Pods
 
 IRSA - IAM Roles for Service Accounts (Available on High-Side)
-- require OIDC Provider setup
+- requires OIDC Provider setup
 - would need to be setup per cluster
 
 eksctl utils associate-iam-oidc-provider --region=us-east-1 --cluster=lowk8 --approve
 
 Pod Identity (Not Available on High-Side)
 - does not require OIDC Provider setup
-- require pod identity add-on to be running in the cluster
-- require association via the aws-cli/eksctl (aws eks create-pod-identity-association --cluster-name my-cluster --role-arn arn:aws:iam::111122223333:role/my-role --namespace default --service-account my-service-account)
+- requires pod identity add-on to be running in the cluster
+- requires association via the aws-cli/eksctl (aws eks create-pod-identity-association --cluster-name my-cluster --role-arn arn:aws:iam::111122223333:role/my-role --namespace default --service-account my-service-account)
 
 eksctl create addon --name eks-pod-identity-agent --cluster lowk8
 eksctl create addon --name aws-ebs-csi-driver --cluster lowk8
