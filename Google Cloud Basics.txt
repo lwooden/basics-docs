@@ -537,13 +537,27 @@ Container Platforms
 
 Services
 	used to run code that responds to web requests, or events
-	can be controlled via versions for rollback, traffic splitting between revisions
+	can be controlled via versions for rollback, traffic splitting between revisions (max 1000 revisions per service)
 	can use Ingress settings to control whether the service is public or private
 	can scale to 0 and scale up based on request load -- UNIQUE
 	can set a minimum of (1) instances if absolutely needed
 
+gcloud run deploy SERVICE --image IMAGE_URL
+gcloud run services update-traffic SERVICE --to-latest // send all traffic to latest revision
+gcloud run services update-traffic SERVICE --to-revisions REVISION=PERCENTAGE || LIST > hello2-00005-red=25,hello2-00001-bod=25,hello2-00002-nan=50 // multiple
+ 
 Jobs
 	used to run code that performs work (a job) and quits when the work is done.
+	by default jobs run for 10 minutes; can run up to 7 days max
+	
+ gcloud run jobs create JOB_NAME --image IMAGE_URL OPTIONS
+ gcloud run jobs deploy JOB_NAME --image IMAGE_URL OPTIONS
+ gcloud run jobs update JOB_NAME
+ gcloud run jobs execute JOB_NAME  --args ARGS --update-env-vars KEY=VALUE>,KEY_N=VALUE_N --tasks TASKS --task-timeout TIMEOUT
+ gcloud scheduler jobs create http SCHEDULER_JOB_NAME --location SCHEDULER_REGION --schedule="SCHEDULE" \
+  --uri="https://run.googleapis.com/v2/projects/PROJECT-ID/locations/CLOUD_RUN_REGION/jobs/JOB-NAME:run" \
+  --http-method POST \
+  --oauth-service-account-email PROJECT-NUMBER-compute@developer.gserviceaccount.com
 
 
 [ Google Kubernetes Engince (GKE) ]
@@ -553,6 +567,10 @@ Jobs
 // Modes
 Standard -> pay per node (i.e EKS)
 Autopilot -> pay per pod (i.e Fargate)
+
+gcloud container clusters create CLUSTER_NAME --location CONTROL_PLANE_LOCATION --node-locations COMPUTE_ZONE,COMPUTE_ZONE1
+gcloud container clusters create-auto CLUSTER_NAME --location=LOCATION --project=PROJECT_ID
+gcloud container clusters get-credentials CLUSTER_NAME --location=CONTROL_PLANE_LOCATION
 	
 // GKE Workload Identity
 - maps a Kubernetes service account -> IAM account

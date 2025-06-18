@@ -276,6 +276,8 @@ Routing Tables
 - works by creating a user-defined route to set the Firewall as the default route instead of the VNET router
 - can configure outbound HTTP/s traffic by FQDN
 - can perform SNAT and DNAT through the Firewall
+- DNAT is focused on incoming traffic coming in to the Public IP of the firewall on a specific port -> translated to an internal IP address on a specific port
+- SNAT is focused on outbound traffic coming into the firewall internal IP address -> translating to a Public IP associated with the firewall -> going outside the network
 - provides threat intelligence out-of-the-box
 - integration w/ Azure Monitor
 - can associate up to 250 public IPs assigned
@@ -295,17 +297,23 @@ Application Rule Collection
 	layer 7 filtering (FQDN)
 	allow http/https traffic from ANY to www.google.com with a rule named "google-allow"
 
-NAT Rule Collection
+DNAT Rule Collection
 	focused on in-bound traffic
 
 
 [ Azure Bastion ]
 - must be deployed to a dedicated subnet called "AzureBastionSubnet" (/26 is the minimum)
-- RDP/SSH sesions are wrapped in a SSH tunnel via the Bastion Service
+- RDP/SSH sessions are wrapped in a SSH tunnel via the Bastion Service
 - supported by a loadbalancer and VM scale set on the backend
 - I can determine how many concurrent sessions I want to support
+- connections are established over HTTPS/443 using the browser (HTML5)
+- connections can be made via 1) the Azure Portal 2) native client (az)
 
 // SKUs
+
+Developer (New)
+  Free
+  
 Basic
 	Linux - SSH
 	Windows - RDP
@@ -315,6 +323,7 @@ Standard
 	Custom Ports/Protocols
 	File Transfer
 	
+Premium
 	
 [ Just-In-Time Access - JIT ]
 - can go to a resource and request access for only my IP when I need it
