@@ -581,6 +581,8 @@ gcloud container clusters get-credentials CLUSTER_NAME --location=CONTROL_PLANE_
 - think AWS Elastic Container Repository (ECR)
 - platform used to host container repositories similar to Docker Hub
 - used by peer services like Cloud Run and App Engine in order to deploy containers
+
+  gcloud artifacts repositories create REPOSITORY --repository-format=docker --location=LOCATION --description="DESCRIPTION" --async @--allow-vulnerability-scanning
 	
 	
 	
