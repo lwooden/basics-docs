@@ -172,7 +172,7 @@ Restore from snapshot (Node)
     ETCDCTL_API=3 etcdctl --data-dir /var/lib/etcd snapshot restore <FILENAME>
 
 Start Etcd (Node)
-    if service, stop it; if static-pod, move it back into /etc/kubernetes/manifest)
+    if service, start it; if static-pod, move it back into /etc/kubernetes/manifest)
     
 Verify etcd is up and running (kubectl/client)
     k describe pod/etcd -n kube-system
@@ -207,6 +207,105 @@ Using Helmfile to Manage Helm Charts
 helmfile sync // references helmfile.yaml in the working directory
 helmfile delete
 
+
+Using Kustomize to Manage Manifests
+----------------------------------------------------
+- Kustomize is a standalone tool to manage K8s Yaml files, but it also comes included with kubectl. The common idea is to have a base set of K8s Yaml and then override or extend it for different overlays, like here done for staging and prod:
+- the common way to apply manifest created with Kustomize is:
+
+kubectl kustomize <DIRECTORY> | kubectl diff -f -  // a diff
+kubectl kustomize <DIRECTORY> | kubectl apply -f - // followed by an appy
+
+➜ candidate@cka5774:/opt/course/5/api-gateway$ ls
+base  prod  staging
+
+Running kubectl kustomize <DIRECTORY> will build the whole Yaml based on whatever is defined in the kustomization.yaml in that directory
+
+// Base contains the foundation of all resources that will be deployed
+cat /opt/course/5/api-gateway/base/api-gateway.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-gateway
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api-gateway
+  minReplicas: 2
+  maxReplicas: 4
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: api-gateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      id: api-gateway
+  template:
+    metadata:
+      labels:
+        id: api-gateway
+    spec:
+      serviceAccountName: api-gateway
+      containers:
+        - image: httpd:2-alpine
+          name: httpd
+
+
+// Overlays contains only the things that will be different (overridden) in each environment
+cat /opt/course/5/api-gateway/prod/api-gateway.yaml
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-gateway
+spec:
+  maxReplicas: 6 // this will be different from the base spec
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  labels:   // this is added on top of the base spec
+    env: prod
+
+# cat /opt/course/5/api-gateway/staging/kustomization.yaml
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+// resources specifies the directory on which everything will be based on
+resources:
+  - ../base
+
+// patches specifies Yaml files with alterations or additions applied on the base files (overrides)
+patches:
+  - path: api-gateway.yaml
+
+// transformers sets the Namespace for all resources
+transformers:
+  - |-
+    apiVersion: builtin
+    kind: NamespaceTransformer
+    metadata:
+      name: notImportantHere
+      namespace: api-gateway-staging
+      
 
 Using Werf to Perform Deployments
 ------------------------------------------------
@@ -296,7 +395,7 @@ kubectl get pods --all-namepsaces
 kubectl get pods -A --sort-by=.metadata.name
 kubectl get pod -l app=fluentbit-logging -o jsonpath='{.items[0].status.containerStatuses[*].name}' // get container names in a pod
 
-kubectl run <NAME> --image <IMAGE> --dry-run=client -o yaml > pod.yml
+kubectl run <NAME> --image <IMAGE> -o yaml > pod.yml
 
 
 // Service Accounts
@@ -356,7 +455,7 @@ kubectl get sts
 kubectl get roles [ -n <NAMESPACE> ]
 kubectl get clusterroles
 
-kubectl create role testrole --verbs list,create ----resource=secrets,configmap [ -n <NAMESPACE> ]
+kubectl create role testrole --verb=list,create ----resource=secrets,configmap [ -n <NAMESPACE> ]
 
 
 // Rolebindings
@@ -500,7 +599,7 @@ Horizontal Pod Autoscaler (HPA)
 - internal metrics include cpu and memory
 - external metrics include request per seconds (RPS), or queue length
 
-// Example Manifest - hpa.yaml
+// Example Manifest - .yaml
 
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -677,6 +776,16 @@ spec:
           requests:
             cpu: 200m
             memory: 250Mi
+            
+            
+Network Policies
+----------------------
+- If you want to control traffic flow at the IP address or port level (OSI layer 3 or 4), NetworkPolicies allow you to specify rules for traffic flow within your cluster, and also between Pods and the outside world.
+- There are two sorts of isolation for a pod: isolation for egress, and isolation for ingress. They concern what connections may be established
+- By default, a pod is non-isolated for egress; all outbound connections are allowed
+- By default, a pod is non-isolated for ingress; all inbound connections are allowed
+
+
   
   
 Taints & Tolerations
@@ -881,7 +990,7 @@ user-db.default.svc.cluster.local #fqdn
 Managing RBAC
 ---------------------
 
-There (4) role-based access related objects are:
+The (4) role-based access related objects are:
 
 Role - defines permissions within a particular namespace (e.g viewing logs for a pod in the default namespace)
 

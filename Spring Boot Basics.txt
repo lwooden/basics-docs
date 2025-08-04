@@ -4,10 +4,21 @@ Things to learn more about:
 - class path
 
 
+./mvnw spring-boot:build-image // builds image using jar artifact method
+./mvnw  -Pnative spring-boot:build-image // builds native image within a linux container and then packages that native image inside of another linux container
+
+ 
+Background
+----------------
+- Spring came out in 2004 as a result of book!
+- Came out in 2014 w/ the release of Java 8
+- Primarily a backend technology
+- Convention over Configuration (sensible defaults so you can move fast)
+
 
 Problems w/ Traditional Spring
 -----------------------------------------
-- keeping up with dependecies, module availability, and version compatibablity is burdensome for us
+- keeping up with dependencies, module availability, and version compatibility is burdensome for us
 - deployment has to be done to external web containers/servers
 
 
@@ -21,7 +32,7 @@ Advantages of SpringBoot
 - if we use the "orm" module, we no longer have to configure the DataSource or TransactionManager
 
 [ SpringBoot Starters ]
-- take care of module availability and version compatiability for us; 
+- take care of module availability and version compatibility for us; 
 - every project has a spring-boot-starter-parent that contains all of the version information for all of the libraries that will be contained in our project
 
 [ Embedded Servlet Containers ]
@@ -29,7 +40,7 @@ Advantages of SpringBoot
 
 [ SpringBoot Actuators ]
 - provides utility routes/endpoints that we can consume in our app (autoconfig, mappings, info, health, metrics)
-- can quickly intergrate 3rd party apps (prometheus) using these endpoints
+- can quickly integrate 3rd party apps (prometheus) using these endpoints
 
 
 Configuring JPA
@@ -38,10 +49,10 @@ Configuring JPA
 Deploying/Running A SpringBoot Application
 -----------------------------------------------------------
 
-[ Inside SpringBoot - Embeded Tomcat Server ]
+[ Inside SpringBoot - Embedded Tomcat Server ]
 
 
-[ Outsude of SpringBoot - Standalone JAR ]
+[ Outside of SpringBoot - Standalone JAR ]
 - in order to run the application on any system we want we must compile our application and get a "jar" artifact. This is the articfact that we will pass to java to run on any remote system that has java installed
  
  // Process
@@ -52,6 +63,13 @@ Deploying/Running A SpringBoot Application
     java -jar <name_of_project>.jar
     
 This will cause our app to run just like it did when we ran it inside of Spring Boot
+
+
+[ Native-Image - GraalVM ]
+// TODO
+- provides everything (code and runtime) needed for the application to run ACCORDING to the architecture of the host its compiled on
+- no local JRE or JVM needed on the host
+- this is not supported by all JDKs (e.g. Amazon Corretto)
 
 
 [ Using JAR Layers - layers.idx - Docker ] 
