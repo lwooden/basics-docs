@@ -8,9 +8,9 @@ az account list
 az resource list
 
 [ azure developer cli ] -- NEW
-- azd acts as a template and/or a wrapper around your applicaiton to create a unified developer experience within Azure
+- azd acts as a template and/or a wrapper around your application to create a unified developer experience within Azure
 - I can deploy my application code directly to Azure with all of the corresponding infrastructure services needed for it to function
-- 
+
 azd up
 
 
@@ -26,15 +26,11 @@ resources | summarize count()
 resources | where type == "microsoft.network/virtualnetworks"
 
 
-	
-
-	
-
-Azure Active Directory
------------------------------
-- azure ad tenants exist outside of the subscription 
+Entra ID (formerly Azure Active Directory)
+---------------------------------------------------------
+- entra ID tenants exist outside of the subscription 
 - they are associated (or shared) with a subscription via a trust relationship
-- subscriptions can only trust ONE Azure AD tenant
+- subscriptions can only trust ONE Entra ID tenant
 - they can also be associated with SaaS offerings (like O365)
 
 [ Users ]
@@ -49,21 +45,21 @@ Cloud Users - created directly in Azure AD
 Users
 
 Groups
-	users can be assinged dynamically based on attributes (i.e. Department name)
+	users can be assigned dynamically based on attributes (i.e. Department name)
 	
 Service Principles
 	these are mapped to enterprise applications or other Azure resources
 	can be assumed by VMs (like Instance roles) instead of using access keys
 	
 Devices
-	hybrird Azure AD join	
+	hybrid Azure AD join	
 	
 [ Authentication & Authorization ]
 
 Azure AD Connect #1
 	syncs users from on-prem AD structure
-	takes the password hash and then hashes it again, and then stores it in AAD
-	users can then authenticate against AAD and use the power of Cloud Auth
+	takes the password hash and then hashes it again, and then stores it in Entra ID
+	users can then authenticate against AAD and use the power of Cloud Authentication
 	
 Pass-Through Authentication #2
 	for organizations that do not trust their user info being stored in the cloud
@@ -100,7 +96,7 @@ Temporary Access Pass -- NEW
 
 
 [ MFA ] 
-- can be enfornced based on trusted IP list (e.g user in the corporate network don't have to use MFA)
+- can be enforced based on trusted IP list (e.g user in the corporate network don't have to use MFA)
 - can be enforced based on time-range using One-Time ByPass (e.g. 300 seconds, 1 hour)
 
 
@@ -122,7 +118,7 @@ Temporary Access Pass -- NEW
 - can set to Report Only when just starting out in order to test drive policies in your organization
 
 
-[ Privileged Identiyy Management - PIM ]
+[ Privileged Identity Management - PIM ]
 - Premium P2 Licensing
 - provides just-in-time (JIT) access to an elevated role for a certain duration of time
 
@@ -141,6 +137,9 @@ Active
 - create reviews
 - reviews access in the "Access Pane"
 - supports security group and app reviews
+
+[ Microsoft Entra Application Proxy ]
+- allows on-premises applications to use tokens from Microsoft Entra ID (think GCP Identity Aware Proxy)
 
 
 Managed Identities
@@ -167,7 +166,7 @@ App Service > Identity > System Assigned > Change status to "ON"
 
 
 [ Service Principal ]
-- acquired through registering my applicaiton
+- acquired through registering my application
 - the registration represents my app within my Azure AD Tenant
 
 
@@ -180,7 +179,7 @@ Microsoft Authentication Library - MSAL
 Governance
 ----------------
 
-[ Org Strucuture ]
+[ Org Structure ]
 
 Azure Tenant
   Subscriptions 
@@ -252,7 +251,7 @@ Networking
 - by default ALL INBOUND ACCESS is blocked on "Standard" SKU Public IP
 -  SERVICE TAGS abstract references to Azure services since recording IP addresses for those services is complex
 
-[ Application Security Groups ] 
+[ Application Security Groups - ASG ] 
 - think AWS Security Groups
 - logical container for network interfaces
 - NICs are associated with ASGs
@@ -341,8 +340,8 @@ Security Center -> Just-In-Time VM Access
 
 
 [ Service Endpoints ]
-- configured at the subnet level of a Vnet
-- provides a new "private" route for resources in the vnet to reach Mircosoft services
+- configured at the subnet level of a VNET
+- provides a new "private" route for resources in the VNET to reach Microsoft services
 - provides the private address as a source IP address when accessing services
 - DOES NOT establish private IP address for the services being accessed (like Private Link)
 - not all services support service endpoints so check before implementing
@@ -350,8 +349,8 @@ Security Center -> Just-In-Time VM Access
 
 [ Private Link ] 
 - private IP addresses within a subnet that point to a particular service
-- no longer need to expose the microsoft service publicly (e.g. your storage account)
-- other connected VNets or on-prem networks can access services in your VNet using private addressing
+- no longer need to expose the Microsoft service publicly (e.g. your storage account)
+- other connected VNETs or on-prem networks can access services in your VNET using private addressing
 
 
 [ WAN Connectivity ] 
@@ -361,7 +360,7 @@ Point-to-Site
 	single connection from a single device
 
 Site-to-Site
-	traditional IPSec conncetion between (2) border devices
+	traditional IPSec connection between (2) border devices
 	VPN Gateways are provisioned on the Azure side
 	Local Gateways are configured in Azure to represent on-premise (customer) devices
 	different SKUs for features/performance
@@ -400,6 +399,7 @@ L - Storage Optimized -> AWS L/D Family
 
 [ Proprietary Operating System ]
 - Mariner OS (think AWS Linux 2)
+- Azure Linux -- NEW
 - AKS Node OS support
 
 
@@ -434,7 +434,7 @@ Ultra Disk
 // Concepts
 Lab - a group of resources to be managed together (e.g VMs)
   Policies - controls in place to manage cost (e.g. automatic shutdown time, limit VMs instance families)
-    Repositories - users can use artifacts and templates from public and private Git repositories to create to create resources
+    Repositories - users can use artifacts and templates from public and private Git repositories to create resources
       Artifacts - specify actions to take to provision a VM, such as running Windows PowerShell scripts, running Bash commands, or installing software
 
 
@@ -549,7 +549,7 @@ Account SAS - specific to the storage account level
 
 
 Role Based Access (RBAC)
-	provides access based to the management and data layer based on Azure Active Directory
+	provides access based to the management and data layer based on Entra ID
 	
 - Create a "Service Principal" (AAD Dashboard > App Registration)
 - Register an application in AAD by giving it a secret
@@ -576,7 +576,7 @@ Single Server
 Flexible Server
 	
 [  Azure SQL Database ]
-- supports "some" SQL features but not all
+- supports "some" SQL features (spatial features)
 
 Autoscale
 
@@ -607,7 +607,8 @@ vCore
 	
 [  Azure SQL Managed Instances ]
 - PaaS offering within your VNET
-- supports most SQL features
+- supports some SQL features (CLR access)
+- does not support OS level features (must deploy on virtual machines) 
 - has many features not available in Azure SQL (i.e. SQL Server agent)
 
 [  Azure SQL Single Database ]
@@ -629,7 +630,7 @@ Semi Structured Options (JSON, XML)
 
 [  Azure Tables  ]
 - backed by an Azure Storage Account
-- stores data that may change structure as "entities" in tabular format (semi-structured)
+- stores data that may change; structure as "entities" in tabular format (semi-structured)
 - focuses on storing a lot of data at a low price point 
 - pricing is determined per GB of storage
 - 20k operations per second
@@ -729,6 +730,7 @@ Data Services (Big Data)
 - serverless ETL and data integration service that can help me create/schedule data-driven workflows (pipelines) that can ingest data from a variety of data stores
 - used to orchestrate data movement
 - can transform data at scale (mapping)
+- can run SSIS integration runtime for SQL server workloads that have been migrated to Azure
 
 // Workflow
 Connect And Collect
@@ -738,7 +740,6 @@ Connect And Collect
 			
 Integrated Runtimes (Infra used to run pipelines) -> Linked Services (Connections to data sources) -> Data Sets (Data you are working with)
 			
-20,570 (6 Nifi EC2's) 
 
 [ Azure Data Lake ]
 - provides a repository where you can upload and store huge amounts of unstructured data with an eye toward high-performance big data analytics
@@ -746,6 +747,11 @@ Integrated Runtimes (Infra used to run pipelines) -> Linked Services (Connection
 - Data Lake Storage Gen2 builds on Azure Blob storage capabilities to optimize it specifically for analytics workloads
 - supports RBAC for security
 - can handle ad hoc data in batches or streaming data
+
+
+[ Azure Batch ]
+- used for HPC 
+// TODO
 
 
 [ Azure Data Bricks ]
@@ -796,11 +802,11 @@ Hosting Platforms
 [ Azure App Service ]
 - provides fully managed hosting for HTTP based web applications and backend APIs
 - applications may be deployed using code or containers
-- supports running workloads on both Linux or Windows
+- supports running workloads on Windows or Linux
 
 // Concept
 App Service Plan (defines a set of compute resources for a web app to run on)
-	App
+	Application
 	
 **Plans define OS, region, number of VMs, size, pricing tier (Free,Shared, Basic, Standard, Premium, etc)
 
@@ -835,7 +841,7 @@ Premium
 	supports geo-replication
 	supports private link with private endpoints
 	
-// Best Practices //
+// Best Practices
 - place registries in the same region as your workloads
 - place registries in their own resource group
 
@@ -986,6 +992,9 @@ Azure Virtual Machine Backup Extension
 Microsoft Data Protection Manager (DPM)
 - on-prem backup solution
 - supports tape
+
+
+// Azure Backup for Blobs
 
 
 Azure Site Recovery
@@ -1164,6 +1173,8 @@ target resource to monitor (VM)
 
 [ Log Analytics Workspace ] 
 - workspaces are deployed geographically
+- they are hosted on physical clusters managed by Azure
+- if ingesting more than 500GB logs per day, create a dedicated cluster for better performance
 
 Workspace
   Data Sources
@@ -1258,6 +1269,7 @@ Asynchronous Messaging
 - mainly for micro-service implementation (support dead-letter queues, etc)
 - supports messages up to 256 KB in size
 - supports advance filtering for subscribers
+- LIMIT: 80GB of message data
 
 // Concepts
 Service Namespace
