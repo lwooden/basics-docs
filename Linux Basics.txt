@@ -27,9 +27,26 @@ script recorded_session.txt // starts recording my terminal session in this file
 script --timing=recorded_sessions.txt  
 scriptreplay --timing=recorded_session.txt
 
+
+Obfuscating a Shell Script (Making it Unreadable)
+--------------------------------------------------------------------
+- this method takes a plain text .sh script, wraps it in c code and compiles it into an executable
+- the content of the file is not readable; it appears to be binary in nature
+
+1) install shc
+2) install gcc
+3) shc -f myscript.sh
+
+this will produce:
+myscript.sh.x - binary executable ready to launch
+myscript.sh.x.c - c level version of the .sh file
+
+4) ./myscript.sh.x // executes the binary
+
+
 Working with Containers
 --------------------------------
-/sys/fs/cgroup - location where the kernel writes fata pertaining to cgroups (e.g. memory, cpu)
+/sys/fs/cgroup - location where the kernel writes data pertaining to cgroups (e.g. memory, cpu)
 *docker creates its 
 
 lsns - list available namespaces on a machine (based on users context)

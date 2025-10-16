@@ -397,6 +397,9 @@ kubectl get pod -l app=fluentbit-logging -o jsonpath='{.items[0].status.containe
 
 kubectl run <NAME> --image <IMAGE> -o yaml > pod.yml
 
+// Debug Pod
+kubectl debug -it POD_NAME --image=busybox --target=CONTAINER_IN_POD // launches ephemeral buzybox container inside of a pod I want to debug
+
 
 // Service Accounts
 kubectl get sa  -n <NAMESPACE> 
@@ -438,7 +441,6 @@ kubectl scale deployment my-deployment --replicas 5 --record // scales replicase
 kubectl rollout restart deploy graphql-api // does a rolling restart on containers in deployment
 
 // Service Accounts
-
 kubectl get [ serviceaccount | sa ] iam-test
 kubectl describe sa iam-test
 
