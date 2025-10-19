@@ -1,0 +1,119 @@
+
+Infrastructure
+-----------------
+
+Realm (think Partner Regions Azure)
+  Region
+     Tenancy - a logical grouping of users, groups, and compartments
+        Compartments - logical container for resources (think folders GCP; Management Groups Azure)
+          Compartment 1
+          IAM
+          Policy
+          Billing
+          
+OCID - Oracle Cloud Identifier
+ocid1.<resource type>.<realm>.[region][.future].<unique ID> 
+
+[ Example Compartment Hierarchy ]
+
+1. NetworkInfra
+  Loadbalancers
+  VCN
+  Internet Gateway 
+  Security List
+  
+2. Dev/Test/Prod Networks
+  Dev Network
+  Test Network
+  Prod Network
+  
+3. Projects (A/B/C)
+  Instances
+  Storage
+  Databases
+  Policy
+  
+
+Networking
+--------------
+
+Regions
+  Availability Domains (AD) -- think Availability Zones AWS/Azure
+    Fault Domains -- similar to Azure
+
+
+[ Virtual Cloud Networks - VCN ]
+- think AWS VPC and Azure VNET
+
+
+[ Subnets ]
+- can span AD's or regions (preferred)
+- can specify a subnet as public or private (think AWS)
+
+Private Subnets - only receive private IP address
+Public Subnets - assigns a public and private address
+
+[ Routing Tables ]
+- do not exist for internal traffic to the VCN (this is implied)
+- must create a route table (and rule) for routing traffic out to the internet
+
+
+[ Dynamic Routing Gateway - DRG ]
+- for hybrid connectivity (think Virtual Gateway AWS, Virtual WAN Azure, Cloud Router GCP)
+- can connect via IPsec VPN, FastConnection (think DirectConnect AWS, ExpressRoute AWS, Cloud Interconnect GCP)
+
+[ Service Gateway ]
+- think VPC Endpoint AWS, PrivateLink AWS, ???? GCP 
+- connect to public services internally within your VCN
+
+[ Local Peering Gateway ]
+- think VPC Peering AWS/GCP, VNET Peering Azure
+- LPGs and routes must be deployed to each VCN
+- this is intra region peering
+
+[ Remote Peering Gateway ]
+- this is outer region peering
+- implemented via DRG
+
+[ Security List ]
+- applied at the subnet level
+
+[ Network Security Groups ]
+- think AWS Security Groups, Azure NSGs
+- can be applied to resources (compute, load balancers, databases)
+
+
+IAM
+------
+- compatible with Active Directory and SAML 2.0 compliant IdPs
+
+Principles 
+  root user (very first user in the OCI account)
+
+IAM Users/Groups
+  can be people or applications 
+  group - a collection of users
+  users have no permissions until they are placed in a group
+  
+Instance Principals
+  think instance profile (AWS)
+  think system/user assigned managed identities (Azure)
+  
+[ Policy ] 
+- an entity that specifies which groups can access specific resources and how
+- best practice is to assign access at the compartment level
+- policy can also be placed at the tenant level
+  
+  
+Requirements of a Policy:
+ACTION/VERB
+RESOURCE TYPE
+LOCATION (TENANCY | COMPARTMENT)
+OR
+CONDITION (ANY | ALL | OR | AND)
+
+Allow <subject> to <verb> <resource-type> in <location> where <conditions>
+  
+- all policy statements begin with allow
+- by default all access to resources within compartment is explicitly denied
+- policy is inherited between the parent compartment and any child components (think Management Groups Azure)
