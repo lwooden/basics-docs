@@ -6,7 +6,7 @@ Realm (think Partner Regions Azure)
   Region
      Tenancy - a logical grouping of users, groups, and compartments
         Compartments - logical container for resources (think folders GCP; Management Groups Azure)
-          Compartment 1
+        Compartment 1
           IAM
           Policy
           Billing
@@ -50,8 +50,8 @@ Regions
 - can span AD's or regions (preferred)
 - can specify a subnet as public or private (think AWS)
 
-Private Subnets - only receive private IP address
-Public Subnets - assigns a public and private address
+Private Subnets - only receive private IP addresses
+Public Subnets - assigns a public and private addresses
 
 [ Routing Tables ]
 - do not exist for internal traffic to the VCN (this is implied)
@@ -66,12 +66,12 @@ Public Subnets - assigns a public and private address
 - think VPC Endpoint AWS, PrivateLink AWS, ???? GCP 
 - connect to public services internally within your VCN
 
-[ Local Peering Gateway ]
+[ Local Peering Gateway - LPG]
 - think VPC Peering AWS/GCP, VNET Peering Azure
 - LPGs and routes must be deployed to each VCN
 - this is intra region peering
 
-[ Remote Peering Gateway ]
+[ Remote Peering Gateway - RPG ]
 - this is outer region peering
 - implemented via DRG
 
@@ -117,3 +117,31 @@ Allow <subject> to <verb> <resource-type> in <location> where <conditions>
 - all policy statements begin with allow
 - by default all access to resources within compartment is explicitly denied
 - policy is inherited between the parent compartment and any child components (think Management Groups Azure)
+
+
+
+Compute
+------------
+
+[ Shapes ] // think Instance Family
+
+
+[ Block Volumes ] // think AWS EBS, Azure Disks, Persistent Disk GCP
+
+
+[ Volume Groups ]
+
+
+[ Custom Image Users ]
+opc - Oracle Linux/CentOS
+ubuntu - Ubuntu
+opc - Windows
+
+
+
+Storage
+-----------
+
+[ OCI File Storage ]
+
+[ OCI Object Storage ]
