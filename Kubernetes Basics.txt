@@ -82,6 +82,7 @@ To test connectivity to a application I have to:
 AWS EKS 1-Node Cluster Setup (DEV)
 ----------------------------------------------
 eksctl create cluster --name=lowk8 --nodes=1 --node-type=m5.large --zones=us-east-1a,us-east-1b
+eksctl create cluster --name=lowk8 --enable-auto-mode
 aws eks update-kubeconfig --name <CLUSTER_NAME> // updates kube-config w/ credentials
 eksctl delete cluster --region=us-east-1 --name=lowk8
 
