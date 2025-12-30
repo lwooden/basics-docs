@@ -47,4 +47,16 @@ Plan In Out
 - pass the plan file as context to the LLM to begin implementation
 - ask LLMS to generate doc files (doc.md) for certain pieces of your application to make it easier to extend (for example adding a new domain object)
 
+Prompting
+---------------
+What?
+Where?
+When?
+Who?
+Why?
 
+
+MCPs + LLMs
+------------------
+- webpages are beginning to host LLM.txt (convex.dev/llm.txt) endpoints to serve as a better interface for LLMs to be able to quickly parse and navigate a website
+- these files function as consolidated docs that LLMs can understand
