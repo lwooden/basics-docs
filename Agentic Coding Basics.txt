@@ -6,6 +6,12 @@ CLI Tools
 - Claude CLI
 - Gemini CLI
 
+IDEs
+------
+- Cursor
+- Claude Code
+- Visual Studio Code
+- Warp
 
 Context Window
 ---------------------
@@ -14,10 +20,31 @@ Compact - when the agentic IDE takes historical chats/responses, summarizes it, 
 
 Models
 ----------
-Composer 1 - fast, decent output
+Composer 1 - very fast, decent output
 Claude Sonnet 4.5 - average speed and output
 Opus - superior model for coding
-GPT Codex High 
+GPT5 Codex High - high reasoning model for complex features
+Gemini 3 - great for building user interfaces
 
 
 *Keep in mind I can call multiple models in parallel to test (more expensive)
+
+
+Diagrams
+-------------
+- LLMs can traverse my code base and generate diagrams (mermaid  graphs) that show the interconnectivity --> https://mermaid.live
+
+
+UI Designs
+---------------
+- focus on getting one page how I want it and ask the LLM to make all other pages look like that one
+
+
+Plan In Out
+---------------
+- cursor and claude have a "plan mode"
+- ask LLMs to generate a plan (plan.md file) before having it start to modify actual code
+- pass the plan file as context to the LLM to begin implementation
+- ask LLMS to generate doc files (doc.md) for certain pieces of your application to make it easier to extend (for example adding a new domain object)
+
+
