@@ -60,3 +60,19 @@ MCPs + LLMs
 ------------------
 - webpages are beginning to host LLM.txt (convex.dev/llm.txt) endpoints to serve as a better interface for LLMs to be able to quickly parse and navigate a website
 - these files function as consolidated docs that LLMs can understand
+
+
+Skills
+-------
+- supported by claude, gemini, and openai
+- small directories that contain information that an LLM can use to accomplish a particular goal better
+
+https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/main/.claude/skills/ui-ux-pro-max
+
+// Structure
+[.claude || .gemini]/skills/ui-ux-pro-max
+/data
+/scripts
+SKILL.md # contains skill description and how to use the skill
+
+

@@ -340,6 +340,11 @@ werf converge --repo public.ecr.aws/mock-node-api/lowsandbox
 // Clean-Up
 
 
+// this keeps the container runner so I can investigate other issues (e.g. filesystem mounting, startup, etc)
+image: <>
+command: [‘tail’, ‘-f’, ‘/dev/null’]
+
+
 Common Commands
 ----------------------------
 
@@ -347,6 +352,8 @@ Common Commands
 kubectl config view
 kubectl config current-context 
 kubectl config use-context arn:aws:eks:us-east-1:548883107094:cluster/alaffia-eks-cluster-prod
+kubectl config set-context --current --namespace=<insert-namespace-name-here> // set default namespace
+
 
 kubectl config get-clusters || delete-cluster <CLUSTER_NAME>
 kubectl config get-contexts || delete-context <CLUSTER_NAME>

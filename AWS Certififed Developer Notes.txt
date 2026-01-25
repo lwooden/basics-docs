@@ -212,7 +212,7 @@ MOCK
   API gateway returns a response with a request being sent (for testing)
   
 HTTP/AWS 
-  configure integration request and reponse
+  configure integration request and response
   setup data mapping using templates for the request/response
   this enables us to modify the request after it hits API Gateway and modify the response before sending back to the client
  
@@ -230,7 +230,7 @@ HTTP_PROXY
 - modify query string parameters
 - modify body content
 - add headers
-- filter out unneccessary data before sending reponse
+- filter out unnecessary data before sending response
 
 
 [Caching]
@@ -290,12 +290,12 @@ DynamoDB
 - strong consistency: all writes happen across all 3 locations at once
 - an "item" represents a "row" in a table
 - an "attribute" represents a "column" in a table
-- stores and retrives data based on primary key
+- stores and retrieves data based on primary key
 - 400 KB is the limit for a row of data
 
 [Primary Keys]
-Parition Key - a unique attribute (id)
-Compsite Key - combination of partition key + sort key
+Partition Key - a unique attribute (id)
+Composite Key - combination of partition key + sort key
 **all items with the same partition key are stored together and sorted by the sort key
 
 [Provisioned Mode]
@@ -506,7 +506,7 @@ CONSUMERS
   2MB/sec per consumer per shared - enhanced fan out (push)
   
  // APIs
-describe-stream  -> referece the stream to get the shard ID
+describe-stream  -> reference the stream to get the shard ID
 get-shard-iterator -> reference the stream and shard ID to get a iterator to read from the shard
 get-records -> reference the iterator to begin reading from the shard (from the beginning, middle, or end)
 
@@ -523,7 +523,7 @@ SPLITTING
 MERGE
   used to merge "cold" shards
   cannot merge more that 2 shards in a single operation
-  decreae throughput
+  decrease throughput
   decrease cost
   old shard will be closed and data will expire according to retention period
   
@@ -732,6 +732,36 @@ In-Line - one-to-one relationship between the entity and the policy; cannot be a
 
 [STSAssumeRole]
 - allows customers to take tokens provided by successful authentication workflows to IDP's like Facebook/Google and use them in the assume-role-with-web-identity API call in order to get temporary AWS crednetials
+
+
+
+SSM
+------
+- secure storage for configurations and secrets (besides AWS Secrets Manager)
+- provides version tracking
+- integrates with other services
+- supports encryption via KMS
+- can reference secrets that are stored in Secrets Manager
+
+// Parameter Store Hierarchy
+
+/my-department
+  /my-app
+    /dev
+     - db-url
+     - db-password
+    /prod
+     - db-url
+     - db-password
+  /other-app
+  
+// Tiers
+
+Standard
+
+Advanced
+  
+
 
 
 
