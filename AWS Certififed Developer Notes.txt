@@ -429,7 +429,7 @@ Client -> DAX Cluster -> DynamoDB Tables
 
 KMS 
 ------
-- use whenever handling sensitve data
+- use whenever handling sensitive data
 
 CMK (Customer Managed Key)
 - can only encrypt / decrypt up to 4KB of data
@@ -610,11 +610,12 @@ CI/CD
 - by default containers are launched outside your VPC
 - can configure to run inside your VPC
 
-buildspec.yml (root)
+// buildspec.yml # must be in root of project
 
-env
-  phases
-     install 
+env - set environment variables
+  phases - define phases
+     install
+       commands: - commands to run in the phase
      pre_build
      build
      post_build

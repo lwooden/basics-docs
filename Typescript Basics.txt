@@ -10,6 +10,17 @@ To transpile a .ts file to a .js file we have to use the typescript compiler
 tsc index.ts // if there are no errors this creates a new file in the folder called index.js
 
 
+Native TypeScript in Node
+---------------------------------
+- as of  Node 22.18.0 typescript can be executed natively
+
+If you are using v22.18.0 or later and your source code contains only erasable TypeScript syntax, you can execute TypeScript code without any flags.
+
+node example.ts
+
+
+
+
 Variable Declaration
 --------------------------
 
@@ -45,7 +56,7 @@ Function Declaration
 
 // declares a function that takes two variables as type number and returns a value of type number
 
-function add(num1: number, num2: number):number {
+function add(num1: number, num2: number): number {
 	return num1 + num2
 }
 
@@ -75,9 +86,54 @@ type IProduct = {
 }
 
 
+[ Union Types ]
+- narrows a value to one or more potential types
+- the effective type are the "union" of all of the types listed
+
+type ID = string | number
+
+// Discovering Primitive Types w/ typeof and instanceof
+typeof - checks if a value is a string, number, boolean, or symbol.
+
+const greeting: string = "Hello"
+if (typeof greeting === "string") {
+  return "This is indeed a string!"
+}
+
+instanceof - checks if an object was created from a particular class. For example, value instanceof Error returns true if value is an Error object.
+
+
+[ Type Guarding ]
+- validates that something that was given to me (an argument) is of a specific type
+
+# type guard function
+function isStringArray(value: TextInput): value is Array<string> {
+	return Array.isArray(value) && value.every((item) => typeof item === 'string')
+}
+
+# use the type guard function
+# since it will be of type array or string, i implement logic that assumes the join and trim methods are available
+function normalizeText(input: TextInput) {
+	if (isStringArray(input)) {
+		return input.join(' ').trim()
+	}
+	return input.trim()
+}
+
+[ Discriminate Unions ]
+- this is when you declare a family of types and use a literal property (.e.g kind) to differentiate between them
+- all other properties will use primitive types (.e.g. string, number)
+- you then declare a higher order type that is a union of the family of types
+- I can then use that property as a "checker" to determine which type I am using in a particular situation
+
+type Circle = { kind: 'circle'; radius: number }
+type Rectangle = { kind: 'rectangle'; width: number; height: number }
+type Shape = Circle | Rectangle
+
+
 
 Interface Declaration
------------------------
+----------------------------
 - another way to name an object type
 - define a "contract" that our objects will follow. 
 - this happens solely at compile time; once the code is compiled the concept of interfaces is gone.
@@ -118,12 +174,6 @@ const createRow = <T,>(label: string, value: T, disabled = false) => ({
 
 
 
-
-
-
-
-
-
 Control Flow
 -----------------
 
@@ -138,6 +188,9 @@ Iterative - Execute Many Times
 Transfer - Transfer Execution From One Part To Another
   break
   continue 
+  
+  
+  
 
 
 

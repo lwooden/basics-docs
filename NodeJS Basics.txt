@@ -98,18 +98,41 @@ console.log(other.getGreeting())
 
 
 
+Arrays
+--------
+
+[ For-of Syntax ]
+
+const numbers = [1, 2, 3, 4]
+
+for (const number of numbers ) {
+  // performs logic for each element of the array
+}
+
+
+
+Objects
+----------
+
+
 
 
 Functions
----------
+-------------
 
-[Standard]
+[ Standard ]
+- use this 99% of the time
+- this is better for stack traces and debugging (function name declaration)
 
-[Arrow]
+funciton myCoolFunction() { }
+
+[ Arrow ]
+- use this when I am creating callback function or functions will a small amount of logic
+
+const myCoolFunction = () => {}
 
 
-Callback Functions
--------------------------
+[ Callback Functions ]
 
 const geocode = (address, callback) => {
   setTimeout(() => {
