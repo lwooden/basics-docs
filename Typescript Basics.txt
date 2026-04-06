@@ -74,7 +74,7 @@ class Student {
 
 
 Type Aliases
-—————————
+-----------------
 -  a name for any type
 - a type cannot be re-opened to add new properties like an interface which is always extendable — IMPORTANT
 
@@ -129,6 +129,36 @@ function normalizeText(input: TextInput) {
 type Circle = { kind: 'circle'; radius: number }
 type Rectangle = { kind: 'rectangle'; width: number; height: number }
 type Shape = Circle | Rectangle
+
+
+[ Literal Types ]
+THIS IS POWERFUL CONTINUE TO WORK ON THIS
+- deriving types from variables at runtime using "as const" at the end of an object definition
+- this is similar to defining enums but it is more dynamic and fluid
+
+const routes = {
+	home: '/',
+	login: '/login',
+	settings: '/settings',
+} as const
+
+
+// Create a `RouteName` type using `keyof typeof routes`
+type RouteName = keyof typeof routes // takes the keys of the object and creates a union out of them
+
+// Create a `RoutePath` type from the values of `routes`
+type RoutePath = (typeof routes)[RouteName] // takes the values of each of the keys in the object and makes a union out of them 
+
+// Add `as const` so this stays the literal '/'
+const defaultRoute: '/' = routes.home
+
+// Implement `getRoutePath` to return the path for a route name
+function getRoutePath(route: RouteName): RoutePath {
+	return routes[route]
+}
+
+console.log('Value: ', getRoutePath('settings'))
+
 
 
 
