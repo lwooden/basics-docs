@@ -19,6 +19,38 @@ If you are using v22.18.0 or later and your source code contains only erasable T
 node example.ts
 
 
+Imports
+-----------
+- method for brining it variables, functions, and objects from other modules in the codebase
+
+[ Named Exports ]
+- most common and clean approach
+- identify exports where they are defined rather than at the bottom of the file
+- can alias named imports 
+
+import { formatCurrency, formatDate } from './utils.ts'
+import { formatCurrency as format, formatDate } from './utils.ts'
+import * as data from './utils.ts' // import everything and asscociate with data object
+
+[ Default Exports ]
+- least common
+- used in React Component libraries
+- use when the module has one clear purpose and you are exporting one thing
+- when I import I can call the export whatever I  want at import time
+
+export default class Formatter {
+	formatCurrency(amount: number): string {
+		return formatCurrency(amount)
+	}
+
+	formatDate(date: Date): string {
+		return formatDate(date)
+	}
+}
+
+import Formatter from './utils.ts'
+import WhateverIWantToName from './utils.ts'
+
 
 
 Variable Declaration
@@ -61,14 +93,78 @@ function add(num1: number, num2: number): number {
 }
 
 
+Interfaces
+-------------
+- another way to name an object type
+- define a "contract" that our objects will follow. 
+- this happens solely at compile time; once the code is compiled the concept of interfaces is gone.
 
-Class Declaration
------------------------
+interface IProduct {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+}
+
+// create an instance of IProduct
+var product:IProduct = {
+    id: 1,
+    name: "Call of Duty",
+    description: "The latest COD game",
+    price: 59.99
+}
+
+
+interface PaymentMethod {
+	pay(amount: number): string
+}
+
+class CreditCard implements PaymentMethod {
+	cardNumber: string
+
+	constructor(cardNumber: string) {
+		this.cardNumber = cardNumber
+	}
+   // because the CreditCard class implements (or extends) PaymentMethod we MUST provide a concrete implementation of the pay method
+	pay(amount: number): string {
+		return `Paid $${amount} with credit card ${this.cardNumber}`
+	}
+}
+
+
+Classes
+----------
+- at a primitive level, classes are functions
 
 class Student {
+  id: number
+  number: string
+  
    constructor(id: number, name: string) {
+     this.id = id
+     this.name = name
    }
 }
+
+[ Extending ] 
+
+class Shape {
+	color: string
+
+	constructor(color: string) {
+		this.color = color
+	}
+}
+
+class Circle extends Shape {
+	radius: number
+
+	constructor(color: string, radius: number) {
+		super(color) // call super to initailize parent class properties
+		this.radius = radius
+	}
+}
+
 
 
 
@@ -160,32 +256,8 @@ function getRoutePath(route: RouteName): RoutePath {
 console.log('Value: ', getRoutePath('settings'))
 
 
-
-
-Interface Declaration
-----------------------------
-- another way to name an object type
-- define a "contract" that our objects will follow. 
-- this happens solely at compile time; once the code is compiled the concept of interfaces is gone.
-
-interface IProduct {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-}
-
-// create an instance of IProduct
-var product:IProduct = {
-    id: 1,
-    name: "Call of Duty",
-    description: "The latest COD game",
-    price: 59.99
-}
-
-
 Generic Objects
-———————
+---------------------
 
 interface Row<T> {
   label: string;
@@ -195,12 +267,39 @@ interface Row<T> {
 
 
 Generic Functions
-————————
+---------------------
+- allows me to compose reusable functions that can be conumed using many different Types
+- <T> represents a "Type Variable" that signals to TypeScript that the type that is passed into the function should also be returned 
+- this provides us flexibilty with type safey unlike using "any" which provides us flexibility with no guarnteed type safety
 
+function identity<T>(value: T): T {
+	return value
+}
+
+// Create a generic `last` function
+// Takes an array of Item, returns Item | undefined
+function last<T>(list: Array<T>): T | undefined {
+	return list.at(-1)
+}
 
 const createRow = <T,>(label: string, value: T, disabled = false) => ({
   // do stuff
 });
+
+
+
+
+
+Enums
+-------------
+- enums are similar to declaring union variables in type script
+- enums generated additional code at runtime which is what we want to avoid as much as possible (pure code)
+
+enum Status {
+  Ready: 'ready',
+  NotReady: 'not ready'
+  Pause: 'paused'
+}
 
 
 
