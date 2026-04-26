@@ -4,10 +4,71 @@ Tailwind Basics
 Ultimate Reference Point -> https://tailwind-workshop.vercel.app
 Online Playground -> play.tailwindcss.com
 
+
+Common Tailwind CSS References
+-----------------------------------------------
+// Text 
+text-2x
+text-red-500
+text-center
+text-[30px] - custom pixel size injection
+font-extrabold
+font-mono
+
+// Container Style
+bg-red-500 - background
+border-2 - border thickness
+border-violet-600 - border color
+rounded-md - rounded border corners
+
+Positioning
+- defines where an element appears relative to the container it is in
+Relative - moves 
+Absolute - moves to nearest parent
+Fixed - doesn't move
+Sticky - normal until scrolled
+
+Display
+- determines how an element behaves 
+
+Block - full width
+Inline - behaves like test
+Flex - enables Flexbok
+Grid - enables Grid
+
+
+// Positioning - defines where an element appears relative to the container it is 
+min-h-[px]
+min-w-[px]
+
+**Margin is external spacing; it pushes elements away from other elements
+m - same value all around margin
+mx - margin top & bottom
+my - margin left & right
+
+**Padding is internal spacing; it adds space when inside of another container
+p - padding same value all around padding
+px - padding top & bottom
+py - padding left & right
+
+gap - 
+h-10 - height
+w-full - full width of container
+
+// Layout (Flexbox & Grid)
+flex justify-center  # horizontal presentation
+flex flex-col items-center # column presentation
+
+grid grid-cols-3
+
+
 What is Tailwind CSS?
 ------------------------------
 - The core idea behind Tailwind is to provide developers with utility classes to create unique designs directly in their HTML markup
+- Tailwind adheres to a mobile first approach making it easier to design for the both the web and mobile devices
 - Utility classes are short CSS snippets for specific styling like background color, margins, and fonts
+- JIT Compiler generates styles on demand; only includes the exact classes I use in my project; keeping my CSS minimal
+
 
 The Tailwind Layers
 ---------------------------
@@ -46,19 +107,32 @@ Components are often expressed in your CSS files using the @layer components {} 
 
 
 [ Utilities ]
+- 
+
+@utility flex-center {
+	@apply flex justify-center item-center; # applies these 3 classes to the 1 flex-center class
+}
+
+
+Media Queries
+-------------------
+- allow me to change css values based on the size of the screen
+
+sm = 40rem / 640px
+md = 48rem / 768px
+lg = 64rem / 1024px
+xl = 80rem / 1280px
+2xl = 96rem / 1536px
+
+<div className: md:block hidden> // this text remains hidden until the screen expands beyond  768px
+<p>I only display on screens larger than 768px </p>
+</div>
+
+<div className: max-sm:bg-red max-md:bg-blue > // this will change the color of the container based how small the screen is; the max size of the view port is set
+<p>I only display on screens larger than 768px </p>
+</div>
 
 
 
 
-Common Tailwind CSS References
------------------------------------------------
-min-h-[px]
-min-w-[px]
-px - padding side
-py - padding top
-mt 
-flex
-flex-col
-justify-between
-gap - 
-items-center
+
