@@ -1,0 +1,21 @@
+React-Native Basics
+
+
+Expo Project Structure
+------------------------------
+
+[ Important Files ]
+main.tsx - expo-router/entry tells expo to boot the app through expos file-based routing system  
+app.json - expos config file; controls app name, icon, splash screen, and platform specific settings (ios/android)
+tsconfig.json - extends expo base typescript config (path alias, strict compile mode
+app - where the source code lives
+
+_layout.tsx - wraps all of my screens; functions the same in Tanstack, Next, and plain React (things that show on every page)
+index.tsx - the first page users see ("/" root screen)
+
+
+
+Styling
+----------
+- Nativewind is React-Natives tailwind-css implementation
+
