@@ -19,3 +19,36 @@ Styling
 ----------
 - Nativewind is React-Natives tailwind-css implementation
 
+
+Route Groups
+-------------------
+- a way to organize files in my project
+- the phrase in parenthesis never show up in the URL window
+\(auth)
+  sign-in.tsx
+  sign-up.tsx
+  
+Dynamic Routes
+--------------------------
+\app
+   \(tabs)
+     \subscriptions
+        [id].tsx  
+  
+  
+  
+ Layout Files
+ -----------------
+ - can be created to define a layout for a particular group of routes within my applicaiton
+ - this is so they can all have the same look and feel
+ 
+ 
+ /app
+ (auth)
+   sign-in.tsx
+   sign-up.tsx
+   _layout.tsx ---> auth group layout
+_layout.tsx ---> root layout wrapper for the entire application (every page)
+
+
+

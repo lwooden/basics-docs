@@ -1,0 +1,219 @@
+
+The Hierarchy
+------------------
+
+Realm (think Partner Regions Azure)
+  Region
+     Tenancy - highest level of segementation (think AWS Account, GCP project)
+        Compartments - logical container for identities, resources, and policies (think AWS Child Accounts, GCP Folders, Azure Management + Resource Groups )
+          IAM
+          Policy
+          Billing
+          
+OCID - Oracle Cloud Identifier
+ocid1.<resource type>.<realm>.[region][.future].<unique ID> 
+
+[ Tenancy ]
+- the highest level of segementation
+(including the defualt compartment)
+- can serve as the overarching organization (high level centralization) or represent a distinct project or program (low level distribution)
+
+[ Compartments ]
+- resources can only belong to (1) compartment
+- rescoues can be "moved" between components
+- span regions 
+- used for organization and fine grained access-control
+- support nested compartments (up to 6 levels) and policy inheritance (poilcy - Azure Management Groups, GCP Folders)
+
+[ Example Compartment Hierarchy ]
+
+1. NetworkInfra
+  Loadbalancers
+  VCN
+  Internet Gateway 
+  Security List
+  
+2. Dev/Test/Prod Networks
+  Dev Network
+  Test Network
+  Prod Network
+  
+3. Projects (A/B/C)
+  Instances
+  Storage
+  Databases
+  Policy
+  
+  
+  
+IAM  // UNIQUE
+------
+- compatible with Active Directory and SAML 2.0 compliant IdPs
+- also supports modern speciications such as OAUTH, OIDC, SAML, SCIM
+- can sync between other external IDPs (i.e. EntraID, Auth0)
+- supports MFA and SSO
+- contains strong pre-built administrative roles for delegation within the organization
+
+[ Identity Domains ]
+- distinct logical containers that hold identity information for users or applications
+- think multiple Entra ID Directories
+
+// Types
+
+Free - Access to All OCI Servies | Limits (2K Users, 2 Non-Oracle Accounts, 3 External IDP Connections) | Uses "DEFAULT" Domain
+Oracle App Premiums - authenticaiton for any Oracle Applications (Hybrid)
+Premium - No restrictions
+External User - 
+
+
+Principles 
+  root user (very first user in the OCI account)
+
+IAM Users/Groups
+  can be people or applications 
+  group - a collection of users
+  users have no permissions until they are placed in a group
+  
+Prebuilt Administrative Roles
+  Identity Domain Administrator - super user privildges within the domain 
+  User Administrator - can full user/group lifecycle within the domain
+  User Manager - can manage account updates, activation , deactivation, removal and password related tasks
+  Security Administrator - can manage IAM, defaults, notifications, password policies, MFA, and Active Directory Bridge
+  Application Administrator - can manage full app lifecycle and user/group management
+  Help Desk Administrator - can manage user details, unlock accounts, and password related task within the domain
+  Audit Administrator - run reports within a domain
+  
+Instance Principals
+  think instance profile (AWS)
+  think system/user assigned managed identities (Azure)
+  
+[ Policy ] 
+- an entity that specifies which groups can access specific resources and how
+- best practice is to assign access at the compartment level
+- policy can also be placed at the tenant level
+  
+  
+Requirements of a Policy:
+  
+Princpal/Group
+   any-user
+   Network-Admins
+   
+Action/Verbs
+  inspect - observe and monitor; no access to data
+  read - read data
+  use - modify pre-existing resource
+  manage - create/delete; full administrative control
+
+Resource Type
+  all-resources
+  # Aggregate Resource Types
+  [database | instance | object | volume]-family 
+  # Individual Resource Type
+  db-systems
+  instances
+  buckets
+  
+Location
+  Tenancy or Compartment
+  
+OR
+CONDITION (ANY | ALL | OR | AND)
+
+Allow <subject> to <verb> <resource-type> in <location> where <conditions>
+
+// Example
+Allow group 'Production (Domain)/'Network Admin' to manage virtual-network-family in compartment Sandbox
+
+- some resources have an "aggregator type"; this means access can be granted to the entire family of the type (.e.g volume-family) // UNIQUE
+  
+- all policy statements begin with allow
+- by default all access to resources within compartment is explicitly denied
+- policy is inherited between the parent compartment and any child components (think Management Groups Azure)'
+
+
+
+
+[ Active Directory Bridge ]
+- connector to sync between my exsting AD infrastructure and OCI
+
+
+  
+
+Networking
+--------------
+
+Regions
+  Availability Domains (AD) -- think Availability Zones AWS/Azure
+    Fault Domains -- similar to Azure
+
+
+[ Virtual Cloud Networks - VCN ]
+- think AWS VPC and Azure VNET
+
+
+[ Subnets ]
+- can span AD's or regions (preferred)
+- can specify a subnet as public or private (think AWS)
+
+Private Subnets - only receive private IP addresses
+Public Subnets - assigns a public and private addresses
+
+[ Routing Tables ]
+- do not exist for internal traffic to the VCN (this is implied)
+- must create a route table (and rule) for routing traffic out to the internet
+
+
+[ Dynamic Routing Gateway - DRG ]
+- for hybrid connectivity (think Virtual Gateway AWS, Virtual WAN Azure, Cloud Router GCP)
+- can connect via IPsec VPN, FastConnection (think DirectConnect AWS, ExpressRoute AWS, Cloud Interconnect GCP)
+
+[ Service Gateway ]
+- think VPC Endpoint AWS, PrivateLink AWS, ???? GCP 
+- connect to public services internally within your VCN
+
+[ Local Peering Gateway - LPG]
+- think VPC Peering AWS/GCP, VNET Peering Azure
+- LPGs and routes must be deployed to each VCN
+- this is intra region peering
+
+[ Remote Peering Gateway - RPG ]
+- this is outer region peering
+- implemented via DRG
+
+[ Security List ]
+- applied at the subnet level
+
+[ Network Security Groups ]
+- think AWS Security Groups, Azure NSGs
+- can be applied to resources (compute, load balancers, databases)
+
+
+
+
+
+Compute
+------------
+
+[ Shapes ] // think Instance Family
+
+
+[ Block Volumes ] // think AWS EBS, Azure Disks, Persistent Disk GCP
+
+
+[ Volume Groups ]
+
+
+[ Custom Image Users ]
+opc - Oracle Linux/CentOS
+ubuntu - Ubuntu
+opc - Windows
+
+
+
+Storage
+-----------
+
+[ OCI File Storage ]
+
+[ OCI Object Storage ]
