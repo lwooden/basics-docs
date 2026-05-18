@@ -25,26 +25,6 @@ ocid1.<resource type>.<realm>.[region][.future].<unique ID>
 - used for organization and fine grained access-control
 - support nested compartments (up to 6 levels) and policy inheritance (poilcy - Azure Management Groups, GCP Folders)
 
-[ Example Compartment Hierarchy ]
-
-1. NetworkInfra
-  Loadbalancers
-  VCN
-  Internet Gateway 
-  Security List
-  
-2. Dev/Test/Prod Networks
-  Dev Network
-  Test Network
-  Prod Network
-  
-3. Projects (A/B/C)
-  Instances
-  Storage
-  Databases
-  Policy
-  
-  
   
 IAM  // UNIQUE
 ------
@@ -132,14 +112,11 @@ Allow group 'Production (Domain)/'Network Admin' to manage virtual-network-famil
 - policy is inherited between the parent compartment and any child components (think Management Groups Azure)'
 
 
-
-
 [ Active Directory Bridge ]
 - connector to sync between my exsting AD infrastructure and OCI
 
 
   
-
 Networking
 --------------
 
@@ -150,6 +127,10 @@ Regions
 
 [ Virtual Cloud Networks - VCN ]
 - think AWS VPC and Azure VNET
+
+// 1st IP - Network Address
+// 2nd IP - Default Gateway
+// Last IP - Broadcast
 
 
 [ Subnets ]
@@ -163,6 +144,22 @@ Public Subnets - assigns a public and private addresses
 - do not exist for internal traffic to the VCN (this is implied)
 - must create a route table (and rule) for routing traffic out to the internet
 
+[ Internet Gateway ]
+
+[ NAT Gateway ]
+- there are no hourly provisioning or data processing fees // UNIQUE
+- they are treated as a standard networking component
+
+[ Security List ]
+- applied at the subnet level
+
+[ Network Security Groups ]
+- can be applied to resources (compute, load balancers, databases)
+- think AWS Security Groups, Azure NSGs
+
+[ DHCP Option Set ]
+
+
 
 [ Dynamic Routing Gateway - DRG ]
 - for hybrid connectivity (think Virtual Gateway AWS, Virtual WAN Azure, Cloud Router GCP)
@@ -173,20 +170,16 @@ Public Subnets - assigns a public and private addresses
 - connect to public services internally within your VCN
 
 [ Local Peering Gateway - LPG]
-- think VPC Peering AWS/GCP, VNET Peering Azure
 - LPGs and routes must be deployed to each VCN
 - this is intra region peering
+- think VPC Peering AWS/GCP, VNET Peering Azure
 
 [ Remote Peering Gateway - RPG ]
 - this is outer region peering
 - implemented via DRG
 
-[ Security List ]
-- applied at the subnet level
 
-[ Network Security Groups ]
-- think AWS Security Groups, Azure NSGs
-- can be applied to resources (compute, load balancers, databases)
+
 
 
 

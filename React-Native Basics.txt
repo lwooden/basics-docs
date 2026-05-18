@@ -52,3 +52,61 @@ _layout.tsx ---> root layout wrapper for the entire application (every page)
 
 
 
+SafeAreaView Component
+ ----------------------------------
+ 
+View Componenet
+ ------------------------
+ - function as the "div" in React Native
+ 
+ Pressable Component
+ -----------------------------
+
+FlatList Component
+ -------------------------
+
+Expo EAS App Store Deployment  (IOS + Android)
+----------------------------------------------------------
+- performs cloud builds for my apps
+- produces installable binaries
+- manages the key signing and certifiates management process for each phone platform for me
+- I must have Apple and Andoird Developer Account
+
+Install EAS CLI
+  npm install -g eas-cli
+
+Login
+  eas login && eas whoami
+  
+Perform Initial Build
+  eas build:configure 
+  # will prompt for project creation (app.json)
+  
+Perform Final Build
+  eas build --platform ALL [ios || android]  --profile production
+  # this will send a production build to EAS cloud servers to carry out
+  # wiil ask for Developer Account credentials
+  
+Submit Build to the App Store
+  eas submit --platform ios
+  # will ask you to confirm the build that I want to reference
+  # will begin the submission process
+  
+Testing with TestFlight
+  In the App Connect Store I can setup Internal/External Testers
+  This references a email so that users can download TestFlight and see the applications in their profile
+  Download TestFlight
+  
+
+
+
+  
+
+
+
+
+ 
+ 
+
+
+

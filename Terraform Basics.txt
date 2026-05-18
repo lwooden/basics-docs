@@ -1,6 +1,5 @@
 Terraform Basics
 -----------------
-
 - Allows me to write infrastructure-as-code
 - Automation of my infrastructure
 - Keep infrastructure in a certain state (e.g no less than 3 instances open)
@@ -12,6 +11,9 @@ Terraform Basics
 is provisioned
 - Works with multiple cloud providers
 
+
+Common Commands
+----------------------------
 $ terraform version
 $ terraform init // run in new directory with your terraform file before you run "apply"
 $ terraform validate // validates terraform files
@@ -22,18 +24,53 @@ $ terraform plan -out tfplan // safe way to print the changes that are going to 
 $ terraform apply tfplan // changes that are going to be executed
 $ terraform console // starts interactive console to evaluate expressions based on created objects
 
-Make a directory for your terraform files
+
+Block Types
+-----------------
+
+Terraform - configures the workspace
+  Providers - provider specific configs
+    Resources - creates infrastructure; come from providers
+      Modules - resuable pieces of code
+        Data - read-only and for lookups
+          Variables - provides input to the program
+             Locals - scoped to a module
+               Output s- share data across modules or workspaces
+               
+
+.Terraformrc
+-----------------
+- Terraform's CLI configuration file for a user's local environment. It lets you customize how the Terraform CLI behaves on your machine.
+- It lives in my home directory (~/.terraformrc)
+- Common things configured: creadentials, special provider installation (private mirror url) 
+
+
+Workflow
+------------
+
+// Make a directory for your terraform files
   mkdir -p /terraform
   cd /terraform
 
-Create a terraform script
+// Create a terraform script
   vim main.tf
   
+// Define required_providers 
+# Define
+required_providers {
+       aws = {
+       version = ">= 5.0.0"
+       source  = "hashicorp/aws"
+       }
+  }
+  # Config
   provider "aws" {
   access_key = "xxxxxx"
   secret_key = "xxxxxx"
   region     = "us-east-1"
 }
+
+// Create a Resource
 
 // "resource_type" "resource_name"
 resource "aws_instance" "example" {  
