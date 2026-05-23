@@ -367,6 +367,7 @@ kubectl explain <resource> // list information about fields associated with the 
 // Events + Cluster Information
 kubectl get events -A --sort-by=.metadata.creationTimestamp // get events from all namespaces
 kubectl cluster-info dump
+kubectl get events -A --field-selector reason=FailedScheduling // get FailedScheduling events from all namespaces
 
 
 // Get All
