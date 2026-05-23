@@ -128,9 +128,11 @@ Regions
 [ Virtual Cloud Networks - VCN ]
 - think AWS VPC and Azure VNET
 
-// 1st IP - Network Address
-// 2nd IP - Default Gateway
-// Last IP - Broadcast
+[ CIDR IP Allocation ]
+1st IP - Network Address
+2nd IP - Default Gateway
+Last IP - Broadcast
+*no reserved octets for future use like other CSPs
 
 
 [ Subnets ]
@@ -158,12 +160,12 @@ Public Subnets - assigns a public and private addresses
 - think AWS Security Groups, Azure NSGs
 
 [ DHCP Option Set ]
-
-
+- think AWS
 
 [ Dynamic Routing Gateway - DRG ]
 - for hybrid connectivity (think Virtual Gateway AWS, Virtual WAN Azure, Cloud Router GCP)
 - can connect via IPsec VPN, FastConnection (think DirectConnect AWS, ExpressRoute AWS, Cloud Interconnect GCP)
+
 
 [ Service Gateway ]
 - think VPC Endpoint AWS, PrivateLink AWS, ???? GCP 
@@ -178,20 +180,56 @@ Public Subnets - assigns a public and private addresses
 - this is outer region peering
 - implemented via DRG
 
+[ Customer Premise Equipment - CPE ]
+- a logical construct that represents my on-premises router
+- think AWS CGW (Customer Gateway)
 
+[ Fast Connect ]
+- private, high-speed, performant connectity to Oracle Cloud
+- they offer connecitity to "Public" Oracle Services like other CSPs
+- think DirectConnect AWS, ExpressRoute AWS, Cloud Interconnect GCP
 
+[ Transitive Routing ]
+On-Prem/CPE -> DRG -> Hub VCN -> Local Peering Gateway -> Spoke VCN
 
+[ Network Command Center ]
 
+Loadbalancers
+--------------------
 
+[ Loadbalancer ]
+- TCP
+- HTTP
+
+// Policies
+Round Robin
+Least Connection
+IP Hash
+Web Application Acceleration (Caching || Compression) + Acceleration Resource 
 
 
 Compute
 ------------
 
-[ Shapes ] // think Instance Family
+[ Images ]
+- Oracle Linux (based off RHEL)
+- Ubuntu
+- CentOS
+- Windows
+*RedHat not supported by default; must manually import RedHat image from RHEL w/ license
+*Max image size is 400GB
 
+[ Shapes ]
+- define oCPUs and Memory supported by an instance 
+- AMD, ARM, and Intel based processors
 
-[ Block Volumes ] // think AWS EBS, Azure Disks, Persistent Disk GCP
+FIXED - cannot customize specs
+
+FLEXIBLE - can customize specs // UNIQUE (OCI/GCP)
+  VM.Standard.E3.Flex
+
+[ Block Volumes ] 
+- think AWS EBS, Azure Disks, Persistent Disk GCP
 
 
 [ Volume Groups ]
@@ -201,6 +239,16 @@ Compute
 opc - Oracle Linux/CentOS
 ubuntu - Ubuntu
 opc - Windows
+
+[ Vertical Scaling || Horizontal Scaling ]
+
+[ Oracle Cloud Agent ] 
+
+[ OS Management Hub ]
+
+[ Run Command ]
+
+[ Shielded Instances ]
 
 
 

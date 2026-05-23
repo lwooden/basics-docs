@@ -81,7 +81,7 @@ To test connectivity to a application I have to:
  
 AWS EKS 1-Node Cluster Setup (DEV)
 ----------------------------------------------
-eksctl create cluster --name=lowk8 --nodes=1 --node-type=m5.large --zones=us-east-1a,us-east-1b
+eksctl create cluster --name=lowk8 --nodes=1 --node-type=m7.large --zones=us-east-1a,us-east-1b
 eksctl create cluster --name=lowk8 --enable-auto-mode
 aws eks update-kubeconfig --name <CLUSTER_NAME> // updates kube-config w/ credentials
 eksctl delete cluster --region=us-east-1 --name=lowk8
@@ -89,13 +89,13 @@ eksctl delete cluster --region=us-east-1 --name=lowk8
 
 // Accessing AWS Services Via Pods
 
-IRSA - IAM Roles for Service Accounts (Available on High-Side)
+[ IRSA - IAM Roles for Service Accounts ]
 - requires OIDC Provider setup
 - would need to be setup per cluster
 
 eksctl utils associate-iam-oidc-provider --region=us-east-1 --cluster=lowk8 --approve
 
-Pod Identity (Not Available on High-Side)
+[ Pod Identity ] 
 - does not require OIDC Provider setup
 - requires pod identity add-on to be running in the cluster
 - requires association via the aws-cli/eksctl (aws eks create-pod-identity-association --cluster-name my-cluster --role-arn arn:aws:iam::111122223333:role/my-role --namespace default --service-account my-service-account)
@@ -122,7 +122,7 @@ Google GKS 1-Node Cluster Setup (DEV)
 ----------------------------------------------
 deploy vpc, subnets, etc using pulumi
 gcloud services enable container // enable GKE api 
-gcloud container clusters create lowk8-gke --cluster-version=1.27 --num-nodes=1 --network="low-sandbox-dev-vpc" --subnetwork="dev-private" --zone=us-east1-b --addons=HttpLoadBalancing,HorizontalPodAutoscaling
+gcloud container clusters create lowk8-gke --cluster-version=1.35 --num-nodes=1 --network="low-sandbox-dev-vpc" --subnetwork="dev-private" --zone=us-east1-b --addons=HttpLoadBalancing,HorizontalPodAutoscaling
 
 gcloud container clusters create-auto CLUSTER_NAME \ # creates auto-pilot cluster
     --region REGION \
@@ -179,8 +179,8 @@ Verify etcd is up and running (kubectl/client)
     k describe pod/etcd -n kube-system
     
     
-Using Helm for Manifest File Management
---------------------------------------------------------
+Using Helm To Deploy to Workloads
+-------------------------------------------------
 - Helm is a package/release manager aimed to help make deploying container based applications to Kubernetes simpler
 
 helm create example-chart // scaffolds a new helm project
@@ -209,8 +209,8 @@ helmfile sync // references helmfile.yaml in the working directory
 helmfile delete
 
 
-Using Kustomize to Manage Manifests
-----------------------------------------------------
+Using Kustomize To Deploy to Workloads
+-------------------------------------------------------
 - Kustomize is a standalone tool to manage K8s Yaml files, but it also comes included with kubectl. The common idea is to have a base set of K8s Yaml and then override or extend it for different overlays, like here done for staging and prod:
 - the common way to apply manifest created with Kustomize is:
 
@@ -332,17 +332,12 @@ spec:
           image: {{ .Values.werf.image.samplenodeapi }}
           
 werf build --repo public.ecr.aws/mock-node-api/lowsandbox
-werf build --repo public.ecr.aws/mock-node-api/lowsandbox --platform linux/amd64 || linux/arm64
+werf build --repo public.ecr.aws/mock-node-api/lowsandbox --platform [ linux/amd64 || linux/arm64 ]
 
 // Deploy
 werf converge --repo public.ecr.aws/mock-node-api/lowsandbox
 
 // Clean-Up
-
-
-// this keeps the container runner so I can investigate other issues (e.g. filesystem mounting, startup, etc)
-image: <>
-command: [‘tail’, ‘-f’, ‘/dev/null’]
 
 
 Common Commands
@@ -352,7 +347,7 @@ Common Commands
 kubectl config view
 kubectl config current-context 
 kubectl config use-context arn:aws:eks:us-east-1:548883107094:cluster/alaffia-eks-cluster-prod
-kubectl config set-context --current --namespace=<insert-namespace-name-here> // set default namespace
+kubectl config set-context --current --namespace=<NAMESPACE> // set default namespace for all commands
 
 
 kubectl config get-clusters || delete-cluster <CLUSTER_NAME>
@@ -367,6 +362,11 @@ kubectl config unset clusters.low-aks-cluster
 // Getting Help
 kubectl api-resources // list all resources currently available to you
 kubectl explain <resource> // list information about fields associated with the resource
+
+
+// Events + Cluster Information
+kubectl get events -A --sort-by=.metadata.creationTimestamp // get events from all namespaces
+kubectl cluster-info dump
 
 
 // Get All
@@ -387,6 +387,14 @@ kubectl describe nodes <NODE>
 kubectl label nodes <NODE> purpose: reports-services
 kubectl drain <NODE> --ignore-daemonsets // drains a node of it's running pods/containers and any daemonsets that are running on it and prevents anymore pods from being scheduled
 kubectl uncordon <NODE> // makes the node available to accept pod scheduling again
+
+
+// Resource Monitoring
+kubectl top pod // gets raw resource usage metrics for pods
+kubectl top pod --sort-by cpu
+kubectl top pod -l app=graphql-container 
+kubectl top node
+**Metrics Server must be installed in the cluster or this return no results
 
 
 // Namespaces
@@ -493,22 +501,13 @@ kubectl exec deploy/graphql-api -- sh -c 'nslookup processing-api' // perform an
 kubectl exec deploy/graphql-api -- ping -c  1 processing-api // perform a ping from inside a container
 
 
+image: nginx
+command: [‘tail’, ‘-f’, ‘/dev/null’] // keep the container shell open so I can investigate other issues (e.g. filesystem mounting, startup, etc)
+
+
 // Logging
 kubectl logs --tail=2 hello-kiamol-2-7f6dd54b9b-j6zvl // get logs from your container
 kubectl logs -l app=graphql-container --follow // trail logs as they come in w/ label app=graphql-container
-
-
-// Events + Cluster Information
-kubectl get events -A --sort-by=.metadata.creationTimestamp // get events from all namespaces
-kubectl cluster-info dump
-
-
-// Resource Monitoring
-kubectl top pod // gets raw resource usage metrics for pods
-kubectl top pod --sort-by cpu
-kubectl top pod -l app=graphql-container 
-
-kubectl top node
 
 
 // Copying Files
