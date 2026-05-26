@@ -1,4 +1,10 @@
 
+Cloud Shell
+----------------
+- can attach itself to the VCN network as if it was a virutal machine // UNIQUE (OCI, AWS, AZURE)
+- can perform ping and route test throughout your network
+- can switch what network Cloud Shell is connected to
+
 The Hierarchy
 ------------------
 
@@ -20,10 +26,22 @@ ocid1.<resource type>.<realm>.[region][.future].<unique ID>
 
 [ Compartments ]
 - resources can only belong to (1) compartment
-- rescoues can be "moved" between components
-- span regions 
+- resources can be "moved" between components
+- resources can span regions 
 - used for organization and fine grained access-control
 - support nested compartments (up to 6 levels) and policy inheritance (poilcy - Azure Management Groups, GCP Folders)
+- I can configure quotas to limit consumption across components // UNIQUE
+
+// Example Quote Policy
+set <family> quota <quota name> to <count> in <tenancy || compartment>
+set vcn quota vcn-count to 4 in compartment Production
+
+unset - reset back to default settings
+zero - sets value to 0; none of these resources can be created
+
+
+// Budgets
+- set budgers at the compartment level
 
   
 IAM  // UNIQUE
@@ -36,7 +54,9 @@ IAM  // UNIQUE
 
 [ Identity Domains ]
 - distinct logical containers that hold identity information for users or applications
-- think multiple Entra ID Directories
+- these are regional constructs
+- must enable replication for domains to access other regions
+- think multiple Azure Entra ID Directories
 
 // Types
 
@@ -56,7 +76,7 @@ IAM Users/Groups
   
 Prebuilt Administrative Roles
   Identity Domain Administrator - super user privildges within the domain 
-  User Administrator - can full user/group lifecycle within the domain
+  User Administrator - can manage full user/group lifecycle within the domain
   User Manager - can manage account updates, activation , deactivation, removal and password related tasks
   Security Administrator - can manage IAM, defaults, notifications, password policies, MFA, and Active Directory Bridge
   Application Administrator - can manage full app lifecycle and user/group management
@@ -72,8 +92,7 @@ Instance Principals
 - best practice is to assign access at the compartment level
 - policy can also be placed at the tenant level
   
-  
-Requirements of a Policy:
+// Requirements of a Policy
   
 Princpal/Group
    any-user
@@ -109,7 +128,24 @@ Allow group 'Production (Domain)/'Network Admin' to manage virtual-network-famil
   
 - all policy statements begin with allow
 - by default all access to resources within compartment is explicitly denied
-- policy is inherited between the parent compartment and any child components (think Management Groups Azure)'
+- policy is inherited between the parent compartment and any child components (think Management Groups Azure)
+
+[ Dynamic Groups ] // UNIQUE
+- a programmatic way to delegate access to large groups of principals
+
+// Principal Types
+User - human in the organization
+  Instance - unique VM host
+    Service - OCI managed service
+      Resource - database or loadbalancer
+
+// Workflow
+Create Dynamic Groups
+  Define Matching Rules for Memberships
+    Write Policies for Access
+    
+// Example Policy
+Allow dynamic-group 'COMPARTMENT'/'DYNAMIC_GROUP' to manage objects-family in compartment Production
 
 
 [ Active Directory Bridge ]
@@ -126,6 +162,7 @@ Regions
 
 
 [ Virtual Cloud Networks - VCN ]
+- Allowable Size /16 - /30
 - think AWS VPC and Azure VNET
 
 [ CIDR IP Allocation ]
@@ -144,7 +181,7 @@ Public Subnets - assigns a public and private addresses
 
 [ Routing Tables ]
 - do not exist for internal traffic to the VCN (this is implied)
-- must create a route table (and rule) for routing traffic out to the internet
+- must create a route table (and rule) to route traffic out to the internet
 
 [ Internet Gateway ]
 
@@ -152,33 +189,88 @@ Public Subnets - assigns a public and private addresses
 - there are no hourly provisioning or data processing fees // UNIQUE
 - they are treated as a standard networking component
 
+[ DNS ]
+
+
 [ Security List ]
-- applied at the subnet level
+- first layer of the defense applied at the subnet level
+- every VCN comes with a default security list
+- thin AWS NACLs
+
+// Example
+Stateless: No  
+Source: 0.0.0.0/0 
+IP: TCP 
+Source Port Range: All
+Dest Port Rage: 22
 
 [ Network Security Groups ]
+- second layer of the defense applied at the subnet level
 - can be applied to resources (compute, load balancers, databases)
 - think AWS Security Groups, Azure NSGs
+
+// Example
+Direction: Ingress
+Source Type: CIDR
+Source CIDR: 10.0.0.0/0
+IP Protocol: TCP
+Dest Port: 80
+
 
 [ DHCP Option Set ]
 - think AWS
 
 [ Dynamic Routing Gateway - DRG ]
-- for hybrid connectivity (think Virtual Gateway AWS, Virtual WAN Azure, Cloud Router GCP)
-- can connect via IPsec VPN, FastConnection (think DirectConnect AWS, ExpressRoute AWS, Cloud Interconnect GCP)
+- for hybrid connectivity 
+- can connect spoke VCNs (think AWS Transit Gatway construct), on-premise networks via IPsec VPN, FastConnection
+- think AWS Virtual Gateway, Azure Virtual WAN, GCP Cloud Router
+- think AWS DirectConnect, Azure ExpressRoute, GCP Cloud Interconnect)
 
+// Workflow
+Provision DRG
+  Attach DRG to VCN's
+    Create Route Rules in VCN's
+      Permit Traffic via Security List in VCN's
+      
+
+// Two Route Table Types
+1. For Remote Peering Connections/Virtual Circuits/IPSec Attachments
+2. For VCN Attachments
+
+// Two Route Distribution Types
+1. For RPCs/VCs/IPSec -> Import VCN Routes
+2. For VCN Attachments -> Import All Other Routes
+*Understand that the one route distribution type needs the other types routes to perform routing
+
+DRG Route Tables + DRG Route Distribution = Routing Policies
 
 [ Service Gateway ]
-- think VPC Endpoint AWS, PrivateLink AWS, ???? GCP 
-- connect to public services internally within your VCN
+- connect to Oracle services privately from my VCN
+- think AWS VPC Endpoint, Azure PrivateLink, GCP Private Services Connect
+
+// Route Rule Example
+Target Type                    Destination Service                Target Service Gateway
+Service Gateway            OCI PHX Object Storage       Low-Service-Gateway
+
 
 [ Local Peering Gateway - LPG]
-- LPGs and routes must be deployed to each VCN
+- LPGs must be deployed to each VCN (Step 1)
+- LPG Peeing request must be established by one of the VCN (Step 2)
+- Route Rules must be created in each VCN Route Table (Step 3)
+- Security List must be updated to accept traffic from each VCN (Step 4)
 - this is intra region peering
-- think VPC Peering AWS/GCP, VNET Peering Azure
+- think AWS/GCP VPC Peering, Azure VNET Peering
 
 [ Remote Peering Gateway - RPG ]
 - this is outer region peering
 - implemented via DRG
+
+// Workflow
+Provision (2) DRGs 
+  Provision (2) Remote Peering Connections (RPCs) between both DRGs
+     Provision a Connection using the RPCs OIDs
+        Create Route Rules in VCN's
+          Permit Traffic via Security List in VCN's
 
 [ Customer Premise Equipment - CPE ]
 - a logical construct that represents my on-premises router
@@ -227,6 +319,10 @@ FIXED - cannot customize specs
 
 FLEXIBLE - can customize specs // UNIQUE (OCI/GCP)
   VM.Standard.E3.Flex
+  
+[ Preemptible Instanes ]
+- spare capacity used at 50% discount over one demand
+- think AWS Spot Instances
 
 [ Block Volumes ] 
 - think AWS EBS, Azure Disks, Persistent Disk GCP
@@ -243,18 +339,117 @@ opc - Windows
 [ Vertical Scaling || Horizontal Scaling ]
 
 [ Oracle Cloud Agent ] 
+- allows for the installation of plugins and integration wiht OS Management Hub
+- provides my virtual machines extra functionality like becoming a bastion, monitoring, etc
 
 [ OS Management Hub ]
+- central hub that makes managing fleets of my instances seamless
+- takes care of things like patching, vulnerabilities, managing profiles for my enterprise resources
+- dynamic groups allow for automated registration of OCI Instances with OSMH 
 
-[ Run Command ]
+Instance (w/ Agent) ---> Turn on OSMH Plugin -----> OSMH
+
+// Components
+Management Station - central hub
+  Profiles - registration blueprints (software source, lifecycle stage, group membership)
+    Software Sources - control repositories that are available for OCI instances to download from
+      Agents - oracle agent
+        Network Configuration - making instances visible to OSMH (via internet of service gateway)
+          Reports - on software updates and vulnerabilities
+            Ksplice - allows for patch installation without reboot
+
+[ Run Command ] (AWS)
+- remote execute commands/scripts on a instance 
+- think AWS SSM
+- does not support Ubuntu
+- 4K max size of script
+- Output can go to Object Storage on stdout
 
 [ Shielded Instances ]
+- harden firmware security
+- defend against boot level attacks (secure boot, TPM)
+- NO CHARGE for these options
 
 
 
 Storage
 -----------
+[ Local NVMe Storage ]
+- extremely low latency
+
+
+[ OCI Block Storage ]
+- 50GB to 32TB
+- Max 32 volumes per instance
+- ecryption at rest by default // UNIQUE (GCP)
+
+// Attachment Types
+iSCI - uses internal storage stack in guest OS and network hardware virtualization; does not use hypervisor in attachment process
+  Paravirtualized - virtualization technique; hypervisor API's connect to remote storage directly as if it was attached; efficient than full virtualization
+  
+// Access Types
+Read/Write - attach to (1) instance
+Read/Write Shareable  - 1 to Many scenario; must use clustered filesystem to prevent corruption
+Read-Only Shareable -  1 to Many scenario
+*up to (8) instances can connect
+
+// Volume Performance
+Lower Cost - streaming and log processing
+  Balanced** - good balance for cost and performance
+    Higher Performance - high I/O requirements
+      Ultra-Higher Performance - the best possible performance
+**Balanced is the default peformance level
+**VPU = Volume Performance Unit
+
+// Backups
+- point-in-time snapshot
+- encrypted by default
+- can be restored as new volumes
+- backups are stored in Object Storage
+- can be copied between regions
+
+Manual Backups
+
+Policy-Based Schedule 
+  Oracle Defined
+    Bronze - Monthy Incremental | 1st Day of the Monthy | Retained for 12 months
+    Silver - Weekly Incremental | Sunday | Retained for 4 weeks (+ Bronze)
+    Gold - Daily Incremental | Retained for 7 days  (+ Silver and Bronze)
+  User Defined
+
 
 [ OCI File Storage ]
 
+
 [ OCI Object Storage ]
+- Top level unique namespace is defined for each tenant on creation // UNIQUE
+- bucket must be unique in the tenancy // UNIQUE
+- supports prefix slashes for folder simulation
+- 10TB Maximum Object Size
+- supports pre-authenticated request (pre-signed url)
+- supports tiering (auto lifecycle policies)  
+
+// Naming Convention
+https://objectstorage.<REGION>.oraclecloud.co/n/<NAMESPACE>/b/<BUCKET>/o/<OBJECT>
+
+// Tiers
+Standard Storage Tier (HOT)
+  Infrequent Access Storage Tier (COOL) 31 Days
+    Archive Storage Tier (COLD) 90 Days
+*You define the DEFAULT storage tier of a bucket a creation time
+
+// Logging
+*Must explicitly enable for the two types:
+read operations
+write operations
+
+// Retention Rules
+- prevents modification of deletion of an object based on a certain criteria
+- bucket level setting
+
+Time-Bound - 
+  Indefinite - objects cannot be modified unless the bucket is deleted
+*Rule Rentention Lock - irreversible action; can only be undone by deleting the bucket; 14 day soft period before becoming active
+
+[ OCI Archive Storage ]
+

@@ -185,7 +185,7 @@ Inbound Access FROM authorized VPC networks only
 Outbound Access TO whitelisted IP ranges only
 
 [ Private Service Connect ]
-- allows consumers (me) to access managed services (e.g. Cloud SQL, BigQuery) privately from inside my VPC
+- allows me to access managed services (e.g. Cloud SQL, BigQuery) privately from inside my VPC
 - I can use my own internal IP addresses to access services without leaving my VPC
 - traffic is sent to endpoints and backends (think AWS endpoints) and then routed to the target service
 
