@@ -412,7 +412,9 @@ kubectl get pods --all-namepsaces
 kubectl get pods -A --sort-by=.metadata.name
 kubectl get pod -l app=fluentbit-logging -o jsonpath='{.items[0].status.containerStatuses[*].name}' // get container names in a pod
 
-kubectl run <NAME> --image <IMAGE> -o yaml > pod.yml
+kubectl run <NAME> --image <IMAGE> -o yaml > pod.yml // creates resourse and exports configuration to manifest file
+kubectl run my-pod --image=nginx --dry-run=client -o yaml > pod.yaml // modern version; does not create the resourse in the cluster
+
 
 // Debug Pod
 kubectl debug -it POD_NAME --image=busybox --target=CONTAINER_IN_POD // launches ephemeral buzybox container inside of a pod I want to debug
@@ -504,6 +506,9 @@ kubectl exec deploy/graphql-api -- ping -c  1 processing-api // perform a ping f
 
 image: nginx
 command: [‘tail’, ‘-f’, ‘/dev/null’] // keep the container shell open so I can investigate other issues (e.g. filesystem mounting, startup, etc)
+
+command: ["/bin/sh", "-c"] // same thing; using sleep infinity tool
+args: ["sleep infinity"]
 
 
 // Logging
