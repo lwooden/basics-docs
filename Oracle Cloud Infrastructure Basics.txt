@@ -1,4 +1,8 @@
 
+CLI Common Commands
+----------------------------------
+
+
 Cloud Shell
 ----------------
 - can attach itself to the VCN network as if it was a virutal machine // UNIQUE (OCI, AWS, AZURE)
@@ -286,6 +290,12 @@ On-Prem/CPE -> DRG -> Hub VCN -> Local Peering Gateway -> Spoke VCN
 
 [ Network Command Center ]
 
+[ Bastion ]
+- Oracles bastion service
+- think Azure Bastion 
+- located under Identity & Security
+- 
+
 Loadbalancers
 --------------------
 
@@ -318,7 +328,14 @@ Compute
 FIXED - cannot customize specs
 
 FLEXIBLE - can customize specs // UNIQUE (OCI/GCP)
-  VM.Standard.E3.Flex
+  # General Purpose workloads
+  VM.Standard.E3.Flex (Intel)
+  VM.Standard.E4/E5/E6.Flex (AMD)
+  # Large Database + Big Data Workloads
+  VM.DenseIO.E4.Flex (AMD)
+  VM.DenseIO.E5.Flex (AMD)
+  # High Performance Computing
+  VM.Optimized3.Flex (Intel)
   
 [ Preemptible Instanes ]
 - spare capacity used at 50% discount over one demand
@@ -453,3 +470,164 @@ Time-Bound -
 
 [ OCI Archive Storage ]
 
+
+Container Platforms
+--------------------------
+
+[ Oracle Kubernetes Engince (OKE) ] // UNIQUE
+- managed Kubernetes service
+- think AWS EKS, Azure AKS, and Google GKE
+- cannot downgrade from enhanced -> basic
+
+// Cluster Types
+Basic
+  all core Kubernetes featues
+  come with SLO, but no SLA
+   
+Enhanced (default provision type)
+  uses virtual node pools for simpler management
+  deploy and configure cluster add-ons in a granular way
+  add extra nodes to the cluster
+  support workload identity (IAM roles for service accounts)
+  financially backed SLA (receive credits if broken)
+
+// Node Types
+Managed Nodes
+  I am responsible for managing these nodes
+  I am responsible for upgrading Kubernetes and managing capacity
+  supported in basic and enhanced clusters
+  resource allocation is at the node pool level
+  specify CPU and memory resource reqs for a 
+  
+Virtual Nodes -- UNIQUE
+  fully managed serverless experience for worker nodes
+  support up to 1000 pods (more in the future)
+  simplifies scaling
+  resource allocation is at the pod level
+  requirements are defined in the pod spec (reqs and limits)
+  
+
+[ Oracle Cloud Infrastructure Registry (OCIR) ]
+- an artifact repository
+- think AWS ECR, Azure Container Registries, and Google Artifact Registry
+- supports OCI container spec and helm spec
+- can switch between private and public after provisioning // UNIQUE
+- can add a "scanner" to support container scanner
+- repository deletes are "soft" and usually take affect after 48 hours
+- i can "restore" images that were once deleted using the OCLI
+
+// Format
+<REGION_KEY>.ocir.io/<TENANCY>/<REPOSITORY>:<VERSION_TAG>
+ash.ocir.io/lowsandbox/node-sample-api:1.0
+
+
+Serverless 
+------------
+
+[ OCI Functions ] -- UNIQUE
+- logical grouping of functions and allocation of resources
+- combines configuration context and runtime isolation
+- must specify subnets that the function will execute in
+- there is no default CSP Provided execution context (like AWS)
+- it is ideal to group multiple functions in a single application for efficiency and performance -- UNIQUE
+- functions are built and stored as container images in a registry -- UNIQUE
+- can be invoked using CLI, signed HTTP request, Oracle SDKs, other OCI services
+- on first invocation, OCI function pulls the container and executes the function
+- subsequent requests to the same function are directed to the existing container
+- after a period of inactivity the container is removed
+- container instances can scale up to 60 GB RAM for function execution
+
+// Concept 
+  Application
+    Function 1 -> Container Image
+    Function 2 -> Container Image
+    
+// Accessing Other OCI Resources Using Functions
+Add function to Dynamic Group
+  Add the necessary policy for them to be able to access the target service 
+    Tokens granted to resources using the group are cached for 15 minutes
+    
+
+  
+[ API Management ]
+- supports swagger (Open API 2.0)
+- supports Open API 3.0 (successor to swagger)
+
+// Concept 
+API Gateway
+  API Deployment (Specification)
+  API Deployment (Specification)
+  
+
+Usage Plans + Entitlements
+  Subscriber and Client Tokens
+    Request/Response Policies
+    
+// Security
+Trust Store
+  define default and custom CA's and CA bundles for Client and Backend TLS negotiation
+Mutual TLS
+  only supports customa CA's and CA bundles 
+  can define certain attributes that the certificate must contain
+  otherwise it accepts the request if the certificate is valid
+  
+
+Asynchronous Messaging
+----------------------------------
+
+[ Serverless Streaming ]
+- managed Kafka service
+
+// Concept
+Stream
+  Partition 1
+  Partition 2
+  Partition 3
+  Partition 4
+  Partition 5
+
+// Limits
+Retention Max  > 7 Days
+Message Size > 1 MB
+
+// Security
+Integrated w/ OCI IAM
+  Messages are encrypted via TLS
+  
+// Service Connectors
+OCI Logging
+  [ Service Connector ] - Sends data to OCI Streaming
+    OCI Streaming 
+     Kafka Connect
+      [ 3rd Party Application ] - Splunk
+  
+    
+  
+
+[ Serverless Queues ]
+
+
+[ Serverless Events ]
+
+
+Security
+------------
+
+[ Bastion ]
+
+
+
+Monitoring
+--------------
+- think AWS CloudWatch, Azure Metrics and Log Analytics Workspace, GCP Cloud Logging
+
+// Log Types
+Audit
+  audit events emitted by OCI Audit service
+  
+Service
+  emitted by OCI native services like events, functions, object storage
+  predefined logging for native OCI services
+
+Custom
+  logs emitted by my custom applications running on OCI

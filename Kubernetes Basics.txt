@@ -118,7 +118,7 @@ az aks get-credentials --resource-group lowsandbox-dev-rg --name lowk8-aks // up
 az aks delete --name lowk8-aks --resource-group lowsandbox-dev-rg
 
 
-Google GKS 1-Node Cluster Setup (DEV)
+Google GKE 1-Node Cluster Setup (DEV)
 ----------------------------------------------
 deploy vpc, subnets, etc using pulumi
 gcloud services enable container // enable GKE api 
@@ -130,6 +130,22 @@ gcloud container clusters create-auto CLUSTER_NAME \ # creates auto-pilot cluste
     
 gcloud container clusters get-credentials lowk8-gke --region=us-east1-b
 gcloud container clusters delete lowk8-gke --region=us-east1-b
+
+
+Oracle OKE 1-Node Cluster Setup (DEV)
+----------------------------------------------
+
+// Create Control Plane
+oci ce cluster create --compartment-id ocid1.compartment.oc1..aaaaaaaamr3hlw5noqo6ld4dlowuzzki4vl2m4kpfcqypjwwgvlqh4ue7kkq --name "lowk8-oke" --kubernetes-version "v1.36.0" --vcn-id ocid1.vcn.oc1.iad.amaaaaaaeurq5giankkb4wxwnt6sapakb2qtl5c3ew5gdhe6er7ocrl3fxiq --endpoint-public-ip-enabled true --endpoint-subnet-id ocid1.subnet.oc1.iad.aaaaaaaadkm4laa5nvhrfckzx6seqtnj2xpndlhosijm44ac6me4m2bypxdq --service-lb-subnet-ids "[\"ocid1.subnet.oc1.iad.aaaaaaaadkm4laa5nvhrfckzx6seqtnj2xpndlhosijm44ac6me4m2bypxdq\"]" --cluster-pod-network-options '[{"cniType":"OCI_VCN_IP_NATIVE"}]' --type ENHANCED_CLUSTER
+
+// Update Kube Config 
+oci ce cluster create-kubeconfig --cluster-id <ID> --file $HOME/.kube/config --region <REGION> --token-version 2.0.0 --kube-endpoint <ENDPOINT>
+
+
+// Create Virtual Node Pool
+oci ce virtual-node-pool create --cluster-id ocid1.cluster.oc1.iad.aaaaaaaasupkps3jpco6gmigxocfrvhlrwv4xxi4x7fo2zog3coc3ga3gbgq --compartment-id ocid1.compartment.oc1..aaaaaaaamr3hlw5noqo6ld4dlowuzzki4vl2m4kpfcqypjwwgvlqh4ue7kkq --display-name low-vnp --placement-configurations "[{\"availabilityDomain\":\"WmHC:US-ASHBURN-AD-1\",\"faultDomain\":[\"FAULT-DOMAIN-1\"],\"subnetId\":\"ocid1.subnet.oc1.iad.aaaaaaaawse7am5tbomxiodnvbncnnewt6h3c74ptdzepiyodijefrqvnzza\"}]" --pod-configuration "{\"subnetId\":\"ocid1.subnet.oc1.iad.aaaaaaaawse7am5tbomxiodnvbncnnewt6h3c74ptdzepiyodijefrqvnzza\",\"shape\":\"Pod.Standard.E4.Flex\"}" --size 1
+
+API Server Unreachable. Check network configuration and ensure network path between Virtual Node and API Server exists
 
 
 Static Pod Location (On Node)

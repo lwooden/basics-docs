@@ -1,0 +1,138 @@
+Tanstack Basics
+
+
+What is Tanstack
+----------------------
+- At its core, TanStack is a collection of tools that help you build modern apps
+- Indepenent components such as Tanstacker Router, data fetching and caching, server functions (SSR),
+forms, and AI can be combined to build the app that I want
+- TanStack Start is a full framework, built on top of Router that performs SSR, streaming, and server functions
+- TanStack Router and the other supporting components ARE NOT
+
+// Mental Model
+TanStack Router = lightweight SPA application (think Pure React)
+TanStack Start = full-stack application
+
+// Type Safety
+One more thing that sets TanStack apart: type safety.
+My routes, loaders, params, and search params are all fully typed, automatically.
+So if my loader returns a list of posts, my component already knows the shape of that data.
+
+// General Request Flow
+
+/posts (Route) -> Data Fetch   -> Cache    -> UI Render
+User Nav 						Loader runs		 Store Result			Display
+
+Project Structure
+---------------------
+
+// TanStack Start Structure
+src/
+	routes/
+	__root.tsx ← root layout, wraps everything (think layout.tsx in NextJS)
+	index.tsx ← / index route
+	posts.tsx ← /posts
+
+components/
+lib/ ← my utility functions, API calls, helpers, shared logic
+router.tsx ← router config
+routeTree.gen.ts ← auto-generated, don't touch
+
+// TanStack Rotuer (SPA Only)
+src/
+routes/
+	__root.tsx ← root layout, wraps everything
+components/
+lib/
+routeTree.gen.ts
+
+
+File Base Routing (Conventions)
+------------------------------------------
+
+// Flat
+src/
+	routes/
+	__root.tsx
+	posts.tsx
+	posts.$postId.tsx ← becomes /posts/<ID>
+
+- $ prefix represents a dynamic param
+- $postId is a URL route param
+
+// NextJS Style Folder Structure
+src/
+	routes/
+	__root.tsx
+	posts/
+  index.tsx
+	$postId.tsx ← becomes /posts/<ID>
+
+
+How a Page Is Rendered
+---------------------------------
+- The beatuty of Tanstack is that everything that you need to know about your route and how your component renders is located in the same file 
+
+Server Function Def
+	Loader
+		Caching
+			Component
+
+Route -> Data -> Caching -> UI (all unified together)
+
+
+Understanding Loaders
+-------------------------------
+- createServerFn defines server-only logic. The loader calls it, on the server during SSR, it runs directly; on the client during navigation, it becomes an RPC call to the server.
+- the component AWLAYS receives data before rendering
+
+import{createFileRoute}from'@tanstack/react-router'
+import{createServerFn}from'@tanstack/react-start'
+
+// Server Function Definition
+const getPosts = createServerFn().handler(async () => {
+
+# Runs on the server only — safe to use env vars, DB calls, etc.
+
+const res = await fetch('https://api.example.com/posts')
+return res.json()
+
+})
+
+
+export const Route = createFileRoute('/posts')({
+loader: () => getPosts(),  # reference server function
+
+component: PostsPage # define UI component to render
+})
+
+// Component Definition
+function PostsPage() {
+const posts = Route.useLoaderData() # used to access what the loader returned (type safe)
+
+return (
+<ul> {posts.map(post => (<li key={post.id}>{post.title}</li>))} </ul>
+
+ )
+}
+
+
+Pending State
+------------------
+- I can define different UI's for different states
+- all unified together in one file
+
+// Pending
+pendingComponent: () => <Loading />
+
+// Error State
+If something fails:
+errorComponent: ({ error }) => <ErrorView error={error} />
+
+// Not Found State
+If a route doesn’t exist:
+notFoundComponent: () => <NotFound />
+
+
+
+STOPPED ON 30
